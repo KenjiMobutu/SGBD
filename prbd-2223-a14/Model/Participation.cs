@@ -21,4 +21,6 @@ public class Participation : EntityBase<MyPollContext> {
     //public virtual ICollection<User> Participate { get; set; } = new HashSet<User>();
     //public virtual ICollection<Poll> FollowedBy { get; set; } = new HashSet<Poll>();
 
+    public Participation() { }
+
 }

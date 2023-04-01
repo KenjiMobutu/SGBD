@@ -10,7 +10,7 @@ public class MyPollContext : DbContextBase {
     public DbSet<Admin> Admins  => Set<Admin>();
     public DbSet<Vote> Votes { get; set; }
     public DbSet<Poll> Polls => Set<Poll>();
-    public DbSet<Participation> Participations { get; set; }
+    public DbSet<Participation> Participations => Set<Participation>();
     public DbSet<Choice> Choices { get; set; }
     public DbSet<Comment> Comments { get; set; }
 
@@ -28,12 +28,6 @@ public class MyPollContext : DbContextBase {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>()
-            .HasDiscriminator(u => u.Role)
-            .HasValue<User>(Role.Member)
-            .HasValue<Admin>(Role.Admin);
-
-        SeedData(modelBuilder);
 
         modelBuilder.Entity<Participation>()
             .HasKey(p => new { p.PollId, p.UserId });
@@ -41,21 +35,31 @@ public class MyPollContext : DbContextBase {
         modelBuilder.Entity<Vote>()
             .HasKey(v => new { v.UserId, v.ChoiceId });
 
-        
+        /*------------USER--------------*/
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Polls)
+            .WithMany(p => p.Participants)
+            .UsingEntity(e => e.ToTable("Participation"));
+
+        modelBuilder.Entity<User>()
+                    .HasDiscriminator(u => u.Role)
+                    .HasValue<User>(Role.Member)
+                    .HasValue<Admin>(Role.Admin);
 
         modelBuilder.Entity<Admin>()
             .HasBaseType<User>();
 
-        // l'entité User participe à une relation one-to-many ...
-        modelBuilder.Entity<User>()
+        // l'entité User participe à une relation one-to-many ... à vérifier avec BP
+        /*modelBuilder.Entity<User>()
             // avec, du côté many, la propriété PollsCreator ...
-            .HasMany(user => user.PollsCreator)
+            .HasMany(user => user.Polls)
             // avec, du côté one, la propriété CreatorId ...
-            .WithOne(poll => poll.Creator)
+            .WithOne(poll => poll.CreatorId)
             // et pour laquelle on active le delete en cascade du côté client (EF)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.ClientCascade);*/
 
-       
+
         modelBuilder.Entity<User>()
             .HasMany(user => user.CommentsList)
             .WithOne(comment => comment.User)
@@ -66,6 +70,54 @@ public class MyPollContext : DbContextBase {
             .WithOne(vote => vote.User)
             .OnDelete(DeleteBehavior.ClientCascade);
 
+        /*------------POLL--------------*/
+        modelBuilder.Entity<Poll>()
+            .HasKey(p => p.PollId);
+
+        modelBuilder.Entity<Poll>()
+            .Property(p => p.Title)
+            .IsRequired();
+
+        modelBuilder.Entity<Poll>()
+            .HasMany(poll => poll.Comments)
+            .WithOne(comment => comment.Poll)
+            .HasForeignKey(c => c.PollId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<Poll>()
+            .HasMany(poll => poll.Choices)
+            .WithOne(choice => choice.Poll)
+            .HasForeignKey(c => c.PollId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+     
+
+        /*------------CHOICE--------------*/
+
+        modelBuilder.Entity<Choice>()
+            .HasMany(choice => choice.VotesList)
+            .WithOne(vote => vote.Choice)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Polls)
+            .WithMany(p => p.Participants)
+            .UsingEntity<Participation>(
+                p => p.HasOne(p => p.Poll)
+                    .WithMany(p => p.Participations)
+                    .HasForeignKey(p => p.PollId),
+                p => p.HasOne(p => p.User)
+                    .WithMany(u => u.PartcipantsList)
+                    .HasForeignKey(p => p.UserId),
+                p => { p.HasKey(p => new {p.PollId, p.UserId }); }
+            );
+
+
+
+        modelBuilder.Entity<Participation>()
+            .HasKey(p => new {p.PollId, p.UserId});
+
+        SeedData(modelBuilder);
     }
    /* protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);

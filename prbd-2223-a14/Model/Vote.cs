@@ -18,4 +18,6 @@ public class Vote : EntityBase<MyPollContext> {
     [ForeignKey(nameof(Choice))]
     public int ChoiceId { get; set; }
     public virtual Choice Choice { get; set; }
+
+    public Vote() { }
 }
