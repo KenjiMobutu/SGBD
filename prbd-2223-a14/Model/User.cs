@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 //using Castle.Components.DictionaryAdapter;
 using PRBD_Framework;
 
 namespace MyPoll.Model;
 
+public enum Role {
+    Member = 1, Admin = 2
+}
 public class User : EntityBase<MyPollContext> {
 
     [Key]
@@ -13,7 +17,19 @@ public class User : EntityBase<MyPollContext> {
     public string Mail { get; set; }
     
     public string Password { get; set; }
-   
-    //public Boolean IsAdmin { get; set; }
+
+    public Role Role { get; protected set; } = Role.Member;
+    public virtual ICollection<Poll> PollsCreator { get; set; } = new HashSet<Poll>();
+    public virtual ICollection<Comment> CommentsList { get; set; } = new HashSet<Comment>();
+    public virtual ICollection<Vote> VotesList { get; set; } = new HashSet<Vote>();
+    
+    public User( int userId, string name, string mail, string password) {
+        UserId = userId;
+        Name = name;
+        Mail = mail;
+        Password = password;
+
+    }
+    public User() { }
 
 }

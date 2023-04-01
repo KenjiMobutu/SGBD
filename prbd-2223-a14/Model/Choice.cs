@@ -9,4 +9,7 @@ public class Choice : EntityBase<MyPollContext> {
     [Key]
     public int ChoiceId { get; set; }
     public string Label { get; set; }
+
+    public int PollId { get; set; }
+    public virtual Poll Poll { get; set; }
 }
