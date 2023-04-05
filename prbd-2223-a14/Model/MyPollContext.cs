@@ -6,7 +6,7 @@ using PRBD_Framework;
 namespace MyPoll.Model;
 
 public class MyPollContext : DbContextBase {
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users => Set<User>();
     public DbSet<Admin> Admins  => Set<Admin>();
     public DbSet<Vote> Votes { get; set; }
     public DbSet<Poll> Polls => Set<Poll>();
@@ -28,34 +28,30 @@ public class MyPollContext : DbContextBase {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-
-        modelBuilder.Entity<Participation>()
-            .HasKey(p => new { p.PollId, p.UserId });
-
         modelBuilder.Entity<Vote>()
             .HasKey(v => new { v.UserId, v.ChoiceId });
 
         /*------------USER--------------*/
 
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Polls)
-            .WithMany(p => p.Participants)
-            .UsingEntity(e => e.ToTable("Participation"));
+        modelBuilder.Entity<Admin>()
+                    .HasBaseType<User>();
 
         modelBuilder.Entity<User>()
                     .HasDiscriminator(u => u.Role)
                     .HasValue<User>(Role.Member)
                     .HasValue<Admin>(Role.Admin);
 
-        modelBuilder.Entity<Admin>()
-            .HasBaseType<User>();
+        modelBuilder.Entity<User>()
+                .HasMany(u => u.Polls)
+                .WithMany(p => p.Participants)
+                .UsingEntity(e => e.ToTable("Participation"));
 
-        // l'entité User participe à une relation one-to-many ... à vérifier avec BP
+        // l'entité User participe àune relation one-to-many ... à vérifier avec BP
         /*modelBuilder.Entity<User>()
             // avec, du côté many, la propriété PollsCreator ...
             .HasMany(user => user.Polls)
             // avec, du côté one, la propriété CreatorId ...
-            .WithOne(poll => poll.CreatorId)
+            .WithOne(poll => poll.Creator)
             // et pour laquelle on active le delete en cascade du côté client (EF)
             .OnDelete(DeleteBehavior.ClientCascade);*/
 
@@ -70,56 +66,23 @@ public class MyPollContext : DbContextBase {
             .WithOne(vote => vote.User)
             .OnDelete(DeleteBehavior.ClientCascade);
 
-        /*------------POLL--------------*/
-        modelBuilder.Entity<Poll>()
-            .HasKey(p => p.PollId);
-
-        modelBuilder.Entity<Poll>()
-            .Property(p => p.Title)
-            .IsRequired();
-
-        modelBuilder.Entity<Poll>()
-            .HasMany(poll => poll.Comments)
-            .WithOne(comment => comment.Poll)
-            .HasForeignKey(c => c.PollId)
-            .OnDelete(DeleteBehavior.ClientCascade);
-
-        modelBuilder.Entity<Poll>()
-            .HasMany(poll => poll.Choices)
-            .WithOne(choice => choice.Poll)
-            .HasForeignKey(c => c.PollId)
-            .OnDelete(DeleteBehavior.ClientCascade);
-
-     
-
-        /*------------CHOICE--------------*/
-
-        modelBuilder.Entity<Choice>()
-            .HasMany(choice => choice.VotesList)
-            .WithOne(vote => vote.Choice)
-            .OnDelete(DeleteBehavior.ClientCascade);
-
         modelBuilder.Entity<User>()
-            .HasMany(u => u.Polls)
-            .WithMany(p => p.Participants)
-            .UsingEntity<Participation>(
-                p => p.HasOne(p => p.Poll)
-                    .WithMany(p => p.Participations)
-                    .HasForeignKey(p => p.PollId),
-                p => p.HasOne(p => p.User)
-                    .WithMany(u => u.PartcipantsList)
-                    .HasForeignKey(p => p.UserId),
-                p => { p.HasKey(p => new {p.PollId, p.UserId }); }
-            );
+                    .HasMany(u => u.Polls)
+                    .WithMany(p => p.Participants)
+                    .UsingEntity<Participation>(
+                        p => p.HasOne(p => p.Poll)
+                            .WithMany()
+                            .HasForeignKey(p => p.PollId)
+                            .OnDelete(DeleteBehavior.ClientCascade),
+                        p => p.HasOne(p => p.User)
+                            .WithMany()
+                            .HasForeignKey(p => p.UserId)
+                            .OnDelete(DeleteBehavior.ClientCascade),
+                        p => { p.HasKey(p => new {p.PollId, p.UserId }); }
+                    );
 
 
-
-        modelBuilder.Entity<Participation>()
-            .HasKey(p => new {p.PollId, p.UserId});
-
-        SeedData(modelBuilder);
-    }
-   /* protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        /* protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
         ...
         // l'entité Member participe à une relation many-to-many ...
@@ -141,6 +104,111 @@ public class MyPollContext : DbContextBase {
                     joinEntity.HasKey(f => new { f.FollowerPseudo, f.FolloweePseudo });
                 });
     }*/
+
+        /*modelBuilder.Entity<User>()
+    .HasMany(u => u.Participations)
+    .WithMany(p => p.Participants)
+    .UsingEntity<Participation>(
+        p => p.HasOne(p => p.Poll)
+            .WithMany(p => p.Participations)
+            .HasForeignKey(p => p.PollId)
+            .OnDelete(DeleteBehavior.Cascade),
+        p => p.HasOne(p => p.User)
+            .WithMany(u => u.Participations)
+            .HasForeignKey(p => p.UserId) // utiliser UserId
+            .OnDelete(DeleteBehavior.Cascade),
+        p => { p.HasKey(p => new { p.PollId, p.UserId }); }
+    );*/
+
+        /*------------POLL--------------*/
+        modelBuilder.Entity<Poll>()
+            .HasOne(poll => poll.Creator);
+
+        modelBuilder.Entity<Poll>()
+            .HasKey(p => p.PollId);
+
+        modelBuilder.Entity<Poll>()
+            .Property(p => p.Title)
+            .IsRequired();
+
+        modelBuilder.Entity<Poll>()
+            .HasMany(poll => poll.Comments)
+            .WithOne(comment => comment.Poll)
+            .HasForeignKey(c => c.PollId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Poll>()
+            .HasMany(poll => poll.Choices)
+            .WithOne(choice => choice.Poll)
+            .HasForeignKey(c => c.PollId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+     
+
+        /*------------CHOICE--------------*/
+
+        modelBuilder.Entity<Choice>()
+            .HasMany(choice => choice.VotesList)
+            .WithOne(vote => vote.Choice)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<Choice>()
+            .HasOne(c => c.Poll)
+            .WithMany(p => p.Choices)
+            .HasForeignKey(c => c.PollId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+
+        /*------------PARTICIPATION--------------*/
+
+        modelBuilder.Entity<Participation>()
+            .HasKey(p => new { p.PollId, p.UserId });
+            
+
+        /*modelBuilder.Entity<Participation>()
+            .HasOne(p => p.Poll)
+            .WithMany(p => p.Participants)
+            .HasForeignKey(p => p.PollId)
+            .OnDelete(DeleteBehavior.ClientCascade);*/
+
+        /*------------COMMENT--------------*/
+
+        modelBuilder.Entity<Comment>()
+            .HasKey(c => c.CommentId);
+
+        modelBuilder.Entity<Comment>()
+            .Property(c => c.Text)
+            .IsRequired();
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.Poll)
+            .WithMany(p => p.Comments)
+            .HasForeignKey(c => c.PollId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        /*------------VOTE--------------*/
+
+        modelBuilder.Entity<Vote>()
+            .HasKey(v => new { v.UserId, v.ChoiceId });
+
+        modelBuilder.Entity<Vote>()
+            .HasOne(v => v.Choice)
+            .WithMany(c => c.VotesList)
+            .HasForeignKey(v => v.ChoiceId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<Vote>()
+            .HasOne(v => v.User)
+            .WithMany(u => u.VotesList)
+            .HasForeignKey(v => v.UserId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+
+
+        SeedData(modelBuilder);
+    }
+   
 
 
     private static void SeedData(ModelBuilder modelBuilder) {
