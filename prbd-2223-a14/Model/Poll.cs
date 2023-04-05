@@ -16,17 +16,17 @@ public class Poll : EntityBase<MyPollContext> {
     public Boolean IsClosed { get; set; }
 
 
-    [ForeignKey(nameof(User))]
+    [Required,ForeignKey(nameof(Creator))]
     public int  CreatorId { get; set; }
-    //public virtual User Creator { get; set; }
+    public virtual User Creator { get; set; }
 
     public Poll() { }
 
     public virtual ICollection<User> Participants { get; set; } = new HashSet<User>();
-    public virtual ICollection<Participation> Participations{ get; set; } = new HashSet<Participation>();
+    //public virtual ICollection<Participation> Participations{ get; set; } = new HashSet<Participation>();
     public virtual ICollection<Comment> Comments{ get; set; } = new HashSet<Comment>();
     public virtual ICollection<Choice> Choices{ get; set; } = new HashSet<Choice>();
-    public virtual ICollection<Vote> Vote { get; set; } = new HashSet<Vote>();
+   // public virtual ICollection<Vote> Vote { get; set; } = new HashSet<Vote>();
 
 
 }
