@@ -7,6 +7,7 @@ namespace MyPoll.Model;
 
 
 public class Comment : EntityBase<MyPollContext> {
+    [Key]
     public int CommentId { get; set; }
     public string Text { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.Now;
