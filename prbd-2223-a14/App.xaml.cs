@@ -6,23 +6,41 @@ using PRBD_Framework;
 namespace MyPoll; 
 
 public partial class App : ApplicationBase<User, MyPollContext> {
+    public enum Messages {
+        MSG_NEW_MEMBER,
+        MSG_PSEUDO_CHANGED,
+        MSG_MEMBER_CHANGED,
+        MSG_DISPLAY_MEMBER,
+        MSG_CLOSE_TAB,
+        MSG_LOGIN
+    }
     protected override void OnStartup(StartupEventArgs e) {
         base.OnStartup(e);
-        PrepareDatabase();
-    }
-
-    private static void PrepareDatabase() {
        
         // Clear database and seed data
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
+
+        Register<User>(this, Messages.MSG_LOGIN, user => {
+            Login(user);
+            NavigateTo<MainViewModel, User, MyPollContext>();
+        });
 
         // Cold start
         Console.Write("Cold starting database... ");
         Context.Users.Find(0);
         Console.WriteLine("done");
 
+        // affichage du pseudo de tous les membres
+        foreach (var u in Context.Users) {
+            Console.WriteLine(u.Name);
+        }
+
         // affichage du nombre d'instances de l'entité 'Member'
         Console.WriteLine("Nombres d'utilisateurs --> "+Context.Users.Count());
+    }
+
+    protected override void OnRefreshData() {
+        // pour plus tard
     }
 }

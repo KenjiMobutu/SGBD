@@ -33,18 +33,18 @@ public class MyPollContext : DbContextBase {
 
         /*------------USER--------------*/
 
-        modelBuilder.Entity<Admin>()
-                    .HasBaseType<User>();
+        //modelBuilder.Entity<Admin>()
+        //            .HasBaseType<User>();
 
         modelBuilder.Entity<User>()
                     .HasDiscriminator(u => u.Role)
                     .HasValue<User>(Role.Member)
                     .HasValue<Admin>(Role.Admin);
 
-        modelBuilder.Entity<User>()
-                .HasMany(u => u.Polls)
-                .WithMany(p => p.Participants)
-                .UsingEntity(e => e.ToTable("Participation"));
+        //modelBuilder.Entity<User>()
+        //        .HasMany(u => u.Polls)
+        //        .WithMany(p => p.Participants)
+        //        .UsingEntity(e => e.ToTable("Participation"));
 
         // l'entité User participe àune relation one-to-many ... à vérifier avec BP
         /*modelBuilder.Entity<User>()
@@ -67,7 +67,7 @@ public class MyPollContext : DbContextBase {
             .OnDelete(DeleteBehavior.ClientCascade);
 
         modelBuilder.Entity<User>()
-                    .HasMany(u => u.Polls)
+                    .HasMany(u => u.Participations)
                     .WithMany(p => p.Participants)
                     .UsingEntity<Participation>(
                         p => p.HasOne(p => p.Poll)

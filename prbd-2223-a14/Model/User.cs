@@ -27,10 +27,12 @@ public class User : EntityBase<MyPollContext> {
         }
     public User() { }
 
-    public virtual ICollection<User> Participations { get; set; } = new HashSet<User>();
+    public virtual ICollection<Poll> Participations { get; set; } = new HashSet<Poll>();
     //public virtual ICollection<Poll> UserPollList { get; set; } = new HashSet<Poll>();
     //public virtual ICollection<Participation> PartcipantsList { get; set; } = new HashSet<Participation>();
     //public virtual ICollection<Choice> ChoicesList { get; set; } = new HashSet<Choice>();
+
+    [InverseProperty(nameof(Poll.Creator))]
     public virtual ICollection<Poll> Polls { get; set; } = new HashSet<Poll>();
     public virtual ICollection<Comment> CommentsList { get; set; } = new HashSet<Comment>();
     public virtual ICollection<Vote> VotesList { get; set; } = new HashSet<Vote>();
