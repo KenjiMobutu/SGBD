@@ -27,9 +27,9 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         });
 
         // Cold start
-        Console.Write("Cold starting database... ");
-        Context.Users.Find(0);
-        Console.WriteLine("done");
+        //Console.Write("Cold starting database... ");
+        //Context.Users.Find(0);
+        //Console.WriteLine("done");
 
         // affichage du pseudo de tous les membres
         foreach (var u in Context.Users) {

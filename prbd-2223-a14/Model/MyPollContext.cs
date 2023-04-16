@@ -8,11 +8,11 @@ namespace MyPoll.Model;
 public class MyPollContext : DbContextBase {
     public DbSet<User> Users => Set<User>();
     public DbSet<Admin> Admins  => Set<Admin>();
-    public DbSet<Vote> Votes { get; set; }
+    public DbSet<Vote> Votes => Set<Vote>();
     public DbSet<Poll> Polls => Set<Poll>();
     public DbSet<Participation> Participations => Set<Participation>();
-    public DbSet<Choice> Choices { get; set; }
-    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Choice> Choices => Set<Choice>();
+    public DbSet<Comment> Comments => Set<Comment>();
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
@@ -33,28 +33,13 @@ public class MyPollContext : DbContextBase {
 
         /*------------USER--------------*/
 
-        //modelBuilder.Entity<Admin>()
-        //            .HasBaseType<User>();
+        modelBuilder.Entity<Admin>()
+                    .HasBaseType<User>();
 
         modelBuilder.Entity<User>()
                     .HasDiscriminator(u => u.Role)
                     .HasValue<User>(Role.Member)
                     .HasValue<Admin>(Role.Admin);
-
-        //modelBuilder.Entity<User>()
-        //        .HasMany(u => u.Polls)
-        //        .WithMany(p => p.Participants)
-        //        .UsingEntity(e => e.ToTable("Participation"));
-
-        // l'entité User participe àune relation one-to-many ... à vérifier avec BP
-        /*modelBuilder.Entity<User>()
-            // avec, du côté many, la propriété PollsCreator ...
-            .HasMany(user => user.Polls)
-            // avec, du côté one, la propriété CreatorId ...
-            .WithOne(poll => poll.Creator)
-            // et pour laquelle on active le delete en cascade du côté client (EF)
-            .OnDelete(DeleteBehavior.ClientCascade);*/
-
 
         modelBuilder.Entity<User>()
             .HasMany(user => user.CommentsList)
@@ -81,44 +66,6 @@ public class MyPollContext : DbContextBase {
                         p => { p.HasKey(p => new {p.PollId, p.UserId }); }
                     );
 
-
-        /* protected override void OnModelCreating(ModelBuilder modelBuilder) {
-        base.OnModelCreating(modelBuilder);
-        ...
-        // l'entité Member participe à une relation many-to-many ...
-        modelBuilder.Entity<Member>()
-            // avec, d'un côté, la propriété Followees ...
-            .HasMany(m => m.Followees)
-            // avec, de l'autre côté, la propriété Followers ...
-            .WithMany(m => m.Followers)
-            // en utilisant l'entité Follow comme entité "association"
-            .UsingEntity<Follow>(
-                // celle-ci étant constituée d'une relation one-to-many à partir de Followee
-                right => right.HasOne(f => f.Followee).WithMany().HasForeignKey(nameof(Follow.FolloweePseudo))
-                    .OnDelete(DeleteBehavior.ClientCascade),
-                // et d'une autre relation one-to-many à partir de Follower
-                left => left.HasOne(f => f.Follower).WithMany().HasForeignKey(nameof(Follow.FollowerPseudo))
-                    .OnDelete(DeleteBehavior.ClientCascade),
-                joinEntity => {
-                    // en n'oubliant pas de spécifier la clé primaire composée de la table association
-                    joinEntity.HasKey(f => new { f.FollowerPseudo, f.FolloweePseudo });
-                });
-    }*/
-
-        /*modelBuilder.Entity<User>()
-    .HasMany(u => u.Participations)
-    .WithMany(p => p.Participants)
-    .UsingEntity<Participation>(
-        p => p.HasOne(p => p.Poll)
-            .WithMany(p => p.Participations)
-            .HasForeignKey(p => p.PollId)
-            .OnDelete(DeleteBehavior.Cascade),
-        p => p.HasOne(p => p.User)
-            .WithMany(u => u.Participations)
-            .HasForeignKey(p => p.UserId) // utiliser UserId
-            .OnDelete(DeleteBehavior.Cascade),
-        p => { p.HasKey(p => new { p.PollId, p.UserId }); }
-    );*/
 
         /*------------POLL--------------*/
         modelBuilder.Entity<Poll>()
@@ -212,15 +159,6 @@ public class MyPollContext : DbContextBase {
 
 
     private static void SeedData(ModelBuilder modelBuilder) {
-        /*modelBuilder.Entity<User>().HasData(
-            new User { UserId = 1, Name = "ben" },
-            new User { UserId = 2, Name = "bruno" }
-            );
-
-        modelBuilder.Entity<Admin>().HasData(
-            new Admin { UserId = 3, Name = "Mando" }
-            );*/
-        
         modelBuilder.Entity<User>()
             .HasData(
                 new User {

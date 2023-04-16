@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PRBD_Framework;
 
-namespace MyPoll.View {
+namespace MyPoll.View;
     /// <summary>
     /// Logique d'interaction pour LoginView.xaml
     /// </summary>
@@ -21,5 +21,9 @@ namespace MyPoll.View {
         public LoginView() {
             InitializeComponent();
         }
+
+    private void btnCancel_Click(object sender, RoutedEventArgs e) {
+        Close();
     }
 }
+

@@ -1,16 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
-using PRBD_Framework;
-
-namespace MyPoll.Model;
+﻿namespace MyPoll.Model;
 
 public class Admin : User{
     public Admin() {
         Role = Role.Admin;
     }
 
-    public Admin(int UserId,string Name, string Mail , string Password)
-       :base(UserId,Name,Mail,Password) {
+    public Admin(int userId,string name, string mail , string password)
+       :base(userId,name,mail,password) {
         Role = Role.Admin;
     }
     

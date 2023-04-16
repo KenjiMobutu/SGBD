@@ -30,7 +30,7 @@ public class LoginViewModel : ViewModelCommon{
     }
     private void LoginAction() {
         if (Validate()) {
-            var user = Context.Users.Find(Mail);
+            var user = Context.Users.SingleOrDefault(user => user.Mail == Mail);
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
     }
