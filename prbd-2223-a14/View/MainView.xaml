@@ -5,6 +5,8 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
               xmlns:vm="clr-namespace:MyPoll.ViewModel"
+              xmlns:vw="clr-namespace:MyPoll.View"
+              
               d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
               mc:Ignorable="d"
               WindowStartupLocation="CenterScreen" Title="My Poll App " Height="400" Width="600">
@@ -12,8 +14,10 @@
     <Window.DataContext>
         <vm:MainViewModel x:Name="vm"/>
     </Window.DataContext>
-    
-    <TextBlock Text="{Binding Title}"
-               VerticalAlignment="Center" HorizontalAlignment="Center"
-               FontSize="40" FontFamily="Comic Sans MS"/>
+    <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
+        <TabItem x:Name="polls" Header="Polls" Tag="Polls">
+            <vw:PollsView />
+        </TabItem>
+    </f:MyTabControl>
+   
 </f:WindowBase>
