@@ -9,7 +9,7 @@
               
               d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
               mc:Ignorable="d"
-              WindowStartupLocation="CenterScreen" Title="My Poll App " Height="400" Width="600">
+              WindowStartupLocation="CenterScreen" Title="My Polls " Height="600" Width="800">
     
     <Window.DataContext>
         <vm:MainViewModel x:Name="vm"/>
