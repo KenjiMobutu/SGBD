@@ -11,6 +11,8 @@ using PRBD_Framework;
 namespace MyPoll.ViewModel;
 public class LoginViewModel : ViewModelCommon{
     public ICommand LoginCommand { get; set; }
+    public ICommand LoginCommandUser { get; set; }
+
 
     private string _mail;
 
@@ -28,11 +30,29 @@ public class LoginViewModel : ViewModelCommon{
     public LoginViewModel() : base(){
         LoginCommand = new RelayCommand(LoginAction,
             () => { return _mail != null && _password != null && !HasErrors; });
+
+        LoginCommandUser = new RelayCommand(LoginActionUser,
+            () => { return _mail != null; });
     }
+  
+
     private void LoginAction() {
         if (Validate()) {
             var user = Context.Users.SingleOrDefault(user => user.Mail == Mail);
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
+        }
+    }
+
+    public void LoginActionUser() {
+        if (!string.IsNullOrEmpty(_mail)) {
+            // connexion pour l'utilisateur normal
+            var user = Context.Users.SingleOrDefault(user => user.Mail == Mail);
+            if (user != null) {
+                Mail = user.Mail;
+                
+                Password = user.Password;
+                NotifyColleagues(App.Messages.MSG_LOGIN, "user");
+            }
         }
     }
 
