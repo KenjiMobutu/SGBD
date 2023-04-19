@@ -37,7 +37,7 @@
         <DockPanel Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
             <Button x:Name="btnCancel" Content="Cancel" 
                     HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" IsCancel="True" Margin="0,0,10,0"
-                    Click="btnCancel_Click" />
+Click="btnCancel_Click" />
             <Button x:Name="btnLogin" Content="Login" 
                     HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" IsDefault="True" Margin="10,0,0,0" 
                     Command="{Binding LoginCommand}"/>

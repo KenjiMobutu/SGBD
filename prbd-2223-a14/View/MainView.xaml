@@ -7,12 +7,12 @@
               xmlns:vm="clr-namespace:MyPoll.ViewModel"
               d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
               mc:Ignorable="d"
-              WindowStartupLocation="CenterScreen"
-              Title="MyPoll - prbd-2223-a14"
-              Height="400" Width="600">
+              WindowStartupLocation="CenterScreen" Title="My Poll App " Height="400" Width="600">
+    
     <Window.DataContext>
         <vm:MainViewModel x:Name="vm"/>
     </Window.DataContext>
+    
     <TextBlock Text="{Binding Title}"
                VerticalAlignment="Center" HorizontalAlignment="Center"
                FontSize="40" FontFamily="Comic Sans MS"/>
