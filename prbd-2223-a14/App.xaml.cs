@@ -13,6 +13,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_DISPLAY_MEMBER,
         MSG_CLOSE_TAB,
         MSG_LOGIN,
+        MSG_LOGOUT,
         MSG_NEW_POLL,
         MSG_DISPLAY_POLL,
         MSG_POLL_CHANGED
@@ -27,6 +28,11 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         Register<User>(this, Messages.MSG_LOGIN, user => {
             Login(user);
             NavigateTo<MainViewModel, User, MyPollContext>();
+        });
+
+        Register(this, Messages.MSG_LOGOUT, () => {
+            Logout();
+            NavigateTo<LoginViewModel, User, MyPollContext>();
         });
 
         // Cold start
@@ -44,6 +50,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
     }
 
     protected override void OnRefreshData() {
-        // pour plus tard
+        if (CurrentUser?.Name != null)
+            CurrentUser = User.GetByName(CurrentUser.Name);
     }
 }
