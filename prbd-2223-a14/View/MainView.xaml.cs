@@ -1,4 +1,5 @@
 ﻿using PRBD_Framework;
+using MyPoll.Model;
 
 namespace MyPoll.View;
 

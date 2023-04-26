@@ -1,5 +1,7 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MyPoll.View;
 //using Castle.Components.DictionaryAdapter;
 using PRBD_Framework;
 
@@ -19,6 +21,12 @@ public class Poll : EntityBase<MyPollContext> {
     [Required,ForeignKey(nameof(Creator))]
     public int  CreatorId { get; set; }
     public virtual User Creator { get; set; }
+
+    public static IQueryable<Poll> GetPolls(User CurrentUser) {
+        var polls = Context.Polls.Where(poll =>
+        poll.Creator.Mail == CurrentUser.Mail || poll.Participants.Contains(CurrentUser));
+        return polls;
+    }
 
     public Poll() { }
 

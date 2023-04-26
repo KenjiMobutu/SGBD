@@ -15,7 +15,7 @@
         <vm:MainViewModel x:Name="vm"/>
     </Window.DataContext>
     <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
-        <TabItem x:Name="polls" Header="Polls" Tag="Polls">
+        <TabItem x:Name="pollsTab" Header="Polls" Tag="Polls">
             <vw:PollsView />
         </TabItem>
     </f:MyTabControl>

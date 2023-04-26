@@ -24,6 +24,10 @@ public class User : EntityBase<MyPollContext> {
             Password = password;
     }
     public User() { }
+    public bool isAdmin() {
+        return Role == Role.Admin;
+    }
+
 
     public virtual ICollection<Poll> Participations { get; set; } = new HashSet<Poll>();
 

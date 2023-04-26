@@ -12,7 +12,10 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_MEMBER_CHANGED,
         MSG_DISPLAY_MEMBER,
         MSG_CLOSE_TAB,
-        MSG_LOGIN
+        MSG_LOGIN,
+        MSG_NEW_POLL,
+        MSG_DISPLAY_POLL,
+        MSG_POLL_CHANGED
     }
     protected override void OnStartup(StartupEventArgs e) {
         base.OnStartup(e);
