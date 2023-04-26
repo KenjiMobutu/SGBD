@@ -8,9 +8,17 @@
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:PollCardViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <Image Width="80" Height="80"  RenderOptions.BitmapScalingMode="Fant" Stretch="UniformToFill" />
-        <TextBlock FontSize="14" FontWeight="Bold" Width="80" TextAlignment="Center" Text="{Binding Title}" />
+             d:DesignHeight="80" d:DesignWidth="150">
+    <StackPanel Margin="10,10,10,10">
+        <!-- Ajouter une marge de 10 pixels en bas -->
+        <TextBlock FontSize="14" FontWeight="Bold" Width="130" TextAlignment="Center" TextWrapping="Wrap">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0}, {1}">
+                    <Binding Path="Name"/>
+                    <Binding Path="Creator"/>
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
     </StackPanel>
+
 </f:UserControlBase>
