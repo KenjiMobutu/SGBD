@@ -49,7 +49,11 @@ public class PollsViewModel : ViewModelCommon {
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }
-
+    //public static IQueryable<Poll> GetAll() {
+    //    IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
+    //    Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
+    //    return Polls;
+    //}
     private void Filtering() {
         IQueryable<Poll> query = Context.Polls;
         if (!CurrentUser.isAdmin()) {
@@ -64,53 +68,9 @@ public class PollsViewModel : ViewModelCommon {
     protected override void OnRefreshData() {
         //GetUserPolls();
         //Filtering();
+        IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
 
-        
+
+        Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }
-
-    //private void ApplyFilterAction() {
-    //    IQueryable<Poll> query = Context.Polls;
-    //    if (!CurrentUser.isAdmin()) {
-    //        query = query.Where(p => p.Participants.Any(p.PollId == CurrentUser.UserId));
-    //    }
-    //    query = query.Where(p => p.Title.Contains(Filter));
-
-        //    var filter = new ObservableCollection<PollCardViewModel>(query.Select(p => new PollCardViewModel(p)));
-
-        //    Polls = filter;
-        //}
-        //private void ApplyFilterAction() {
-        //    IQueryable<Poll> query = Context.Polls;
-        //    if (!CurrentUser.isAdmin() {
-        //        query = query.Where(p => p.Participants.Any(p.PollId == CurrentUser.UserId));
-        //    }
-        //    query = query.Where(p => p.Title.Contains(Filter));
-
-        //    var filter = new ObservableCollection<PollCardViewModel>(query.Select(p => new PollCardViewModel(p)));
-
-        //    Polls = filter;
-        //}
-
-        //protected override void OnRefreshData() {
-        //    /* ApplyFilterAction est appelée deux fois quand on clique sur un radiobutton : une fois
-        //     * pour mettre celui qui est sélectionné à true et une autre fois pour mettre celui qui
-        //     * était sélectionné à false. Du coup, pour éviter de faire deux fois la requête, on retourne
-        //     * sans rien faire quand deux flags sont vrais en même temps.
-        //     */
-
-        //    IQueryable<Poll> polls = string.IsNullOrEmpty(Filter) ? Member.GetAll() : Member.GetFiltered(Filter);
-        //    var filteredPolls = from p in polls
-        //                          where
-        //                              // on veut les followees de l'utilisateur courant => on prend tous ceux qui ont 
-        //                              // le pseudo courant dans leurs followers 
-        //                              FolloweesSelected && m.Followers.Any(f => CurrentUser != null && f.Pseudo == CurrentUser.Pseudo) ||
-        //                              // on veut les followers de l'utilisateur courant => on prend tous ceux qui ont 
-        //                              // le pseudo courant dans leurs followees 
-        //                              FollowersSelected && m.Followees.Any(f => CurrentUser != null && f.Pseudo == CurrentUser.Pseudo) ||
-        //                              // on veut tous les membres
-        //                              AllSelected
-        //                          select m;
-        //    Polls = new ObservableCollection<PollCardViewModel>(filteredPolls.Select(p => new PollCardViewModel(p)));
-        //}
-    public string Title { get; } = "prbd-2223-a14";
 }
