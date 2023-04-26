@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MyPoll.View;
+using MyPoll.ViewModel;
 //using Castle.Components.DictionaryAdapter;
 using PRBD_Framework;
 
@@ -22,11 +23,8 @@ public class Poll : EntityBase<MyPollContext> {
     public int  CreatorId { get; set; }
     public virtual User Creator { get; set; }
 
-    public static IQueryable<Poll> GetPolls(User CurrentUser) {
-        var polls = Context.Polls.Where(poll =>
-        poll.Creator.Mail == CurrentUser.Mail || poll.Participants.Contains(CurrentUser));
-        return polls;
-    }
+    
+    
 
     public Poll() { }
 
@@ -36,5 +34,17 @@ public class Poll : EntityBase<MyPollContext> {
     public virtual ICollection<Choice> Choices{ get; set; } = new HashSet<Choice>();
    // public virtual ICollection<Vote> Vote { get; set; } = new HashSet<Vote>();
 
+    public static IQueryable<Poll> GetPolls(User CurrentUser) {
+            var polls = Context.Polls.Where(poll =>
+            poll.Creator.Mail == CurrentUser.Mail || poll.Participants.Contains(CurrentUser));
+            return polls;
+    }
 
+    public static IQueryable<Poll> GetFiltered(string Filter) {
+        var filtered = from p in Context.Polls
+                       where p.Title.Contains(Filter)
+                       orderby p.Title
+                       select p;
+        return filtered;
+    }
 }
