@@ -6,18 +6,25 @@
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
               xmlns:vm="clr-namespace:MyPoll.ViewModel"
               xmlns:vw="clr-namespace:MyPoll.View"
-              
-              d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
               mc:Ignorable="d"
-              WindowStartupLocation="CenterScreen" Title="My Polls " Height="600" Width="800">
-    
+              Title="{Binding Title}" Height="768" Width="1024" WindowStartupLocation="CenterScreen"
+              KeyDown="WindowBase_KeyDown">
     <Window.DataContext>
-        <vm:MainViewModel x:Name="vm"/>
+        <vm:MainViewModel/>
     </Window.DataContext>
-    <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
-        <TabItem x:Name="pollsTab" Header="Polls" Tag="Polls">
-            <vw:PollsView />
-        </TabItem>
-    </f:MyTabControl>
-   
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="Logout" Click="MenuLogout_Click"/>
+            <MenuItem Header="Reload" Command="{Binding ReloadDataCommand}" />
+        </Menu>
+        <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
+            <TabItem x:Name="pollsTab" Header="Polls" Tag="Polls">
+                <vw:PollsView />
+            </TabItem>
+        </f:MyTabControl>
+    </Grid>
 </f:WindowBase>
