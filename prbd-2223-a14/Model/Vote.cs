@@ -20,4 +20,11 @@ public class Vote : EntityBase<MyPollContext> {
     public virtual Choice Choice { get; set; }
 
     public Vote() { }
+
+    public double Value => Type switch {
+        VoteType.Yes => 1,
+        VoteType.Maybe => 0.5,
+        VoteType.No => -1,
+        _ => 0,// throw new Exception("bad vote value"),
+    };
 }

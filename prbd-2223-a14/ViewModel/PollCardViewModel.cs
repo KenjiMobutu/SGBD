@@ -12,6 +12,7 @@ using PRBD_Framework;
 namespace MyPoll.ViewModel;
 
 public class PollCardViewModel : ViewModelCommon {
+    public IEnumerable<Choice> BestChoice => Poll.BestChoice;
     private readonly Poll _poll;
     public Poll Poll {
         get => _poll;
@@ -20,7 +21,7 @@ public class PollCardViewModel : ViewModelCommon {
     public string Name => Poll.Title;
     public PollType Type => Poll.Type;
     public int CreatorId => Poll.CreatorId;
-    public virtual User Creator => Poll.Creator;
+    public  User Creator => Poll.Creator;
 
     public PollCardViewModel(Poll poll) {
         Poll = poll;

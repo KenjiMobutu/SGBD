@@ -47,4 +47,23 @@ public class Poll : EntityBase<MyPollContext> {
                        select p;
         return filtered;
     }
+
+    [NotMapped]
+    public IEnumerable<Choice> BestChoice {
+        get {
+            if (Choices.Count == 0) return new List<Choice>();
+            var maxScore = Choices.Select(c => c.VotesList.Sum(v => v.Value)).Max();
+            if (maxScore == 0) return new List<Choice>();
+            var choices = Choices.Where(c => c.VotesList.Sum(v => v.Value) == maxScore).ToList();
+
+            //var choices = Context.Choices
+            //.Include(c => c.Votes)
+            //.Where(c => c.PollId == poll.Id)
+            //.OrderByDescending(c => c.Votes.Count())
+            //.ToList();
+
+            //return choices.FirstOrDefault()?.Label;
+            return choices;
+        }
+    }
 }
