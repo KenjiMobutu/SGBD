@@ -35,7 +35,9 @@ public class User : EntityBase<MyPollContext> {
     public virtual ICollection<Poll> Polls { get; set; } = new HashSet<Poll>();
     public virtual ICollection<Comment> CommentsList { get; set; } = new HashSet<Comment>();
     public virtual ICollection<Vote> VotesList { get; set; } = new HashSet<Vote>();
-    
-    
+
+    public static User GetByName(string name) {
+        return Context.Users.SingleOrDefault(u => u.Name == name);
+    }
 
 }
