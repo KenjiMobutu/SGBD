@@ -7,40 +7,49 @@
              xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:PollCardViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="250" d:DesignWidth="150">
+             d:DataContext="{d:DesignInstance Type=vm:PollCardViewModel, IsDesignTimeCreatable=False}">
     <f:UserControlBase.Resources>
         <vm:PluralizeConverter x:Key="PluralizeConverter"/>
     </f:UserControlBase.Resources>
-    <StackPanel Margin="10">
-        <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
-        <TextBlock FontSize="12" TextAlignment="Center">
-            <Run Text="created by "/>
-            <Run Text="{Binding Creator.Name}" FontWeight="Bold"/>
-        </TextBlock>
-        <TextBlock TextAlignment="Center">
-            <Run Text="{Binding ParticipantsCount,  Mode=OneWay}"/>
-            <Run Text=" Participants"/>
-        </TextBlock>
-        <TextBlock TextAlignment="Center">
-            <Run Text="{Binding VotesCount,  Mode=OneWay}"/>
-            <Run Text=" votes"/>
-        </TextBlock>
-        <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding BestChoices.Count, Converter={StaticResource PluralizeConverter}, ConverterParameter='Best choice'}" TextAlignment="Center"/>
+    <Border Background="{Binding BackgroundColor}" CornerRadius="10" Padding="10" Margin="5" BorderThickness="1"  Height="200" Width="220">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
+            <TextBlock Grid.Row="1" FontSize="12" TextAlignment="Center">
+                <Run Text="created by "/>
+                <Run Text="{Binding Creator.Name}" FontWeight="Bold"/>
+            </TextBlock>
+            <TextBlock Grid.Row="2" TextAlignment="Center">
+                <Run Text="{Binding ParticipantsCount,  Mode=OneWay}"/>
+                <Run Text=" Participants"/>
+            </TextBlock>
+            <TextBlock Grid.Row="3" TextAlignment="Center">
+                <Run Text="{Binding VotesCount,  Mode=OneWay}"/>
+                <Run Text=" votes"/>
+            </TextBlock>
+            <TextBlock Grid.Row="4" FontSize="12" FontWeight="Bold" Text="{Binding BestChoices.Count, Converter={StaticResource PluralizeConverter}, ConverterParameter='Best choice'}" TextAlignment="Center"/>
 
-        <ItemsControl ItemsSource="{Binding BestChoices}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="5">
-                        <TextBlock TextAlignment="Center" TextWrapping="Wrap" MaxWidth="150">
-                    <Run Text="{Binding Label}"/>
-                    <Run Text=" (" FontWeight="Bold"/>
-                    <Run Text="{Binding Score, Mode=OneWay}"/>
-                    <Run Text=")" FontWeight="Bold"/>
-                        </TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel>
+            <ItemsControl Grid.Row="5" ItemsSource="{Binding BestChoices}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5">
+                            <TextBlock TextAlignment="Center" TextWrapping="Wrap" MaxWidth="250">
+                                <Run Text="{Binding Label}"/>
+                                <Run Text=" (" FontWeight="Bold"/>
+                                <Run Text="{Binding Score, Mode=OneWay}"/>
+                                <Run Text=")" FontWeight="Bold"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
 </f:UserControlBase>

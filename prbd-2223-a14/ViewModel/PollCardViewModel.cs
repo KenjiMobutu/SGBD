@@ -7,6 +7,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
 using MyPoll.Model;
 using PRBD_Framework;
 
@@ -32,6 +33,14 @@ public class PollCardViewModel : ViewModelCommon {
     public IEnumerable<Choice> BestChoices => Poll.BestChoices;
     [NotMapped]
     public double VotesSum => BestChoices.Sum(c => c.VotesList.Sum(v => v.Value));
+    public SolidColorBrush BackgroundColor {
+        get {
+            return Poll.IsClosed ? new SolidColorBrush(Color.FromRgb(255, 230, 220)) : new SolidColorBrush(Colors.White);
+        }
+    }
+
+
+
 
 
     public double VotesCount => Poll.GetVotesCount();  
