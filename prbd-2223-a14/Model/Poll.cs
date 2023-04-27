@@ -56,7 +56,7 @@ public class Poll : EntityBase<MyPollContext> {
     }
 
     [NotMapped]
-    public IEnumerable<Choice> BestChoice {
+    public IEnumerable<Choice> BestChoices {
         get {
             if (Choices.Count == 0) return new List<Choice>();
             var maxScore = Choices.Select(c => c.VotesList.Sum(v => v.Value)).Max();
@@ -66,4 +66,18 @@ public class Poll : EntityBase<MyPollContext> {
             return choices;
         }
     }
+
+    public double GetVotesCount(Choice choice) {
+        return choice.VotesList.Sum(v => v.Value);
+    }
+    public int GetVotesCount() {
+        int count = 0;
+        foreach (var choice in Choices) {
+            count += choice.VotesList.Count;
+        }
+        return count;
+    }
+
+
+
 }

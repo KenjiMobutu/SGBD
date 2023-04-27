@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.RightsManagement;
@@ -12,7 +13,6 @@ using PRBD_Framework;
 namespace MyPoll.ViewModel;
 
 public class PollCardViewModel : ViewModelCommon {
-    public IEnumerable<Choice> BestChoice => Poll.BestChoice;
     private readonly Poll _poll;
 
     public Poll Poll {
@@ -28,12 +28,14 @@ public class PollCardViewModel : ViewModelCommon {
     public PollType Type => Poll.Type;
     public int CreatorId => Poll.CreatorId;
     public User Creator => Poll.Creator;
-
     public int ParticipantsCount => Poll.Participants.Count;
+    public IEnumerable<Choice> BestChoices => Poll.BestChoices;
+    [NotMapped]
+    public double VotesSum => BestChoices.Sum(c => c.VotesList.Sum(v => v.Value));
 
 
+    public double VotesCount => Poll.GetVotesCount();  
     public PollCardViewModel(Poll poll) {
         Poll = poll;
     }
 }
-

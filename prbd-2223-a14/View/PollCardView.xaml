@@ -8,9 +8,11 @@
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:PollCardViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="80" d:DesignWidth="150">
+             d:DesignHeight="250" d:DesignWidth="150">
+    <f:UserControlBase.Resources>
+        <vm:PluralizeConverter x:Key="PluralizeConverter"/>
+    </f:UserControlBase.Resources>
     <StackPanel Margin="10">
-        <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
         <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
         <TextBlock FontSize="12" TextAlignment="Center">
             <Run Text="created by "/>
@@ -20,5 +22,25 @@
             <Run Text="{Binding ParticipantsCount,  Mode=OneWay}"/>
             <Run Text=" Participants"/>
         </TextBlock>
+        <TextBlock TextAlignment="Center">
+            <Run Text="{Binding VotesCount,  Mode=OneWay}"/>
+            <Run Text=" votes"/>
+        </TextBlock>
+        <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding BestChoices.Count, Converter={StaticResource PluralizeConverter}, ConverterParameter='Best choice'}" TextAlignment="Center"/>
+
+        <ItemsControl ItemsSource="{Binding BestChoices}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="5">
+                        <TextBlock TextAlignment="Center" TextWrapping="Wrap" MaxWidth="150">
+                    <Run Text="{Binding Label}"/>
+                    <Run Text=" (" FontWeight="Bold"/>
+                    <Run Text="{Binding Score, Mode=OneWay}"/>
+                    <Run Text=")" FontWeight="Bold"/>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </StackPanel>
 </f:UserControlBase>
