@@ -11,6 +11,7 @@
              d:DesignHeight="80" d:DesignWidth="150">
     <StackPanel Margin="10">
         <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
+        <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
         <TextBlock FontSize="12" Text="{Binding Creator.Name}" TextAlignment="Center"/>
     </StackPanel>
 </f:UserControlBase>

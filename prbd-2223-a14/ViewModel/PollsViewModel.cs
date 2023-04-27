@@ -29,7 +29,7 @@ public class PollsViewModel : ViewModelCommon {
 
     public PollsViewModel() : base() {
         OnRefreshData();
-
+        
         ClearFilter = new RelayCommand(() => Filter = "");
 
         NewPoll = new RelayCommand(() => {
@@ -44,33 +44,17 @@ public class PollsViewModel : ViewModelCommon {
 
         //AllSelected = true;
     }
-    protected  void GetUserPolls() {
-        IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
+    
 
-        Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
-    }
-    //public static IQueryable<Poll> GetAll() {
-    //    IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
-    //    Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
-    //    return Polls;
-    //}
-    private void Filtering() {
-        IQueryable<Poll> query = Context.Polls;
-        if (!CurrentUser.isAdmin()) {
-            query = query.Where(p => p.Participants.Any(participant => participant.UserId == CurrentUser.UserId));
-        }
-        query = query.Where(p => p.Title.Contains(Filter));
-
-        var filter = new ObservableCollection<PollCardViewModel>(query.Select(p => new PollCardViewModel(p)));
-
-        Polls = filter;
-    }
     protected override void OnRefreshData() {
-        //GetUserPolls();
-        //Filtering();
         IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
 
+        if (!string.IsNullOrEmpty(Filter)) {
+            polls = polls.Where(p => p.Title.Contains(Filter) || p.Creator.Name.Contains(Filter));
+        }
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }
+
+
 }
