@@ -18,10 +18,15 @@ public class PollCardViewModel : ViewModelCommon {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
+    //public User Creator { get; }
+    public PollCardViewModel(Poll poll, User creator) {
+        Poll = poll;
+        
+    }
     public string Name => Poll.Title;
     public PollType Type => Poll.Type;
     public int CreatorId => Poll.CreatorId;
-    public  User Creator => Poll.Creator;
+    public User Creator => Poll.Creator;
 
     public PollCardViewModel(Poll poll) {
         Poll = poll;

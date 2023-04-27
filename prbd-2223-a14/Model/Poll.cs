@@ -39,6 +39,13 @@ public class Poll : EntityBase<MyPollContext> {
             poll.Creator.Mail == CurrentUser.Mail || poll.Participants.Contains(CurrentUser));
             return polls;
     }
+    public static Dictionary<int, User> GetCreator(IEnumerable<Poll> polls) {
+        var creatorIds = polls.Select(p => p.CreatorId).Distinct();
+        var creators = Context.Users.Where(u => creatorIds.Contains(u.UserId)).ToDictionary(u => u.UserId);
+        return creators;
+    }
+
+
 
     public static IQueryable<Poll> GetFiltered(string Filter) {
         var filtered = from p in Context.Polls
@@ -56,13 +63,6 @@ public class Poll : EntityBase<MyPollContext> {
             if (maxScore == 0) return new List<Choice>();
             var choices = Choices.Where(c => c.VotesList.Sum(v => v.Value) == maxScore).ToList();
 
-            //var choices = Context.Choices
-            //.Include(c => c.Votes)
-            //.Where(c => c.PollId == poll.Id)
-            //.OrderByDescending(c => c.Votes.Count())
-            //.ToList();
-
-            //return choices.FirstOrDefault()?.Label;
             return choices;
         }
     }

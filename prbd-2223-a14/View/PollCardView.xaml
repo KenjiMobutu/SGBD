@@ -9,16 +9,8 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:PollCardViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="80" d:DesignWidth="150">
-    <StackPanel Margin="10,10,10,10">
-        <!-- Ajouter une marge de 10 pixels en bas -->
-        <TextBlock FontSize="14" FontWeight="Bold" Width="130" TextAlignment="Center" TextWrapping="Wrap">
-            <TextBlock.Text>
-                <MultiBinding StringFormat="{}{0}, {1}">
-                    <Binding Path="Name"/>
-                    <Binding Path="Creator"/>
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+    <StackPanel Margin="10">
+        <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
+        <TextBlock FontSize="12" Text="{Binding Creator.Name}" TextAlignment="Center"/>
     </StackPanel>
-
 </f:UserControlBase>
