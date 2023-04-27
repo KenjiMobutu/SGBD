@@ -14,23 +14,26 @@ namespace MyPoll.ViewModel;
 public class PollCardViewModel : ViewModelCommon {
     public IEnumerable<Choice> BestChoice => Poll.BestChoice;
     private readonly Poll _poll;
+
     public Poll Poll {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
-    //public User Creator { get; }
+
     public PollCardViewModel(Poll poll, User creator) {
         Poll = poll;
-        
     }
+
     public string Name => Poll.Title;
     public PollType Type => Poll.Type;
     public int CreatorId => Poll.CreatorId;
     public User Creator => Poll.Creator;
 
+    public int ParticipantsCount => Poll.Participants.Count;
+
+
     public PollCardViewModel(Poll poll) {
         Poll = poll;
     }
-    
-  
 }
+

@@ -12,6 +12,13 @@
     <StackPanel Margin="10">
         <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
         <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Name}" TextAlignment="Center"/>
-        <TextBlock FontSize="12" Text="{Binding Creator.Name}" TextAlignment="Center"/>
+        <TextBlock FontSize="12" TextAlignment="Center">
+            <Run Text="created by "/>
+            <Run Text="{Binding Creator.Name}" FontWeight="Bold"/>
+        </TextBlock>
+        <TextBlock TextAlignment="Center">
+            <Run Text="{Binding ParticipantsCount,  Mode=OneWay}"/>
+            <Run Text=" Participants"/>
+        </TextBlock>
     </StackPanel>
 </f:UserControlBase>

@@ -41,8 +41,6 @@ public class PollsViewModel : ViewModelCommon {
         });
 
         Register<Poll>(App.Messages.MSG_POLL_CHANGED, member => OnRefreshData());
-
-        //AllSelected = true;
     }
     
 
