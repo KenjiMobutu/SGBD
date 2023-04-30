@@ -12,12 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyPoll.Model;
+using MyPoll.ViewModel;
 using PRBD_Framework;
 
 namespace MyPoll.View;
 
-public partial class PollCardView : UserControlBase {
-    public PollCardView(){
+public partial class PollDetailView : UserControlBase {
+    private readonly PollDetailViewModel _vm;
+    public PollDetailView(Poll poll, bool isNew) {
         InitializeComponent();
+        DataContext = _vm = new PollDetailViewModel(poll, isNew);
     }
 }

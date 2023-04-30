@@ -40,7 +40,7 @@ public class PollsViewModel : ViewModelCommon {
             NotifyColleagues(App.Messages.MSG_DISPLAY_POLL, vm.Poll);
         });
 
-        Register<Poll>(App.Messages.MSG_POLL_CHANGED, member => OnRefreshData());
+        Register<Poll>(App.Messages.MSG_POLL_CHANGED, poll => OnRefreshData());
     }
     
 

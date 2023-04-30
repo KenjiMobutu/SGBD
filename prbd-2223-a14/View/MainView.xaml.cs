@@ -2,13 +2,50 @@
 using MyPoll.Model;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace MyPoll.View;
 
 public partial class MainView : WindowBase {
     public MainView() {
         InitializeComponent();
+
+        Register<Poll>(App.Messages.MSG_NEW_POLL,
+            poll => DoDisplayMember(poll, true));
+
+        Register<Poll>(App.Messages.MSG_DISPLAY_POLL,
+            poll => DoDisplayMember(poll, false));
+
+        Register<Poll>(App.Messages.MSG_POLL_CHANGED,
+            poll => DoRenameTab(string.IsNullOrEmpty(poll.Title) ? "<New Poll>" : poll.Title));
+
+        Register<Poll>(App.Messages.MSG_CLOSE_TAB,
+            poll => DoCloseTab(poll));
+
     }
+
+    private void DoDisplayMember(Poll poll, bool isNew) {
+        if (poll != null)
+            OpenTab(isNew ? "<New Poll>" : poll.Title, poll.Title, () => new PollDetailView(poll, isNew));
+    }
+    private void OpenTab(string header, string tag, Func<UserControlBase> createView) {
+        var tab = tabControl.FindByTag(tag);
+        if (tab == null)
+            tabControl.Add(createView(), header, tag);
+        else
+            tabControl.SetFocus(tab);
+    }
+    private void DoRenameTab(string header) {
+        if (tabControl.SelectedItem is TabItem tab) {
+            MyTabControl.RenameTab(tab, header);
+            tab.Tag = header;
+        }
+    }
+
+    private void DoCloseTab(Poll poll) {
+        tabControl.CloseByTag(string.IsNullOrEmpty(poll.Title) ? "<New Poll>" : poll.Title);
+    }
+
     private void MenuLogout_Click(object sender, System.Windows.RoutedEventArgs e) {
         NotifyColleagues(App.Messages.MSG_LOGOUT);
     }
@@ -20,4 +57,6 @@ public partial class MainView : WindowBase {
         base.OnClosing(e);
         tabControl.Dispose();
     }
+
+
 }

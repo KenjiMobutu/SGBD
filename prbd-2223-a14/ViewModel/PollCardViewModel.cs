@@ -38,12 +38,8 @@ public class PollCardViewModel : ViewModelCommon {
             return Poll.IsClosed ? new SolidColorBrush(Color.FromRgb(255, 230, 220)) : new SolidColorBrush(Colors.White);
         }
     }
+    public double VotesCount => Poll.GetVotesCount();
 
-
-
-
-
-    public double VotesCount => Poll.GetVotesCount();  
     public PollCardViewModel(Poll poll) {
         Poll = poll;
     }
