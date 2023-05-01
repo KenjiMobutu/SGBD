@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance Type=vm:PollDetailViewModel, IsDesignTimeCreatable=False}"
              FontSize="14" d:DesignHeight="450" d:DesignWidth="800"
              x:Name="uc">
-    <Grid>
+    <Grid Margin="10">
             
     </Grid>
 </f:UserControlBase>

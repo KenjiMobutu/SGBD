@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MyPoll.Model;
 using PRBD_Framework;
@@ -29,7 +24,7 @@ public class PollsViewModel : ViewModelCommon {
 
     public PollsViewModel() : base() {
         OnRefreshData();
-        
+
         ClearFilter = new RelayCommand(() => Filter = "");
 
         NewPoll = new RelayCommand(() => {
@@ -42,7 +37,7 @@ public class PollsViewModel : ViewModelCommon {
 
         Register<Poll>(App.Messages.MSG_POLL_CHANGED, poll => OnRefreshData());
     }
-    
+
 
     protected override void OnRefreshData() {
         IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);

@@ -12,7 +12,7 @@ namespace MyPoll.ViewModel;
 public class LoginViewModel : ViewModelCommon{
     public ICommand LoginCommand { get; set; }
     public ICommand LoginCommandUser { get; set; }
-
+    public ICommand OpenSignUpCommand { get; set; }
 
     private string _mail;
 
@@ -33,8 +33,13 @@ public class LoginViewModel : ViewModelCommon{
 
         LoginCommandUser = new RelayCommand(LoginActionUser,
             () => { return _mail != null; });
+
+        OpenSignUpCommand = new RelayCommand(OpenSignUp);
     }
-  
+
+    private void OpenSignUp() {
+        NotifyColleagues(App.Messages.MSG_NEW_MEMBER, new User());
+    }
 
     private void LoginAction() {
         if (Validate()) {
@@ -42,6 +47,7 @@ public class LoginViewModel : ViewModelCommon{
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
     }
+
 
     public void LoginActionUser() {
         if (!string.IsNullOrEmpty(_mail)) {

@@ -41,16 +41,16 @@
             <Button x:Name="btnLogin" Content="Login" 
                     HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" IsDefault="True" Margin="10,0,0,0" 
                     Command="{Binding LoginCommand}"/>
-
         </DockPanel>
+        
         <DockPanel Grid.Row="3" Grid.ColumnSpan="2">
             <TextBlock Height="auto" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" Width="220" >
                 <Run Text="If you don't have a login and a password, click"/>
-                <Hyperlink><Run Text="here"/></Hyperlink>
+                <Hyperlink  Command="{Binding OpenSignUpCommand}"><Run Text="here"/></Hyperlink>
                 <Run Text="to sign-up."/>
             </TextBlock>
-
         </DockPanel>
+        
         <Button Content="Login as Harry Covère (User)" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="30,48,0,0" Grid.Row="4" VerticalAlignment="Top" Width="170"  CommandParameter="harry@test.com" Click="btnHarry_Click"/>
         <Button Content="Login as John Deuf (User)" HorizontalAlignment="Left" Margin="30,82,0,0" Grid.Row="4" VerticalAlignment="Top" RenderTransformOrigin="0.458,-0.357" Width="170" Grid.ColumnSpan="2" Click="btnJohn_Click" CommandParameter="john@test.com"/>
         <Button Content="Login as admin (Administrator)" HorizontalAlignment="Left" Margin="30,116,0,0" Grid.Row="4" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="170" Click="btnAdmin_Click" CommandParameter="admin@test.com"/>

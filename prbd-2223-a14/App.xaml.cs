@@ -16,7 +16,8 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_LOGOUT,
         MSG_NEW_POLL,
         MSG_DISPLAY_POLL,
-        MSG_POLL_CHANGED
+        MSG_POLL_CHANGED,
+        MSG_SIGNUP
     }
     protected override void OnStartup(StartupEventArgs e) {
         base.OnStartup(e);
@@ -34,6 +35,12 @@ public partial class App : ApplicationBase<User, MyPollContext> {
             Logout();
             NavigateTo<LoginViewModel, User, MyPollContext>();
         });
+
+        Register<User>(this, Messages.MSG_NEW_MEMBER, user => {
+            
+            NavigateTo<SignUpViewModel, User, MyPollContext>();
+        });
+
 
         // Cold start
         //Console.Write("Cold starting database... ");

@@ -10,15 +10,14 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyPoll.Model;
 using MyPoll.ViewModel;
 using PRBD_Framework;
 
 namespace MyPoll.View;
-    /// <summary>
-    /// Logique d'interaction pour LoginView.xaml
-    /// </summary>
-    public partial class LoginView : WindowBase {
+public partial class LoginView : WindowBase {
         public LoginView() {
             InitializeComponent();
         }
@@ -50,6 +49,11 @@ namespace MyPoll.View;
         viewModel.Password = "admin";
         viewModel.LoginCommand.Execute("admin@test.com");
     }
+
+    
+
+
+
 
 
 
