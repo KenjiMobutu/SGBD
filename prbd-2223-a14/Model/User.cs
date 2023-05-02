@@ -30,6 +30,7 @@ public class User : EntityBase<MyPollContext> {
 
 
     public virtual ICollection<Poll> Participations { get; set; } = new HashSet<Poll>();
+    public virtual ICollection<Choice> Choices { get; set; } = new HashSet<Choice>();
 
     [InverseProperty(nameof(Poll.Creator))]
     public virtual ICollection<Poll> Polls { get; set; } = new HashSet<Poll>();

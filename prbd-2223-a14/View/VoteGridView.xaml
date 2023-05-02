@@ -11,7 +11,7 @@
              SizeToContent="WidthAndHeight"     
              WindowStartupLocation="CenterScreen"
              x:Name="uc"
-             d:DesignHeight="450" d:DesignWidth="800">
+             >
     <Window.DataContext>
         <vm:VoteGridViewModel x:Name="vm" />
     </Window.DataContext>
@@ -51,7 +51,7 @@
                             <Border BorderBrush="Black" BorderThickness="1,1,0,1" SnapsToDevicePixels="True"
                                     Background="#FFE6E6E6" HorizontalAlignment="Stretch" Width="100" >
                                 <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <TextBlock Text="{Binding Name}" Padding="5" HorizontalAlignment="Center"
+                                    <TextBlock Text="{Binding Label}" Padding="5" HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Width="auto" TextAlignment="Center" TextWrapping="Wrap"
                                                FontWeight="Bold">

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MyPoll.Model;
+using MyPoll.View;
 using PRBD_Framework;
 
 namespace MyPoll.ViewModel;
@@ -36,6 +37,16 @@ public class PollDetailViewModel : ViewModelCommon {
 
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
+
+    private VoteGridView _voteGridView;
+    public VoteGridView VoteGridView {
+        get {
+            if (_voteGridView == null) {
+                _voteGridView = new VoteGridView();
+            }
+            return _voteGridView;
+        }
+    }
 
 }
 
