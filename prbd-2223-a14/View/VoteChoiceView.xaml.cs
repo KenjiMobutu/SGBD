@@ -12,21 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MyPoll.ViewModel;
-using MyPoll.Model;
 using PRBD_Framework;
 
-
 namespace MyPoll.View;
-
-public partial class SignUpView : WindowBase {
-    private readonly SignUpViewModel _vm;
-    public SignUpView() {
+public partial class VoteChoiceView : UserControlBase {
+    public VoteChoiceView() {
         InitializeComponent();
-        //DataContext = _vm = new SignUpViewModel();
-    }
-
-    private void btnCancel_Click(object sender, RoutedEventArgs e) {
-        Close();
     }
 }
+

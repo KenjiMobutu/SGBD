@@ -11,10 +11,11 @@ namespace MyPoll.ViewModel;
 
 public class PollDetailViewModel : ViewModelCommon {
 
-    private Poll _poll;
+    private readonly Poll _poll;
+
     public Poll Poll {
         get => _poll;
-        set => SetProperty(ref _poll, value);
+        private init => SetProperty(ref _poll, value);
     }
 
     private bool _isNew;
@@ -28,8 +29,13 @@ public class PollDetailViewModel : ViewModelCommon {
         IsNew = isNew;
         Poll = poll;
 
-
     }
+    public PollDetailViewModel(Poll poll, User creator) {
+        Poll = poll;
+    }
+
+    public string Title => Poll.Title;
+    public User Creator => Poll.Creator;
 
 }
 

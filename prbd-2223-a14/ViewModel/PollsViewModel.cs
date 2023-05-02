@@ -40,6 +40,11 @@ public class PollsViewModel : ViewModelCommon {
 
 
     protected override void OnRefreshData() {
+        if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.Mail)) {
+            // gestion du cas où CurrentUser est null ou CurrentUser.Mail est null
+            return;
+        }
+
         IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
 
         if (!string.IsNullOrEmpty(Filter)) {
@@ -48,6 +53,7 @@ public class PollsViewModel : ViewModelCommon {
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }
+
 
 
 }
