@@ -15,24 +15,16 @@ public class Choice : EntityBase<MyPollContext> {
     public virtual Poll Poll { get; set; }
 
     public virtual ICollection<Vote> VotesList { get; set; } = new HashSet<Vote>();
+
     [NotMapped]
     public double Score => VotesList.Sum(v => v.Value);
-    public static IQueryable<Choice> GetChoice(Choice CurrentChoice) {
-        var choices = Context.Choices.Where(choice =>
-        choice.ChoiceId == CurrentChoice.ChoiceId );
-        return choices;
-    }
-    public static IQueryable<Choice> GetChoicesForPoll(int pollId) {
+    
+    public static IQueryable<Choice> GetChoicesForGrid(int pollId) {
         var poll = Context.Polls.FirstOrDefault(p => p.PollId == pollId);
         if (poll == null) {
             throw new ArgumentException($"Poll with ID {pollId} does not exist.");
         }
         return Context.Choices.Where(c => c.PollId == pollId);
     }
-    public override string ToString() {
-        return $"Choice {{ ChoiceId = {ChoiceId}, Label = {Label}, PollId = {PollId}, Score = {Score} }}";
-    }
-
-
     public Choice() { }
 }
