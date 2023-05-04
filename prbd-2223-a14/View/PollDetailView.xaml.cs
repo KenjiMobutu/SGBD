@@ -19,9 +19,14 @@ using PRBD_Framework;
 namespace MyPoll.View;
 
 public partial class PollDetailView : UserControlBase {
-    private readonly PollDetailViewModel _vm;
     public PollDetailView(Poll poll, bool isNew) {
         InitializeComponent();
-        DataContext = _vm = new PollDetailViewModel(poll, isNew);
+        DataContext = new PollDetailViewModel(poll, isNew);
+        DoDisplayGrid(poll);
+    }
+
+    private void DoDisplayGrid(Poll poll) {
+        if (poll != null)
+            new VoteGridView(poll);
     }
 }

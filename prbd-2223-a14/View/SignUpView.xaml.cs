@@ -20,7 +20,7 @@ using PRBD_Framework;
 namespace MyPoll.View;
 
 public partial class SignUpView : WindowBase {
-    private readonly SignUpViewModel _vm;
+    //private readonly SignUpViewModel _vm;
     public SignUpView() {
         InitializeComponent();
         //DataContext = _vm = new SignUpViewModel();

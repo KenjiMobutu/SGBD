@@ -65,14 +65,23 @@ public class VoteParticipantViewModel : ViewModelCommon {
         private set => SetProperty(ref _choicesVM, value);
     }
 
-    private void RefreshVotes() {
+    /*private void RefreshVotes() {
         // On crée, pour chaque inscription de l'étudiant, un RegistrationStudentCourseViewModel
         // qui sera utilisé par le RegistrationStudentCourseView
         // RegistrationsVM est la liste qui servira de source pour la balise <ItemsControl>
         VotesVM = _choices
             .Select(c => new VoteChoiceViewModel(Participant, c))
             .ToList();
+    }*/
+
+    private void RefreshVotes() {
+        // On crée, pour chaque choix du sondage, un VoteChoiceViewModel qui sera utilisé par le VoteParticipantView
+        // VotesVM est la liste qui servira de source pour la balise <ItemsControl>
+        VotesVM = _choices
+            .Select(c => new VoteChoiceViewModel(Participant, c, Participant.VotesList.Any(v => v.Choice.ChoiceId == c.ChoiceId)))
+            .ToList();
     }
+
 
     private void Save() {
         EditMode = false;

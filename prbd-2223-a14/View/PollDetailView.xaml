@@ -10,11 +10,12 @@
              d:DataContext="{d:DesignInstance Type=vm:PollDetailViewModel, IsDesignTimeCreatable=False}"
              FontSize="14" d:DesignHeight="450" d:DesignWidth="800"
              x:Name="uc">
+    
     <Grid Margin="10">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
@@ -26,7 +27,7 @@
             <Run Text=")" FontSize="12" />
         </TextBlock>
 
-        <ListView Grid.Row="1">
+        <ListView ItemsSource="{Binding VoteGridViews}" Grid.Row="1">
             <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel/>
@@ -34,7 +35,15 @@
                 </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <vw:VoteGridView/>
+                    
+                    <ContentPresenter Content="{Binding}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type vm:VoteGridViewModel}">
+                                <vw:VoteGridView />
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

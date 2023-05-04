@@ -39,6 +39,11 @@ public class Poll : EntityBase<MyPollContext> {
             poll.Creator.Mail == CurrentUser.Mail || poll.Participants.Contains(CurrentUser));
             return polls;
     }
+    public static IQueryable<Poll> GetPoll(Poll PollId) {
+        var poll = Context.Polls.Where(poll =>
+        poll.PollId == PollId.PollId);
+        return poll;
+    }
     public static Dictionary<int, User> GetCreator(IEnumerable<Poll> polls) {
         var creatorIds = polls.Select(p => p.CreatorId).Distinct();
         var creators = Context.Users.Where(u => creatorIds.Contains(u.UserId)).ToDictionary(u => u.UserId);

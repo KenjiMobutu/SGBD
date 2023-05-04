@@ -20,7 +20,7 @@ public class MyPollContext : DbContextBase {
         optionsBuilder
             //.UseSqlite("Data Source=prbd-2223-a14.db")
             .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=prbd-2223-a14")
-            .LogTo(Console.WriteLine, LogLevel.Information)
+            //.LogTo(Console.WriteLine, LogLevel.Information)
             .EnableSensitiveDataLogging()
             .UseLazyLoadingProxies(true);
     }

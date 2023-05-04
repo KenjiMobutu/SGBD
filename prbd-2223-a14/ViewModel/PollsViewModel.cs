@@ -53,7 +53,9 @@ public class PollsViewModel : ViewModelCommon {
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }
-
-
-
 }
+
+
+
+
+

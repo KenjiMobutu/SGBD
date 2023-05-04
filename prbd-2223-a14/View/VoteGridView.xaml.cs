@@ -12,11 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyPoll.Model;
+using MyPoll.ViewModel;
 using PRBD_Framework;
 
 namespace MyPoll.View;
-public partial class VoteGridView : WindowBase {
+public partial class VoteGridView : UserControlBase {
+   
     public VoteGridView() {
         InitializeComponent();
     }
+
+    public VoteGridView(Poll poll) {
+        InitializeComponent();
+ 
+        DataContext = new VoteGridViewModel(poll);
+    }
+
 }

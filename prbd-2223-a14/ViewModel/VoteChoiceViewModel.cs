@@ -14,16 +14,19 @@ public class VoteChoiceViewModel : ViewModelCommon {
     public VoteChoiceViewModel(User participant, Choice choice) {
         IsRegistrated = participant.VotesList.Any(p => p.Choice.ChoiceId == choice.ChoiceId);
 
-        // A la construction, s'il existe une inscription de l'étudiant pour le cours, on la récupère,
-        // sinon, on en crée une nouvelle avec les deux attributs correctement initialisés
-        // Si l'utilisateur valide cette inscription, elle sera ajoutée à la liste des inscriptions 
-        // de l'étudiant lors de la sauvegarde par le VM parent (RegistrationStudentViewModel)
         Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId,
             new Vote() { Choice = choice, User = participant });
 
         // Commande (utilisée par le bouton de la vue) qui "bascule" le booléen indiquant si l'étudiant est inscrit au cours 
         ChangeVote = new RelayCommand(() => IsRegistrated = !IsRegistrated);
     }
+    public VoteChoiceViewModel(User participant, Choice choice, bool isRegistered) {
+        IsRegistrated = isRegistered;
+        Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId,
+            new Vote() { Choice = choice, User = participant });
+        ChangeVote = new RelayCommand(() => IsRegistrated = !IsRegistrated);
+    }
+
 
     public Vote Vote { get; private set; }
 

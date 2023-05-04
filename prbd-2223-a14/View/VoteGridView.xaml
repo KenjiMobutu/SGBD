@@ -1,4 +1,4 @@
-﻿<f:WindowBase x:Class="MyPoll.View.VoteGridView"
+﻿<f:UserControlBase x:Class="MyPoll.View.VoteGridView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,13 +8,13 @@
              xmlns:vw="clr-namespace:MyPoll.View"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:VoteGridViewModel, IsDesignTimeCreatable=True}"
-             SizeToContent="WidthAndHeight"     
-             WindowStartupLocation="CenterScreen"
-             x:Name="uc"
-             >
-    <Window.DataContext>
+              
+             x:Name="uc">
+             
+    <UserControl.DataContext>
         <vm:VoteGridViewModel x:Name="vm" />
-    </Window.DataContext>
+    </UserControl.DataContext>
+
 
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
         
@@ -89,4 +89,4 @@
 
         </StackPanel>
     </ScrollViewer>
-</f:WindowBase>
+</f:UserControlBase>

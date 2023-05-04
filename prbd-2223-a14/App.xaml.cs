@@ -17,7 +17,9 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_NEW_POLL,
         MSG_DISPLAY_POLL,
         MSG_POLL_CHANGED,
-        MSG_SIGNUP
+        MSG_SIGNUP,
+        MSG_DISPLAY_GRID,
+        MSG_DISPLAY_CHANGED
     }
     protected override void OnStartup(StartupEventArgs e) {
         base.OnStartup(e);
