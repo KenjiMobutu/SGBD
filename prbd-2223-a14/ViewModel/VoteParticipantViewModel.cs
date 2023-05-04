@@ -18,12 +18,15 @@ public class VoteParticipantViewModel : ViewModelCommon {
         _voteGridViewModel = voteGridViewModel;
         _choices = choices;
         Participant = participant;
+        IsCurrentUser = CurrentUser == participant;
         RefreshVotes();
 
-        EditCommand = new RelayCommand(() => EditMode = true);
-        SaveCommand = new RelayCommand(Save);
-        CancelCommand = new RelayCommand(Cancel);
-        DeleteCommand = new RelayCommand(Delete);
+        if (participant == CurrentUser) {
+            EditCommand = new RelayCommand(() => EditMode = true);
+            SaveCommand = new RelayCommand(Save);
+            CancelCommand = new RelayCommand(Cancel);
+            DeleteCommand = new RelayCommand(Delete);
+        }
     }
 
     private VoteGridViewModel _voteGridViewModel;
@@ -34,6 +37,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
     private List<Choice> _choices;
 
     public User Participant { get; }
+    public bool IsCurrentUser { get; }
 
     private bool _editMode;
 
@@ -46,7 +50,9 @@ public class VoteParticipantViewModel : ViewModelCommon {
     private void EditModeChanged() {
         // Lorsqu'on change le mode d'édition de la ligne, on le signale à chaque cellule
         foreach (VoteChoiceViewModel vcVM in _choicesVM) {
-            vcVM.EditMode = EditMode;
+           
+                vcVM.EditMode = EditMode;
+            
         }
 
         // On informe le parent qu'on change le mode d'édition de la ligne
@@ -55,7 +61,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
     public void Changes() {
         RaisePropertyChanged(nameof(Editable));
     }
-    public bool Editable => !EditMode && !ParentEditMode;
+    public bool Editable => !EditMode && !ParentEditMode && IsCurrentUser;
 
     public bool ParentEditMode => _voteGridViewModel.EditMode;
 

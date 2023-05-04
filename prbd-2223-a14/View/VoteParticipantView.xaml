@@ -32,7 +32,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- Les actions pour l'étudiant 
+        <!-- Les actions pour l'user 
             On utilise CalcBinding (préfixé par c:) pour la visibilité. Cette librairie convertit un bool en une valeur de Visibility
             De plus, cette librairie permet de binder sur des expressions calculées (c'est le cas pour Editable)
         -->
@@ -43,6 +43,7 @@
                         FontSize="15" Margin="0"
                         Padding="2" Background="Transparent" BorderBrush="Transparent"
                         Visibility="{c:Binding Editable}"
+
                         Command="{Binding EditCommand}" />
                 <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="red" Width="20"
                         FontSize="15" Margin="0"
