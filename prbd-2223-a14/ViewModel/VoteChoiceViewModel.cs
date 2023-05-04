@@ -13,6 +13,7 @@ namespace MyPoll.ViewModel;
 public class VoteChoiceViewModel : ViewModelCommon {
     public VoteChoiceViewModel(User participant, Choice choice) {
         IsRegistrated = participant.VotesList.Any(p => p.Choice.ChoiceId == choice.ChoiceId);
+        Console.WriteLine(IsRegistrated);
 
         Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId,
             new Vote() { Choice = choice, User = participant });
@@ -22,8 +23,10 @@ public class VoteChoiceViewModel : ViewModelCommon {
     }
     public VoteChoiceViewModel(User participant, Choice choice, bool isRegistered) {
         IsRegistrated = isRegistered;
+        Console.WriteLine(IsRegistrated);
         Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId,
             new Vote() { Choice = choice, User = participant });
+        Console.WriteLine("VOTE ===> "+Vote.Value);
         ChangeVote = new RelayCommand(() => IsRegistrated = !IsRegistrated);
     }
 
@@ -45,8 +48,20 @@ public class VoteChoiceViewModel : ViewModelCommon {
         get => _isRegistrated;
         set => SetProperty(ref _isRegistrated, value);
     }
-    public EFontAwesomeIcon RegistratedIcon => IsRegistrated ? EFontAwesomeIcon.Solid_Check : EFontAwesomeIcon.None;
+    public bool IsRegistratedX {
+        get => Vote.Value == -1;
+    }
+    public bool IsRegistratedQuestion {
+        get => Vote.Value == 0.5;
+    }
+    public EFontAwesomeIcon RegistratedIcon => IsRegistrated && Vote.Value == 1 ? EFontAwesomeIcon.Solid_Check : EFontAwesomeIcon.None;
+
+    public EFontAwesomeIcon RegistratedX => IsRegistrated && Vote.Value == -1 ? EFontAwesomeIcon.Solid_X : EFontAwesomeIcon.None;
+    public EFontAwesomeIcon RegistratedQuestion => IsRegistrated && Vote.Value == 0.5 ? EFontAwesomeIcon.Regular_CircleQuestion : EFontAwesomeIcon.None;
     public Brush RegistratedColor => IsRegistrated ? Brushes.Green : Brushes.White;
-    public string RegistratedToolTip => IsRegistrated ? "Yes" : "No";
+    public Brush RegistratedColorRed =>  IsRegistratedX ? Brushes.Red : Brushes.White;
+    public Brush RegistratedColorOrange => IsRegistrated ? Brushes.Orange : Brushes.White;
+    public string RegistratedToolTip => IsRegistrated ? "Yes" : "No"  ;
+
 }
 

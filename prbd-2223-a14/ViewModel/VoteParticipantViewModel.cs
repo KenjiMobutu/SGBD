@@ -61,7 +61,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
     public void Changes() {
         RaisePropertyChanged(nameof(Editable));
     }
-    public bool Editable => !EditMode && !ParentEditMode && IsCurrentUser;
+    public bool Editable => !EditMode && !ParentEditMode && (IsCurrentUser || IsAdmin);
 
     public bool ParentEditMode => _voteGridViewModel.EditMode;
 

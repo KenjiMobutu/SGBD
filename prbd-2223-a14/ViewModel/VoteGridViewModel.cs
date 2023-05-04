@@ -42,7 +42,7 @@ public class VoteGridViewModel : ViewModelCommon {
         //var participants = Context.Participations.OrderBy(p => p.User.Name).ToList();
         var participants = Participation.GetParticipantOfGrid(pollId).OrderBy(p => p.User.Name).ToList();
         foreach (var p in participants.ToList()) {
-            Console.WriteLine("NAME PARTICIPANTS ===> : " + p.User );
+            Console.WriteLine("NAME PARTICIPANTS ===> : " + p.User.Name );
         }
         _participantsVM = participants.Select(p => new VoteParticipantViewModel(this, p.User, _choices)).ToList();
     }

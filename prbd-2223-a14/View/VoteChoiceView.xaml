@@ -16,29 +16,52 @@
     
     <Border BorderBrush="Black" BorderThickness="1,0,0,1"
             SnapsToDevicePixels="True" Width="100" MinHeight="50">
-        <StackPanel VerticalAlignment="Center">
-
-            <!-- Si on n'est pas en mode d'édition -->
-
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <fa:FontAwesome Icon="{Binding RegistratedIcon}"
-                            Foreground="{Binding RegistratedColor}"
-                            FontSize="25"
-                            Visibility="{c:Binding !EditMode}" />
+                    Foreground="{Binding RegistratedColor}"
+                    FontSize="25"
+                    Visibility="{c:Binding !EditMode}" />
+            <fa:FontAwesome Icon="{Binding RegistratedX}"
+                    Foreground="{Binding RegistratedColorRed}"
+                    FontSize="25"
+                    Visibility="{c:Binding !EditMode}" />
+            <fa:FontAwesome Icon="{Binding RegistratedQuestion}"
+                    Foreground="{Binding RegistratedColorOrange}"
+                    FontSize="25"
+                    Visibility="{c:Binding !EditMode}" />
 
             <!-- Si on est en mode d'édition 
-                Grâce à la librairie CalcBinding, on peut utiliser des expressions (ici une ternaire)
-                Ce bouton change l'état de l'inscription
-            -->
+        Grâce à la librairie CalcBinding, on peut utiliser des expressions (ici une ternaire)
+        Ce bouton change l'état de l'inscription
+    -->
             <Button Padding="2" BorderBrush="Transparent"
-                    Visibility="{c:Binding EditMode}"
-                        Background="Transparent" Width="32"
-                        Command="{Binding ChangeRegistration}">
+            Visibility="{c:Binding EditMode}"
+            Background="Transparent" Width="32"
+            Command="{Binding ChangeRegistration}">
                 <fa:FontAwesome Icon="Solid_Check"
-                                    Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Green : media:Brushes.LightGray'}"
-                                    FontSize="25"
-                                    ToolTip="{Binding RegistratedToolTip}" />
+                            Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Green : media:Brushes.LightGray'}"
+                            FontSize="25"
+                            ToolTip="{Binding RegistratedToolTip}" />
             </Button>
-
+            <Button Padding="2" BorderBrush="Transparent"
+            Visibility="{c:Binding EditMode}"
+            Background="Transparent" Width="32"
+            Command="{Binding ChangeRegistration}">
+                <fa:FontAwesome Icon="Solid_X"
+                            Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Red : media:Brushes.LightGray'}"
+                            FontSize="25"
+                            ToolTip="{Binding RegistratedToolTip}" />
+            </Button>
+            <Button Padding="2" BorderBrush="Transparent"
+            Visibility="{c:Binding EditMode}"
+            Background="Transparent" Width="32"
+            Command="{Binding ChangeRegistration}">
+                <fa:FontAwesome Icon="Regular_CircleQuestion"
+                            Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Orange : media:Brushes.LightGray'}"
+                            FontSize="25"
+                            ToolTip="{Binding RegistratedToolTip}" />
+            </Button>
         </StackPanel>
+
     </Border>
 </f:UserControlBase>
