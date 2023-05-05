@@ -32,35 +32,39 @@
 
             <!-- Si on est en mode d'édition 
         Grâce à la librairie CalcBinding, on peut utiliser des expressions (ici une ternaire)
-        Ce bouton change l'état de l'inscription
-    -->
+        Ce bouton change l'état du vote
+        -->
             <Button Padding="2" BorderBrush="Transparent"
-            Visibility="{c:Binding EditMode}"
-            Background="Transparent" Width="32"
-            Command="{Binding ChangeRegistration}">
+                 Visibility="{c:Binding EditMode}"
+                Background="Transparent" Width="32"
+                Command="{Binding HasVotedCommand}"
+                CommandParameter="1">
                 <fa:FontAwesome Icon="Solid_Check"
-                            Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Green : media:Brushes.LightGray'}"
-                            FontSize="25"
-                            ToolTip="{Binding RegistratedToolTip}" />
+                     Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Green : media:Brushes.LightGray'}"
+                     FontSize="25"
+                     ToolTip="{Binding RegistratedToolTip}" />
             </Button>
             <Button Padding="2" BorderBrush="Transparent"
-            Visibility="{c:Binding EditMode}"
-            Background="Transparent" Width="32"
-            Command="{Binding ChangeRegistration}">
+                 Visibility="{c:Binding EditMode}"
+                 Background="Transparent" Width="32"
+                Command="{Binding HasVotedCommand}"
+                CommandParameter="-1">
                 <fa:FontAwesome Icon="Solid_X"
-                            Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Red : media:Brushes.LightGray'}"
-                            FontSize="25"
-                            ToolTip="{Binding RegistratedToolTip}" />
+                     Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Red : media:Brushes.LightGray'}"
+                     FontSize="25"
+                     ToolTip="{Binding RegistratedToolTip}" />
             </Button>
             <Button Padding="2" BorderBrush="Transparent"
-            Visibility="{c:Binding EditMode}"
-            Background="Transparent" Width="32"
-            Command="{Binding ChangeRegistration}">
+                Visibility="{c:Binding EditMode}"
+                Background="Transparent" Width="32"
+                Command="{Binding HasVotedCommand}"
+                CommandParameter="0.5">
                 <fa:FontAwesome Icon="Regular_CircleQuestion"
-                            Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Orange : media:Brushes.LightGray'}"
-                            FontSize="25"
-                            ToolTip="{Binding RegistratedToolTip}" />
+                     Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Orange : media:Brushes.LightGray'}"
+                     FontSize="25"
+                     ToolTip="{Binding RegistratedToolTip}" />
             </Button>
+
         </StackPanel>
 
     </Border>

@@ -9,6 +9,7 @@ public enum VoteType { Yes = 1, No = -1, Maybe = 1/2 }
 public class Vote : EntityBase<MyPollContext> {
     public VoteType Type { get; set; }
 
+
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
     public virtual User User { get; set; }
