@@ -20,6 +20,12 @@ public class PollCardViewModel : ViewModelCommon {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
+    private readonly Choice _choice;
+
+    public Choice Choice {
+        get => _choice;
+        private init => SetProperty(ref _choice, value);
+    }
 
     public PollCardViewModel(Poll poll, User creator) {
         Poll = poll;
@@ -35,9 +41,13 @@ public class PollCardViewModel : ViewModelCommon {
     public double VotesSum => BestChoices.Sum(c => c.VotesList.Sum(v => v.Value));
     public SolidColorBrush BackgroundColor {
         get {
-            return Poll.IsClosed ? new SolidColorBrush(Color.FromRgb(255, 230, 220)) : new SolidColorBrush(Colors.White);
+            return IsClosed ? new SolidColorBrush(Color.FromRgb(255, 230, 220)) : (UserHasVoted ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Gray));
+
         }
     }
+    public bool UserHasVoted => Poll.Choices.Any(c => c.VotesList.Any(v => v.UserId == CurrentUser.UserId));
+
+    public bool IsClosed => Poll.IsClosed;
     public double VotesCount => Poll.GetVotesCount();
 
     public PollCardViewModel(Poll poll) {
