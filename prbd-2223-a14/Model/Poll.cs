@@ -23,8 +23,11 @@ public class Poll : EntityBase<MyPollContext> {
     public int  CreatorId { get; set; }
     public virtual User Creator { get; set; }
 
-    
-    
+    [NotMapped]
+    public bool IsOpen => !IsClosed;
+
+
+
 
     public Poll() { }
 

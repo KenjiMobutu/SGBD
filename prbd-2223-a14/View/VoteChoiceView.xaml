@@ -15,7 +15,7 @@
 
     
     <Border BorderBrush="Black" BorderThickness="1,0,0,1"
-            SnapsToDevicePixels="True" Width="100" MinHeight="50">
+            SnapsToDevicePixels="True" Width="130" MinHeight="50">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <fa:FontAwesome Icon="{Binding RegistratedIcon}"
                     Foreground="{Binding RegistratedColor}"
@@ -40,7 +40,7 @@
                 Command="{Binding HasVotedCommand}"
                 CommandParameter="1">
                 <fa:FontAwesome Icon="Solid_Check"
-                     Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Green : media:Brushes.LightGray'}"
+                     Foreground="{c:Binding 'IsRegistratedYes ? media:Brushes.Green : media:Brushes.LightGray'}"
                      FontSize="25"
                      ToolTip="{Binding RegistratedToolTip}" />
             </Button>
@@ -50,9 +50,9 @@
                 Command="{Binding HasVotedCommand}"
                 CommandParameter="-1">
                 <fa:FontAwesome Icon="Solid_X"
-                     Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Red : media:Brushes.LightGray'}"
+                     Foreground="{c:Binding 'IsRegistratedNo ? media:Brushes.Red : media:Brushes.LightGray'}"
                      FontSize="25"
-                     ToolTip="{Binding RegistratedToolTip}" />
+                     ToolTip="{Binding RegistratedToolTipNo}" />
             </Button>
             <Button Padding="2" BorderBrush="Transparent"
                 Visibility="{c:Binding EditMode}"
@@ -60,9 +60,18 @@
                 Command="{Binding HasVotedCommand}"
                 CommandParameter="0.5">
                 <fa:FontAwesome Icon="Regular_CircleQuestion"
-                     Foreground="{c:Binding 'IsRegistrated ? media:Brushes.Orange : media:Brushes.LightGray'}"
+                     Foreground="{c:Binding 'IsRegistratedMaybe ? media:Brushes.Orange : media:Brushes.LightGray'}"
                      FontSize="25"
-                     ToolTip="{Binding RegistratedToolTip}" />
+                     ToolTip="{Binding RegistratedToolTipMaybe}" />
+            </Button>
+            <Button Padding="2" BorderBrush="Transparent"
+                Visibility="{c:Binding EditMode}"
+                Background="Transparent" Width="32"
+                Command="{Binding ClearChoicesCommand}">
+                <fa:FontAwesome Icon="None"
+                     Foreground="LightGray"
+                      FontSize="25"
+                      ToolTip="Effacer les choix" />
             </Button>
 
         </StackPanel>

@@ -14,7 +14,7 @@
 
         <!-- Le nom du Participant -->
         <Border BorderBrush="Black" BorderThickness="1,0,0,1" SnapsToDevicePixels="True"
-                Width="100">
+                Width="120">
             <TextBlock Text="{Binding Participant.Name}" Margin="5" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Border>
 

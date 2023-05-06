@@ -40,6 +40,7 @@ public class PollDetailViewModel : ViewModelCommon {
         set => SetProperty(ref _voteGridViews, value);
     }
     public ICommand DisplayGrid { get; set; }
+    public ICommand Edit { get; set; }
     public ObservableCollection<VoteGridView> VoteGridViews { get; } = new ObservableCollection<VoteGridView>();
 
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
@@ -53,6 +54,7 @@ public class PollDetailViewModel : ViewModelCommon {
 
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
         VoteGrid = new ObservableCollection<VoteGridView>(VoteGridViews.Select(vg => new VoteGridView(poll)));
+        OnRefreshData();
     }
 
     public string Title => Poll.Title;

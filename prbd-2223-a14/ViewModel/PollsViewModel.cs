@@ -28,7 +28,7 @@ public class PollsViewModel : ViewModelCommon {
         ClearFilter = new RelayCommand(() => Filter = "");
 
         NewPoll = new RelayCommand(() => {
-            NotifyColleagues(App.Messages.MSG_NEW_POLL, new Poll());
+            //NotifyColleagues(App.Messages.MSG_NEW_POLL, new Poll());
         });
 
         DisplayPollDetails = new RelayCommand<PollCardViewModel>(vm => {

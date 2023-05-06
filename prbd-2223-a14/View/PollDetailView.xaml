@@ -10,9 +10,9 @@
              d:DataContext="{d:DesignInstance Type=vm:PollDetailViewModel, IsDesignTimeCreatable=False}"
              FontSize="14" d:DesignHeight="450" d:DesignWidth="800"
              x:Name="uc">
-    
+
     <Grid Margin="10">
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="1*"/>
@@ -29,13 +29,13 @@
 
         <ListView ItemsSource="{Binding VoteGridViews}" Grid.Row="1">
             <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    
+
                     <ContentPresenter Content="{Binding}">
                         <ContentPresenter.Resources>
                             <DataTemplate DataType="{x:Type vm:VoteGridViewModel}">
@@ -47,7 +47,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
         <TextBlock Grid.Row="2" Text="Comments" FontSize="14" FontWeight="Bold" />
+        <Button x:Name="btnEdit" Content="Edit" Command="{Binding Edit}" HorizontalAlignment="Left" Margin="850,10,0,10" Grid.Row="2" Padding="5,1" RenderTransformOrigin="-2.147,0.59"/>
+        <Button x:Name="btnDelete" Content="Delete" Command="{Binding Delete}" HorizontalAlignment="Left" Margin="900,10,0,10" Grid.Row="2" Padding="5,1"/>
     </Grid>
 </f:UserControlBase>

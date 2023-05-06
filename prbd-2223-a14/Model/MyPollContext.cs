@@ -11,6 +11,8 @@ public class MyPollContext : DbContextBase {
     public DbSet<Vote> Votes => Set<Vote>();
     public DbSet<Poll> Polls => Set<Poll>();
     public DbSet<Participation> Participations => Set<Participation>();
+    public DbSet<User> Participants { get; set; }
+
     public DbSet<Choice> Choices => Set<Choice>();
     public DbSet<Comment> Comments => Set<Comment>();
 
