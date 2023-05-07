@@ -8,7 +8,7 @@ using MyPoll.View;
 using PRBD_Framework;
 
 namespace MyPoll.ViewModel;
-internal class PollAddViewModel : ViewModelCommon {
+public class PollAddViewModel : ViewModelCommon {
     private readonly Poll _poll;
 
     public Poll Poll {
@@ -18,9 +18,7 @@ internal class PollAddViewModel : ViewModelCommon {
     public PollAddViewModel(Poll poll) {
         Poll = poll;
     }
-    public PollAddViewModel(Poll poll, bool IsNew) {
-        Poll = poll;
-    }
+    
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
 }

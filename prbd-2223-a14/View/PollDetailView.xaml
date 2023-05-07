@@ -10,6 +10,9 @@
              d:DataContext="{d:DesignInstance Type=vm:PollDetailViewModel, IsDesignTimeCreatable=False}"
              FontSize="14" d:DesignHeight="450" d:DesignWidth="800"
              x:Name="uc">
+    <f:UserControlBase.Resources>
+        <vm:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </f:UserControlBase.Resources>
 
     <Grid Margin="10">
 
@@ -27,7 +30,8 @@
             <Run Text=")" FontSize="12" />
         </TextBlock>
 
-        <ListView ItemsSource="{Binding VoteGridViews}" Grid.Row="1">
+        <ListView ItemsSource="{Binding VoteGridViews}" Grid.Row="1"
+                  Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>

@@ -35,6 +35,12 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _isNew;
         set => SetProperty(ref _isNew, value);
     }
+
+    private bool _isEditing;
+    public bool IsEditing {
+        get => _isEditing;
+        set => SetProperty(ref _isEditing, value);
+    }
     public bool IsExisting => !_isNew;
 
     private ObservableCollection<VoteGridView> _voteGridViews;
@@ -56,6 +62,7 @@ public class PollDetailViewModel : ViewModelCommon {
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
         IsNew = isNew;
         Poll = poll;
+        IsEditing = false;
 
         // Ajouter seulement le VoteGridView du Poll sélectionné
         var voteGridView = new VoteGridView(Poll);
@@ -63,6 +70,7 @@ public class PollDetailViewModel : ViewModelCommon {
 
         DisplayEdit = new RelayCommand(() => {
             EditView = new PollAddView(Poll);
+            IsEditing = true;
         });
 
 

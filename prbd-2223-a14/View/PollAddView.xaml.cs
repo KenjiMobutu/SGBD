@@ -23,7 +23,6 @@ public partial class PollAddView : UserControlBase {
    }
     public PollAddView(Poll poll) {
         InitializeComponent();
-
         DataContext = new PollAddViewModel(poll);
     }
 }

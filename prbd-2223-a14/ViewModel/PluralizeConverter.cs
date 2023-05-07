@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Windows.Data;
 using PRBD_Framework;
 
-namespace MyPoll.ViewModel {
-    public class PluralizeConverter : IValueConverter {
+namespace MyPoll.ViewModel;
+public class PluralizeConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             string text = parameter.ToString();
             int count = (int)value;
@@ -18,5 +18,4 @@ namespace MyPoll.ViewModel {
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
         }
-    }
 }
