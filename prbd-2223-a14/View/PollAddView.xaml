@@ -11,13 +11,82 @@
              d:DataContext="{d:DesignInstance Type=vm:PollAddViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Grid.Row="0">
-            <Run Text="{Binding Title, Mode=OneWay}" FontSize="18" FontWeight="Bold"/>
-            <Run Text=" (" FontSize="12"/>
-            <Run Text=" Je suis POLLADDVIEW ok created by " FontSize="12"/>
-            <Run Text="{Binding Creator.Name}" FontSize="12" FontWeight="Bold"/>
-            <Run Text=")" FontSize="12" />
-        </TextBlock>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label x:Name="labelTitle" Content="Poll Name :" VerticalAlignment="Top" Padding="5" />
+        <TextBox x:Name="txtTitle" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
+             Text="{Binding Poll.Title, UpdateSourceTrigger=PropertyChanged}" />
+
+        <Label x:Name="labelType" Content="Type :" VerticalAlignment="Top" Padding="5" Grid.Row="1" />
+        <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center"
+            SelectedItem="{Binding Poll.Type, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+            <ComboBoxItem Content="Type 1" />
+            <ComboBoxItem Content="Type 2" />
+
+        </ComboBox>
+
+        <Label x:Name="labelCreator" Content="Creator :" VerticalAlignment="Top" Padding="5" Grid.Row="2" />
+        <TextBox x:Name="txtCreator" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
+             Text="{Binding Poll.Creator.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" />
+
+        <Label x:Name="labelIsClosed" Content="Is Closed :" VerticalAlignment="Top" Padding="5" Grid.Row="3" />
+        <CheckBox x:Name="CheckBox" VerticalAlignment="Center" Padding="5" Grid.Row="3" Grid.Column="1" />
+
+        <Label x:Name="Participants" Content="Participants" VerticalAlignment="Top" Padding="5" Grid.Row="4"  Grid.Column="0" Margin="0,20,0,0" />
+        <ListView ItemsSource="{Binding Poll.Participants}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,50,20,-50">
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="&#xE107;" FontFamily="Segoe MDL2 Assets"  Command="{Binding DataContext.DeleteParticipantCommand, ElementName=parent}" 
+                                    CommandParameter="{Binding UserId}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+
+
+
+        <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="2" Margin="0,20,0,0" />
+        <ListView ItemsSource="{Binding Poll.Choices}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,50,-1,-50">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn  DisplayMemberBinding="{Binding Label}" />
+
+                    <!-- ajoutez d'autres colonnes ici si besoin -->
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Grid.Row="5" Grid.ColumnSpan="4" Margin="0,20,20,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="103*" />
+                <ColumnDefinition Width="92*"/>
+                <ColumnDefinition Width="195*" />
+            </Grid.ColumnDefinitions>
+            <Button Content="Save" HorizontalAlignment="Right" Margin="0,240,70,-230" Command="{Binding SaveCommand}" Grid.Column="2" Width="50" />
+            <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,240,10,-230" Command="{Binding CancelCommand}" Grid.Column="2" Width="50" />
+        </Grid>
+
+
     </Grid>
+
+
 </f:UserControlBase>

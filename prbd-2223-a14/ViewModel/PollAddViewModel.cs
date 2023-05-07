@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using MyPoll.Model;
 using MyPoll.View;
 using PRBD_Framework;
@@ -21,5 +22,6 @@ public class PollAddViewModel : ViewModelCommon {
     
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
+    public ICommand DeleteCommand { get; set; }
 }
 
