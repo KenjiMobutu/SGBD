@@ -4,16 +4,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyPoll.Model;
 using MyPoll.View;
 using PRBD_Framework;
+using static MyPoll.App;
 
 namespace MyPoll.ViewModel;
 
 public class PollDetailViewModel : ViewModelCommon {
-
     private readonly Poll _poll;
 
     public Poll Poll {
@@ -39,27 +42,44 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _voteGridViews;
         set => SetProperty(ref _voteGridViews, value);
     }
-    public ICommand DisplayGrid { get; set; }
-    public ICommand Edit { get; set; }
+
+    public ICommand DisplayEdit { get; set; }
+
     public ObservableCollection<VoteGridView> VoteGridViews { get; } = new ObservableCollection<VoteGridView>();
+
+    private UserControl _editView;
+    public UserControl EditView {
+        get => _editView;
+        set => SetProperty(ref _editView, value);
+    }
 
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
         IsNew = isNew;
         Poll = poll;
-        //Choices = new ObservableCollection<Choice>(Poll.Choices);
 
         // Ajouter seulement le VoteGridView du Poll sélectionné
         var voteGridView = new VoteGridView(Poll);
         VoteGridViews.Add(voteGridView);
 
+        DisplayEdit = new RelayCommand(() => {
+            EditView = new PollAddView(Poll);
+        });
+
+
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
         VoteGrid = new ObservableCollection<VoteGridView>(VoteGridViews.Select(vg => new VoteGridView(poll)));
-        OnRefreshData();
     }
 
     public string Title => Poll.Title;
+
     public User Creator => Poll.Creator;
+
+    protected override void OnRefreshData() {
+ 
+    }
 }
+
+
 
 
 

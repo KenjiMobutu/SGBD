@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.EntityFrameworkCore.Metadata;
 using MyPoll.Model;
 using MyPoll.ViewModel;
 using PRBD_Framework;
@@ -23,10 +24,12 @@ public partial class PollDetailView : UserControlBase {
         InitializeComponent();
         DataContext = new PollDetailViewModel(poll, isNew);
         DoDisplayGrid(poll);
+        
     }
 
     private void DoDisplayGrid(Poll poll) {
         if (poll != null)
             new VoteGridView(poll);
     }
+
 }

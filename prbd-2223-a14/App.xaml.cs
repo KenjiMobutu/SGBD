@@ -19,11 +19,12 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_POLL_CHANGED,
         MSG_SIGNUP,
         MSG_DISPLAY_GRID,
-        MSG_DISPLAY_CHANGED
+        MSG_DISPLAY_CHANGED,
+        MSG_EDIT_POLL
     }
     protected override void OnStartup(StartupEventArgs e) {
         base.OnStartup(e);
-       
+
         // Clear database and seed data
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
@@ -39,7 +40,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         });
 
         Register<User>(this, Messages.MSG_NEW_MEMBER, user => {
-            
+
             NavigateTo<SignUpViewModel, User, MyPollContext>();
         });
 
@@ -47,6 +48,13 @@ public partial class App : ApplicationBase<User, MyPollContext> {
 
             NavigateTo<MainViewModel, User, MyPollContext>();
         });
+
+        Register<PollAddViewModel>(this, Messages.MSG_EDIT_POLL, pollAddViewModel => {
+
+            NavigateTo<PollAddViewModel, User, MyPollContext>();
+
+        });
+
 
         // Cold start
         //Console.Write("Cold starting database... ");

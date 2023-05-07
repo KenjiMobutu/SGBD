@@ -35,7 +35,6 @@
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-
                     <ContentPresenter Content="{Binding}">
                         <ContentPresenter.Resources>
                             <DataTemplate DataType="{x:Type vm:VoteGridViewModel}">
@@ -43,12 +42,15 @@
                             </DataTemplate>
                         </ContentPresenter.Resources>
                     </ContentPresenter>
-
                 </DataTemplate>
             </ListView.ItemTemplate>
+            
         </ListView>
+        
         <TextBlock Grid.Row="2" Text="Comments" FontSize="14" FontWeight="Bold" />
-        <Button x:Name="btnEdit" Content="Edit" Command="{Binding Edit}" HorizontalAlignment="Left" Margin="850,10,0,10" Grid.Row="2" Padding="5,1" RenderTransformOrigin="-2.147,0.59"/>
+        <Button x:Name="btnEdit" Content="Edit" Command="{Binding DisplayEdit}" CommandParameter="{Binding}" HorizontalAlignment="Left" Margin="850,10,0,10" Grid.Row="2" Padding="5,1" RenderTransformOrigin="-2.147,0.59"/>
         <Button x:Name="btnDelete" Content="Delete" Command="{Binding Delete}" HorizontalAlignment="Left" Margin="900,10,0,10" Grid.Row="2" Padding="5,1"/>
+        <ContentControl Grid.Row="1" Content="{Binding EditView}" />
+
     </Grid>
 </f:UserControlBase>
