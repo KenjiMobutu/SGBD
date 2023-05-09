@@ -10,9 +10,12 @@ using PRBD_Framework;
 
 namespace MyPoll.ViewModel;
 public class PollAddViewModel : ViewModelCommon {
-
+    public PollAddViewModel() {
+        
+    }
     public ICommand Save { get; set; }
     public ICommand Cancel { get; set; }
+    public ICommand Delete { get; set; }
 
     private readonly Poll _poll;
 
@@ -60,6 +63,47 @@ public class PollAddViewModel : ViewModelCommon {
        
     }
 
+    private ICommand _addAllUsersCommand;
+    public ICommand AddAllUsersCommand {
+        get {
+            if (_addAllUsersCommand == null) {
+                _addAllUsersCommand = new RelayCommand(() => AddAllUsers(),
+                    () => true);
+            }
+            return _addAllUsersCommand;
+        }
+    }
+
+    private ICommand _deleteParticipantCommand;
+    public ICommand DeleteParticipantCommand {
+        get {
+            Console.WriteLine("Delete Command 1");
+            if (_deleteParticipantCommand == null) {
+                Console.WriteLine("Delete Command");
+                _deleteParticipantCommand = new RelayCommand<int>(
+                    (id) => this.DeleteParticipant(id),
+                    (id) => this.CanDeleteParticipant(id)
+                );
+            }
+            return _deleteParticipantCommand;
+        }
+    }
+
+    private void DeleteParticipant(int userId) {
+        var participant = Poll.Participants.FirstOrDefault(p => p.UserId == userId);
+        Console.WriteLine("User à EFFACER  ===> "+participant.Name);
+        if (participant != null) {
+            Poll.Participants.Remove(participant);
+            RaisePropertyChanged(nameof(Poll.Participants));
+        }
+    }
+
+    private bool CanDeleteParticipant(int userId) {
+        return Poll.Participants.Any(p => p.UserId == userId);
+    }
+
+
+
     private bool CanAddSelectedUser() {
         // Vérifier si l'utilisateur sélectionné n'est pas déjà dans la liste des participants
         return SelectedUserToAdd != null && !Poll.Participants.Contains(SelectedUserToAdd);
@@ -81,6 +125,14 @@ public class PollAddViewModel : ViewModelCommon {
                 .OrderBy(u => u.Name)
                 .ToList();
         }
+    }
+
+    private void AddAllUsers() {
+        foreach (var user in AllUsers) {
+            Poll.Participants.Add( user);
+        }
+        // Mise à jour de la liste des participants
+        RaisePropertyChanged(nameof(Poll.Participants));
     }
 
     public override void SaveAction() {
@@ -113,14 +165,74 @@ public class PollAddViewModel : ViewModelCommon {
         return Poll != null && (IsNew || Poll.IsModified);
     }
 
+    private string _newChoiceLabel;
+    public string NewChoiceLabel {
+        get { return _newChoiceLabel; }
+        set {
+            _newChoiceLabel = value;
+            RaisePropertyChanged(nameof(NewChoiceLabel));
+        }
+    }
+
+    private ICommand _addChoiceCommand;
+    public ICommand AddChoiceCommand {
+        get {
+            if (_addChoiceCommand == null) {
+                _addChoiceCommand = new RelayCommand(() => AddChoice(), () => CanAddChoice());
+            }
+            return _addChoiceCommand;
+        }
+    }
+    private ICommand _deleteChoiceCommand;
+    public ICommand DeleteChoiceCommand {
+        get {
+            if (_deleteChoiceCommand == null) {
+                _deleteChoiceCommand = new RelayCommand<int>(
+                    (choiceId) => this.DeleteChoice(choiceId),
+                    (choiceId) => this.CanDeleteChoice(choiceId)
+                );
+            }
+            return _deleteChoiceCommand;
+        }
+    }
+
+    private bool CanDeleteChoice(int choiceId) {
+        
+        return Poll.Choices.Any(c => c.ChoiceId == choiceId);
+    }
+
+    private void DeleteChoice(int choiceId) {
+        var choice = Poll.Choices.FirstOrDefault(c => c.ChoiceId == choiceId);
+        Poll.Choices.Remove(choice);
+        RaisePropertyChanged(nameof(Poll.Choices));
+    }
+
+
+    private bool CanAddChoice() {
+        return !string.IsNullOrEmpty(NewChoiceLabel);
+    }
+
+    private void AddChoice() {
+        Poll.Choices.Add(new Choice { Label = NewChoiceLabel });
+        NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
+        RaisePropertyChanged(nameof(Poll.Choices));
+    }
+
+
+
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
 
         Save = new RelayCommand(SaveAction, CanSaveAction);
         Cancel = new RelayCommand(CancelAction, CanCancelAction);
+        Delete = new RelayCommand(DeleteAction);
 
         RaisePropertyChanged();
     }
+    public void DeleteAction() {
+        Console.WriteLine("DELETE !!!!!");
+    }
+    
 }
 
