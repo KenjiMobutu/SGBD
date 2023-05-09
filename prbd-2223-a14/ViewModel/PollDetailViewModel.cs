@@ -69,7 +69,7 @@ public class PollDetailViewModel : ViewModelCommon {
         VoteGridViews.Add(voteGridView);
 
         DisplayEdit = new RelayCommand(() => {
-            EditView = new PollAddView(Poll);
+            EditView = new PollAddView(Poll,IsNew);
             IsEditing = true;
         });
 

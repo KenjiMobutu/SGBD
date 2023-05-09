@@ -21,9 +21,9 @@ public partial class PollAddView : UserControlBase {
    public PollAddView() {
         InitializeComponent();
    }
-    public PollAddView(Poll poll) {
+    public PollAddView(Poll poll, bool IsNew) {
         InitializeComponent();
-        DataContext = new PollAddViewModel(poll);
+        DataContext = new PollAddViewModel(poll, IsNew);
     }
     
     private void DeleteParticipant_Click(object sender, RoutedEventArgs e) {
@@ -35,6 +35,7 @@ public partial class PollAddView : UserControlBase {
             viewModel.Poll.Participants.Remove(participantToDelete);
         }
     }
+    
 
 
 

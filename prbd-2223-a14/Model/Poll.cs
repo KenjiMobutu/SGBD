@@ -31,7 +31,9 @@ public class Poll : EntityBase<MyPollContext> {
 
     public Poll() { }
 
-    public virtual ICollection<User> Participants { get; set; } = new HashSet<User>();
+    //public virtual ICollection<User> Participants { get; set; } = new HashSet<User>();
+    public virtual ICollection<User> Participants { get; set; } = new HashSet<User>().OrderBy(u => u.Name).ToList();
+
     //public virtual ICollection<Participation> Participations{ get; set; } = new HashSet<Participation>();
     public virtual ICollection<Comment> Comments{ get; set; } = new HashSet<Comment>();
     public virtual ICollection<Choice> Choices{ get; set; } = new HashSet<Choice>();
@@ -52,8 +54,6 @@ public class Poll : EntityBase<MyPollContext> {
         var creators = Context.Users.Where(u => creatorIds.Contains(u.UserId)).ToDictionary(u => u.UserId);
         return creators;
     }
-
-
 
     public static IQueryable<Poll> GetFiltered(string Filter) {
         var filtered = from p in Context.Polls
