@@ -26,9 +26,6 @@ public class Poll : EntityBase<MyPollContext> {
     [NotMapped]
     public bool IsOpen => !IsClosed;
 
-
-
-
     public Poll() { }
 
     //public virtual ICollection<User> Participants { get; set; } = new HashSet<User>();

@@ -11,10 +11,10 @@ public partial class MainView : WindowBase {
         InitializeComponent();
 
         Register<Poll>(App.Messages.MSG_NEW_POLL,
-            poll => DoDisplayMember(poll, true));
+            poll => DoDisplayNewPoll(poll, true));
 
         Register<Poll>(App.Messages.MSG_DISPLAY_POLL,
-            poll => DoDisplayMember(poll, false));
+            poll => DoDisplayPoll(poll, false));
 
         Register<Poll>(App.Messages.MSG_POLL_CHANGED,
             poll => DoRenameTab(string.IsNullOrEmpty(poll.Title) ? "<New Poll>" : poll.Title));
@@ -24,9 +24,13 @@ public partial class MainView : WindowBase {
 
     }
 
-    private void DoDisplayMember(Poll poll, bool isNew) {
+    private void DoDisplayPoll(Poll poll, bool isNew) {
         if (poll != null)
             OpenTab(isNew ? "<New Poll>" : poll.Title, poll.Title, () => new PollDetailView(poll, isNew));
+    }
+    private void DoDisplayNewPoll(Poll poll, bool isNew) {
+        if (poll != null)
+            OpenTab(isNew ? "<New Poll>" : poll.Title, poll.Title, () => new PollAddView(poll, isNew));
     }
     private void OpenTab(string header, string tag, Func<UserControlBase> createView) {
         var tab = tabControl.FindByTag(tag);

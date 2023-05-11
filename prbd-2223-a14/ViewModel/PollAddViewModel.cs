@@ -80,6 +80,16 @@ public class PollAddViewModel : ViewModelCommon {
             return _addAllUsersCommand;
         }
     }
+    private ICommand _addCurrentUserCommand;
+    public ICommand AddCurrentUserCommand {
+        get {
+            if( _addCurrentUserCommand == null && CanAddCurrentUser ) {
+                _addCurrentUserCommand = new RelayCommand(() => AddCurrentUser());
+            }
+            return _addCurrentUserCommand;
+        }
+       
+    }
 
     private ICommand _deleteParticipantCommand;
     public ICommand DeleteParticipantCommand {
@@ -141,11 +151,17 @@ public class PollAddViewModel : ViewModelCommon {
         // Mise à jour de la liste des participants
         RaisePropertyChanged(nameof(Poll.Participants));
     }
+    private void AddCurrentUser() {
+       
+        Poll.Participants.Add(CurrentUser);
+    
+        // Mise à jour de la liste des participants
+        RaisePropertyChanged();
+    }
 
     public override void SaveAction() {
         if (IsNew) {
-            // Un petit raccourci ;-)
-            //Member.Password = Member.Pseudo;
+            Poll.CreatorId = CurrentUser.UserId;
             Context.Add(Poll);
             IsNew = false;
         }

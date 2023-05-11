@@ -91,8 +91,7 @@
                 CommandParameter="{Binding}" HorizontalAlignment="Left" Margin="850,10,0,10" Grid.Row="2" Padding="5,1" RenderTransformOrigin="-2.147,0.59"/>
         <Button x:Name="btnDelete" Content="Delete" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Delete}" HorizontalAlignment="Left" Margin="900,10,0,10" Grid.Row="2" Padding="5,1"/>
-        <ContentControl Grid.Row="1" Content="{Binding EditView}" />
-
-    </Grid>
+            <ContentControl Grid.Row="1" Content="{Binding EditView}" />
+        </Grid>
     </ScrollViewer>
 </f:UserControlBase>

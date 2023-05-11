@@ -24,9 +24,7 @@ public class Participation : EntityBase<MyPollContext> {
 
     public static IQueryable<Participation> GetParticipantOfGrid(int pollId) {
         var poll = Context.Polls.FirstOrDefault(p => p.PollId == pollId);
-        if (poll == null) {
-            throw new ArgumentException($"Poll with ID {pollId} does not exist.");
-        }
+        //if (poll == null) {throw new ArgumentException($"Poll with ID {pollId} does not exist.");}
         return Context.Participations.Where(c => c.PollId == pollId);
     }
 
