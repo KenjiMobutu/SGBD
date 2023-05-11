@@ -37,7 +37,8 @@ public class Poll : EntityBase<MyPollContext> {
     //public virtual ICollection<Participation> Participations{ get; set; } = new HashSet<Participation>();
     public virtual ICollection<Comment> Comments{ get; set; } = new HashSet<Comment>();
     public virtual ICollection<Choice> Choices{ get; set; } = new HashSet<Choice>();
-   // public virtual ICollection<Vote> Vote { get; set; } = new HashSet<Vote>();
+    // public virtual ICollection<Vote> Vote { get; set; } = new HashSet<Vote>();
+    public virtual ICollection<Vote> Votes { get; set; } = new HashSet<Vote>();
 
     public static IQueryable<Poll> GetPolls(User CurrentUser) {
             var polls = Context.Polls.Where(poll =>
@@ -86,6 +87,16 @@ public class Poll : EntityBase<MyPollContext> {
         return count;
     }
 
+    public int TotalVotesForUser(User user) {
+        int totalVotes = 0;
+        foreach (var choice in Choices) {
+            totalVotes += choice.VotesList.Count(v => v.UserId == user.UserId);
+        }
+        return totalVotes;
+    }
 
+    public int VoteCount(Choice choice) {
+        return choice.VotesList.Count;
+    }
 
 }

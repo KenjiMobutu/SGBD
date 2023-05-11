@@ -23,6 +23,7 @@ public class PollAddViewModel : ViewModelCommon {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
+    
     public PollAddViewModel(Poll poll) {
         Poll = poll;
     }
@@ -34,8 +35,14 @@ public class PollAddViewModel : ViewModelCommon {
     public bool IsExisting => !_isNew;
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
-
     public bool CanAddCurrentUser => !Poll.Participants.Any(p => p.UserId == CurrentUser.UserId);
+
+    public int VoteCount(Choice choice) {
+        Console.WriteLine("TotalVotesForPoll 1");
+        return choice.VotesList.Count;
+    }
+
+    
 
     private User _selectedUserToAdd;
 

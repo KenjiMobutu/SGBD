@@ -23,7 +23,7 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
-
+    
     private ObservableCollection<Choice> _choices;
     public ObservableCollection<Choice> Choices {
         get => _choices;
@@ -62,6 +62,7 @@ public class PollDetailViewModel : ViewModelCommon {
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
         IsNew = isNew;
         Poll = poll;
+        var pollId = poll.PollId;
         IsEditing = false;
 
         // Ajouter seulement le VoteGridView du Poll sélectionné
@@ -72,16 +73,21 @@ public class PollDetailViewModel : ViewModelCommon {
             EditView = new PollAddView(Poll,IsNew);
             IsEditing = true;
         });
-
-
+        
+        _comments = Comment.GetAllCommentsForPoll(pollId).ToList();
+        foreach (var c in _comments.ToList()) {
+            Console.WriteLine("Comments ===> : " + c.Text.ToString());
+        }
+       
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
         VoteGrid = new ObservableCollection<VoteGridView>(VoteGridViews.Select(vg => new VoteGridView(poll)));
     }
 
     public string Title => Poll.Title;
-
     public User Creator => Poll.Creator;
 
+    private List<Comment> _comments;
+    public List<Comment> Comments => _comments;
     protected override void OnRefreshData() {
  
     }

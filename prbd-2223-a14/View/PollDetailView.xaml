@@ -13,13 +13,14 @@
     <f:UserControlBase.Resources>
         <vm:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </f:UserControlBase.Resources>
-
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid Margin="10">
-
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0">
@@ -30,31 +31,68 @@
             <Run Text=")" FontSize="12" />
         </TextBlock>
 
-        <ListView ItemsSource="{Binding VoteGridViews}" Grid.Row="1"
-                  Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ListView.ItemsPanel>
+        <ItemsControl ItemsSource="{Binding VoteGridViews}" Grid.Row="1"
+              Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <ContentPresenter Content="{Binding}">
-                        <ContentPresenter.Resources>
-                            <DataTemplate DataType="{x:Type vm:VoteGridViewModel}">
-                                <vw:VoteGridView />
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
-                    </ContentPresenter>
+                    <StackPanel>
+                        <vw:VoteGridView />
+                    </StackPanel>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-            
-        </ListView>
-        
-        <TextBlock Grid.Row="2" Text="Comments" FontSize="14" FontWeight="Bold" />
-        <Button x:Name="btnEdit" Content="Edit" Command="{Binding DisplayEdit}" CommandParameter="{Binding}" HorizontalAlignment="Left" Margin="850,10,0,10" Grid.Row="2" Padding="5,1" RenderTransformOrigin="-2.147,0.59"/>
-        <Button x:Name="btnDelete" Content="Delete" Command="{Binding Delete}" HorizontalAlignment="Left" Margin="900,10,0,10" Grid.Row="2" Padding="5,1"/>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ItemsPresenter />
+                        <StackPanel Grid.Row="1">
+                            <TextBlock Text="Comments" FontSize="14" FontWeight="Bold" Margin="0,10"/>
+                            <TextBlock Height="auto" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Left" Width="100" >
+                                <Hyperlink  Command="{Binding CommentCommand}"><Run Text="Add Comment"/></Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </ItemsControl.Template>
+        </ItemsControl>
+
+        <TextBlock Width="100" Margin="152,306,528,4" Grid.Row="1" FontSize="12" Text="{Binding CommentTitle}" />
+
+            <ItemsControl ItemsSource="{Binding Comments}" Grid.Row="2" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Text}" Grid.Row="0" FontSize="14" />
+                        <TextBlock Text="{Binding CreationDate}" Grid.Row="1" Grid.Column="1" FontSize="12" FontStyle="Italic" />
+                        <TextBlock Text="{Binding User.Name}" Grid.Row="1" Grid.Column="0" FontSize="12" FontStyle="Italic" />
+
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Button x:Name="btnEdit" Content="Edit" Command="{Binding DisplayEdit}" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"
+                CommandParameter="{Binding}" HorizontalAlignment="Left" Margin="850,10,0,10" Grid.Row="2" Padding="5,1" RenderTransformOrigin="-2.147,0.59"/>
+        <Button x:Name="btnDelete" Content="Delete" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding Delete}" HorizontalAlignment="Left" Margin="900,10,0,10" Grid.Row="2" Padding="5,1"/>
         <ContentControl Grid.Row="1" Content="{Binding EditView}" />
 
     </Grid>
+    </ScrollViewer>
 </f:UserControlBase>

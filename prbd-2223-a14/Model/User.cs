@@ -16,12 +16,15 @@ public class User : EntityBase<MyPollContext> {
     public string Mail { get; set; }
     public string Password { get; set; }
     public Role Role { get; protected set; } = Role.Member;
+    
+
 
     public User( int userId, string name, string mail, string password) {
             UserId = userId;
             Name = name;
             Mail = mail;
             Password = password;
+
     }
     public User() { }
     public bool isAdmin() {
@@ -41,5 +44,21 @@ public class User : EntityBase<MyPollContext> {
     public static User GetByName(string name) {
         return Context.Users.SingleOrDefault(u => u.Name == name);
     }
+    
+    public Poll PollUserParticipates {
+        get {
+            return Participations.FirstOrDefault();
+        }
+    }
 
+    public int TotalVotes {
+        get {
+            if (PollUserParticipates != null) {
+                return PollUserParticipates.TotalVotesForUser(this);
+            } else {
+                return 0;
+            }
+        }
+    }
+    
 }

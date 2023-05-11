@@ -13,8 +13,6 @@ public class Vote : EntityBase<MyPollContext> {
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
     public virtual User User { get; set; }
-    
-
 
     [ForeignKey(nameof(Choice))]
     public int ChoiceId { get; set; }
@@ -28,4 +26,5 @@ public class Vote : EntityBase<MyPollContext> {
         VoteType.No => -1,
         _ => 0,// throw new Exception("bad vote value"),
     };
+    
 }

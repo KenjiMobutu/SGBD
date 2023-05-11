@@ -7,14 +7,12 @@
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              xmlns:vw="clr-namespace:MyPoll.View"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:VoteGridViewModel, IsDesignTimeCreatable=True}"
-              
+             d:DataContext="{d:DesignInstance Type=vm:VoteGridViewModel, IsDesignTimeCreatable=True}"           
              x:Name="uc">
-             
+
     <UserControl.DataContext>
         <vm:VoteGridViewModel x:Name="vm" />
     </UserControl.DataContext>
-
 
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
         

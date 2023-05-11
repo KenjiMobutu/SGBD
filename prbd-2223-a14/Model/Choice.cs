@@ -18,7 +18,8 @@ public class Choice : EntityBase<MyPollContext> {
 
     [NotMapped]
     public double Score => VotesList.Sum(v => v.Value);
-    
+    public int TotalVotes => VotesList.Count;
+
     public static IQueryable<Choice> GetChoicesForGrid(int pollId) {
         var poll = Context.Polls.FirstOrDefault(p => p.PollId == pollId);
         if (poll == null) {
