@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,17 +81,17 @@ public class PollAddViewModel : ViewModelCommon {
             return _addAllUsersCommand;
         }
     }
-    private ICommand _addCurrentUserCommand;
-    public ICommand AddCurrentUserCommand {
-        get {
-            if( _addCurrentUserCommand == null && CanAddCurrentUser ) {
-                _addCurrentUserCommand = new RelayCommand(() => AddCurrentUser());
-            }
-            return _addCurrentUserCommand;
-        }
-       
-    }
+    /* private ICommand _addCurrentUserCommand;
+     public ICommand AddCurrentUserCommand {
+         get {
+             if( _addCurrentUserCommand == null && CanAddCurrentUser ) {
+                 _addCurrentUserCommand = new RelayCommand(() => AddCurrentUser());
+             }
+             return _addCurrentUserCommand;
+         }
 
+     }*/
+    public ICommand AddCurrentUserCommand { get; set; }
     private ICommand _deleteParticipantCommand;
     public ICommand DeleteParticipantCommand {
         get {
@@ -151,11 +152,9 @@ public class PollAddViewModel : ViewModelCommon {
         // Mise à jour de la liste des participants
         RaisePropertyChanged(nameof(Poll.Participants));
     }
+ 
     private void AddCurrentUser() {
-       
         Poll.Participants.Add(CurrentUser);
-    
-        // Mise à jour de la liste des participants
         RaisePropertyChanged();
     }
 
@@ -220,7 +219,6 @@ public class PollAddViewModel : ViewModelCommon {
     }
 
     private bool CanDeleteChoice(int choiceId) {
-        
         return Poll.Choices.Any(c => c.ChoiceId == choiceId);
     }
 
@@ -241,17 +239,23 @@ public class PollAddViewModel : ViewModelCommon {
         RaisePropertyChanged(nameof(Poll.Choices));
     }
 
+    private ObservableCollection<User> _participants;
+    public ObservableCollection<User> Participants {
+        get => _participants;
+        set => SetProperty(ref _participants, value);
 
+    }
 
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
-
+        Participants = new ObservableCollection<User>(Poll.Participants);
         Save = new RelayCommand(SaveAction, CanSaveAction);
         Cancel = new RelayCommand(CancelAction, CanCancelAction);
         Delete = new RelayCommand(DeleteAction);
-
+        AddCurrentUserCommand = new RelayCommand(AddCurrentUser);
         RaisePropertyChanged();
+        RaisePropertyChanged(nameof(Participants));
     }
     public void DeleteAction() {
         Console.WriteLine("DELETE !!!!!");

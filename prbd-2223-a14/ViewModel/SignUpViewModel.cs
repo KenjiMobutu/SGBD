@@ -12,6 +12,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyPoll.ViewModel;
 public  class SignUpViewModel : ViewModelCommon {
+
+    private readonly Poll _poll;
+
+    public Poll Poll {
+        get => _poll;
+        private init => SetProperty(ref _poll, value);
+    }
     private const string MailPropertyName = nameof(Mail);
     public ICommand SaveCommand { get; set; }
     public ICommand Cancel { get; set; }
@@ -83,7 +90,8 @@ public  class SignUpViewModel : ViewModelCommon {
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_SIGNUP, User);
-        
+        //NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+
     }
 
     private bool CanSaveAction() {

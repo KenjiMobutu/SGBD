@@ -95,5 +95,11 @@ public class Poll : EntityBase<MyPollContext> {
     public int VoteCount(Choice choice) {
         return choice.VotesList.Count;
     }
+    public void Delete() {
+      
+        // Supprime le membre lui-même
+        Context.Polls.Remove(this);
+        Context.SaveChanges();
+    }
 
 }

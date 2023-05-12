@@ -29,6 +29,12 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _choices;
         private set => SetProperty(ref _choices, value);
     }
+    //public bool IsClosed => Poll.IsClosed;
+    private bool _isClosed;
+    public bool IsClosed {
+        get => _isClosed;
+        set => SetProperty(ref _isClosed, value);
+    }
 
     private bool _isNew;
     public bool IsNew {
@@ -50,6 +56,7 @@ public class PollDetailViewModel : ViewModelCommon {
     }
 
     public ICommand DisplayEdit { get; set; }
+    public ICommand Delete { get; set; }
 
     public ObservableCollection<VoteGridView> VoteGridViews { get; } = new ObservableCollection<VoteGridView>();
 
@@ -64,7 +71,7 @@ public class PollDetailViewModel : ViewModelCommon {
         Poll = poll;
         var pollId = poll.PollId;
         IsEditing = false;
-
+        IsClosed = !poll.IsClosed;
         // Ajouter seulement le VoteGridView du Poll sélectionné
         var voteGridView = new VoteGridView(Poll);
         VoteGridViews.Add(voteGridView);
@@ -73,7 +80,8 @@ public class PollDetailViewModel : ViewModelCommon {
             EditView = new PollAddView(Poll,IsNew);
             IsEditing = true;
         });
-        
+        Delete = new RelayCommand(DeleteAction, () => !IsNew);
+
         _comments = Comment.GetAllCommentsForPoll(pollId).ToList();
         foreach (var c in _comments.ToList()) {
             Console.WriteLine("Comments ===> : " + c.Text.ToString());
@@ -82,7 +90,12 @@ public class PollDetailViewModel : ViewModelCommon {
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
         VoteGrid = new ObservableCollection<VoteGridView>(VoteGridViews.Select(vg => new VoteGridView(poll)));
     }
-
+    private void DeleteAction() {
+        CancelAction();
+        Poll.Delete();
+        NotifyColleagues(App.Messages.MSG_MEMBER_CHANGED, Poll);
+        NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
+    }
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
 
