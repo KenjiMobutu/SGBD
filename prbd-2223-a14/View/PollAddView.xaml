@@ -57,7 +57,7 @@
              Text="{Binding Poll.Creator.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" />
 
         <Label x:Name="labelIsClosed" Content="Is Closed :" VerticalAlignment="Top" Padding="5" Grid.Row="3" />
-        <CheckBox x:Name="CheckBox" VerticalAlignment="Center" Padding="5" Grid.Row="3" Grid.Column="1" />
+        <CheckBox x:Name="CheckBox" IsChecked="{Binding IsClosed}"  VerticalAlignment="Center" Padding="5" Grid.Row="3" Grid.Column="1" />
 
         <Label x:Name="Participants" Content="Participants" VerticalAlignment="Top" Padding="5" Grid.Row="4"  Grid.Column="0" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
         <ListView ItemsSource="{Binding Participants}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,50,20,-50">

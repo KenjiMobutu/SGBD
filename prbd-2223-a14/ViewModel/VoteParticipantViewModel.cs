@@ -13,12 +13,13 @@ using PRBD_Framework;
 namespace MyPoll.ViewModel;
 public class VoteParticipantViewModel : ViewModelCommon {
     private List<User> _participants;
-    public VoteParticipantViewModel(VoteGridViewModel voteGridViewModel,User participant, List<Choice> choices) {
+    public VoteParticipantViewModel(VoteGridViewModel voteGridViewModel,User participant, List<Choice> choices, Poll poll) {
         _participants = Context.Participants.ToList();
         _voteGridViewModel = voteGridViewModel;
         _choices = choices;
         Participant = participant;
         IsCurrentUser = CurrentUser == participant;
+        IsClosed = poll.IsClosed;
         RefreshVotes();
         UpdateVotes();
             EditCommand = new RelayCommand(() => EditMode = true);
@@ -51,6 +52,11 @@ public class VoteParticipantViewModel : ViewModelCommon {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
+    private bool _isClosed;
+    public bool IsClosed {
+        get => _isClosed;
+        set => SetProperty(ref _isClosed, value);
+    }
 
     private void EditModeChanged() {
         // Lorsqu'on change le mode d'édition de la ligne, on le signale à chaque cellule
@@ -65,7 +71,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
     public void Changes() {
         RaisePropertyChanged(nameof(Editable));
     }
-    public bool Editable => !EditMode && !ParentEditMode && (IsCurrentUser || IsAdmin) ;
+    public bool Editable => !EditMode && !ParentEditMode && (IsCurrentUser || IsAdmin) && !IsClosed ;
   
     public bool ParentEditMode => _voteGridViewModel.EditMode;
 

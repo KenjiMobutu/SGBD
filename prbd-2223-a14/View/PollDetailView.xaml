@@ -39,7 +39,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="This poll has been Closed!" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
-                        <Button Grid.Column="1" Content="Reopen" Width="60" Height="30" Margin="0,0,15,0" />
+                        <Button Grid.Column="1" Command="{Binding Reopen}"  Content="Reopen" Width="60" Height="30" Margin="0,0,15,0" />
                     </Grid>
                 </Border>
             </StackPanel>
@@ -66,22 +66,30 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <ItemsPresenter />
-                            <StackPanel Grid.Row="1">
-                                <TextBlock Text="Comments" FontSize="14" FontWeight="Bold" Margin="0,10"/>
-                                <TextBlock Height="auto" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Left" Width="100">
-                                    <Hyperlink Command="{Binding CommentCommand}">
-                                        <Run Text="Add Comment"/>
-                                    </Hyperlink>
-                                </TextBlock>
-                            </StackPanel>
                         </Grid>
                     </ControlTemplate>
                 </ItemsControl.Template>
             </ItemsControl>
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Comments" FontSize="14" FontWeight="Bold" Margin="0,10"/>
+
+                <StackPanel x:Name="CommentPanel" Orientation="Horizontal" Visibility="{Binding IsCommenting, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBox Width="800" Height="30" Margin="0,5"/>
+                    <Button Content="Add Comment" Width="100" Height="30" Margin="10,5"/>
+                </StackPanel>
+
+                <TextBlock Height="auto" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Left" Width="100"
+                           Visibility="{Binding IsVisibleLink, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Hyperlink Command="{Binding ToggleCommentingCommand}" >
+                        <Run Text="Add Comment"/>
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
 
             <TextBlock Width="100" Margin="152,306,528,4" Grid.Row="1" FontSize="12" Text="{Binding CommentTitle}" />
 
-            <ItemsControl ItemsSource="{Binding Comments}" Grid.Row="3" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ItemsControl ItemsSource="{Binding Comments}" Grid.Row="3" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -94,7 +102,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Text}" Grid.Row="0" FontSize="14" />
+                            <TextBlock Text="{Binding Text}" Grid.Row="0" FontSize="14" TextWrapping="Wrap" Width="200" />
                             <TextBlock Text="{Binding User.Name}" Grid.Row="1" Grid.Column="0" FontSize="12" FontStyle="Italic" Foreground="Blue"/>
                             <TextBlock Text=" - " Grid.Row="1" Grid.Column="1" FontSize="12" FontStyle="Italic" Foreground="Gray" />
                             <TextBlock Text="{Binding CreationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Grid.Row="1" Grid.Column="2" FontSize="12" FontStyle="Italic" Foreground="Gray" />
@@ -116,7 +124,7 @@
                 <Button x:Name="btnDelete" Content="Delete" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Command="{Binding Delete}" HorizontalAlignment="Left" Margin="5,10,10,10" Grid.Column="2" Padding="5,1" Width="60"/>
             </Grid>
-
+            <ContentControl Grid.Row="1" Content="{Binding EditView}" />
         </Grid>
     </ScrollViewer>
 </f:UserControlBase>

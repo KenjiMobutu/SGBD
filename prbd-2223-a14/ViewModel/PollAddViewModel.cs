@@ -246,9 +246,16 @@ public class PollAddViewModel : ViewModelCommon {
 
     }
 
+    private bool _isClosed;
+    public bool IsClosed {
+        get => _isClosed;
+        set => SetProperty(ref _isClosed, value);
+    }
+
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
+        IsClosed = Poll.IsClosed;
         Participants = new ObservableCollection<User>(Poll.Participants);
         Save = new RelayCommand(SaveAction, CanSaveAction);
         Cancel = new RelayCommand(CancelAction, CanCancelAction);
