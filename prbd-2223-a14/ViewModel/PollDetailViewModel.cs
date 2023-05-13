@@ -29,7 +29,7 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _choices;
         private set => SetProperty(ref _choices, value);
     }
-    //public bool IsClosed => Poll.IsClosed;
+    
     private bool _isClosed;
     public bool IsClosed {
         get => _isClosed;
@@ -86,6 +86,12 @@ public class PollDetailViewModel : ViewModelCommon {
         set => SetProperty(ref _editView, value);
     }
 
+    private ObservableCollection<Comment> _comments;
+    public ObservableCollection<Comment> Comments {
+        get => _comments;
+        set => SetProperty(ref _comments, value);
+    }
+
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
         IsNew = isNew;
         Poll = poll;
@@ -93,6 +99,7 @@ public class PollDetailViewModel : ViewModelCommon {
 
         IsEditing = false;
         IsClosed = !poll.IsClosed;
+
         if (!IsClosed) {
             IsVisibleLink = true;
             IsCommenting = true;
@@ -122,7 +129,7 @@ public class PollDetailViewModel : ViewModelCommon {
         });
         Delete = new RelayCommand(DeleteAction, () => !IsNew);
 
-        _comments = Comment.GetAllCommentsForPoll(pollId).ToList();
+        Comments = new ObservableCollection<Comment>(Poll.Comments);
         foreach (var c in _comments.ToList()) {
             Console.WriteLine("Comments ===> : " + c.Text.ToString());
         }
@@ -134,10 +141,12 @@ public class PollDetailViewModel : ViewModelCommon {
         if (!string.IsNullOrEmpty(NewCommentText)) {
             Comment newComment = new Comment { Text = NewCommentText, User = CurrentUser };
             Poll.Comments.Add(newComment);
+            Comments.Add(newComment);   
             NewCommentText = ""; // Réinitialiser la propriété pour permettre l'ajout d'un nouveau commentaire
         }
         Context.SaveChanges();
         RaisePropertyChanged();
+        RaisePropertyChanged(nameof(Comments));
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
     }
 
@@ -150,8 +159,6 @@ public class PollDetailViewModel : ViewModelCommon {
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
 
-    private List<Comment> _comments;
-    public List<Comment> Comments => _comments;
     protected override void OnRefreshData() {
  
     }
