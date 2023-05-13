@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyPoll.View"
-             xmlns:vw="clr-namespace:MyPoll.View"
+             xmlns:vw="clr-namespace:MyPoll.ViewModel"
              xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
+             xmlns:m="clr-namespace:MyPoll.Model"
+             
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:PollAddViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
-
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -33,24 +34,30 @@
              Text="{Binding Poll.Title, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label x:Name="labelType" Content="Type :" VerticalAlignment="Top" Padding="5" Grid.Row="1" />
-        <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center"
-          SelectedItem="{Binding Poll.Type, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
-            <ComboBox.Resources>
-                <Style TargetType="ComboBoxItem">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=Poll.Type}" Value="Multiple">
-                            <Setter Property="Content" Value="Multiple"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=Poll.Type}" Value="Single">
-                            <Setter Property="Content" Value="Single"/>
-
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ComboBox.Resources>
-            <ComboBoxItem />
-            <ComboBoxItem />
+        <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center" SelectedItem="{Binding SelectedType}" Grid.Row="1" ItemsSource="{Binding PollTypes}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.Poll.Type, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="{x:Null}">
+                                        <Setter Property="Text" Value="" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
         </ComboBox>
+
+
+
+
+
+
 
         <Label x:Name="labelCreator" Content="Creator :" VerticalAlignment="Top" Padding="5" Grid.Row="2" />
         <TextBox x:Name="txtCreator" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
@@ -113,7 +120,6 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-
 
         <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="2" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
         <ListView ItemsSource="{Binding Choices}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,50,-1,-50">

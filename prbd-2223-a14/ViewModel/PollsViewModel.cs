@@ -46,14 +46,22 @@ public class PollsViewModel : ViewModelCommon {
             return;
         }
 
-        IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
+        IQueryable<Poll> polls;
+
+        if (CurrentUser.IsAdmin) // Vérifier si l'utilisateur actuel est un administrateur
+        {
+            polls = Poll.GetAllPolls(); // Récupérer tous les sondages sans filtre
+        } else {
+            polls = Poll.GetPolls(CurrentUser); // Récupérer les sondages de l'utilisateur actuel
+        }
 
         if (!string.IsNullOrEmpty(Filter)) {
-            polls = polls.Where(p => p.Title.Contains(Filter) || p.Creator.Name.Contains(Filter) );
+            polls = polls.Where(p => p.Title.Contains(Filter) || p.Creator.Name.Contains(Filter) || p.Participants.Any(participant => participant.Name.Contains(Filter)));
         }
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }
+
 }
 
 

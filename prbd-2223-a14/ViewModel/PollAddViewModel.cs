@@ -259,11 +259,27 @@ public class PollAddViewModel : ViewModelCommon {
         get => _isClosed;
         set => SetProperty(ref _isClosed, value);
     }
+    private ObservableCollection<PollType> _pollTypes;
+    public ObservableCollection<PollType> PollTypes {
+        get => _pollTypes;
+        set => SetProperty(ref _pollTypes, value);
 
+    }
+    private PollType _selectedType;
+    public PollType SelectedType {
+        get { return _selectedType; }
+        set {
+            _selectedType = value;
+            RaisePropertyChanged(nameof(SelectedType));
+        }
+    }
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
         IsClosed = Poll.IsClosed;
+       // PollTypes = new ObservableCollection<PollType> { Poll.Type };
+
+        PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
         Choices = new ObservableCollection<Choice>(Poll.Choices);
         Save = new RelayCommand(SaveAction, CanSaveAction);

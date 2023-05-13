@@ -16,7 +16,11 @@ public class User : EntityBase<MyPollContext> {
     public string Mail { get; set; }
     public string Password { get; set; }
     public Role Role { get; protected set; } = Role.Member;
-    
+    public bool IsAdmin {
+        get {
+            return Role == Role.Admin;
+        }
+    }
 
 
     public User( int userId, string name, string mail, string password) {

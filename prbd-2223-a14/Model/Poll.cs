@@ -43,6 +43,9 @@ public class Poll : EntityBase<MyPollContext> {
             return polls;
     }
 
+    public static IQueryable<Poll> GetAllPolls() {
+        return Context.Polls;
+    }
     public static IQueryable<Poll> GetById(Poll PollId) {
         var poll = Context.Polls.Where(poll =>
         poll.PollId == PollId.PollId);

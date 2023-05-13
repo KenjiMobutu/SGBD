@@ -91,7 +91,7 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _comments;
         set => SetProperty(ref _comments, value);
     }
-
+    
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
         IsNew = isNew;
         Poll = poll;
@@ -128,7 +128,7 @@ public class PollDetailViewModel : ViewModelCommon {
             IsClosed = true;
         });
         Delete = new RelayCommand(DeleteAction, () => !IsNew);
-
+       
         Comments = new ObservableCollection<Comment>(Poll.Comments);
         foreach (var c in _comments.ToList()) {
             Console.WriteLine("Comments ===> : " + c.Text.ToString());

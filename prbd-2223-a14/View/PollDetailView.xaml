@@ -92,8 +92,7 @@
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>
-
-
+            
             <TextBlock Width="100" Margin="152,306,528,4" Grid.Row="1" FontSize="12" Text="{Binding CommentTitle}" />
 
             <ItemsControl Grid.Row="4" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -125,7 +124,6 @@
                     <Binding Source="{StaticResource SortedComments}" />
                 </ItemsControl.ItemsSource>
             </ItemsControl>
-
 
             <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
