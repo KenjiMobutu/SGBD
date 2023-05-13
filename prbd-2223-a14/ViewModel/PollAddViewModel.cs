@@ -81,16 +81,7 @@ public class PollAddViewModel : ViewModelCommon {
             return _addAllUsersCommand;
         }
     }
-    /* private ICommand _addCurrentUserCommand;
-     public ICommand AddCurrentUserCommand {
-         get {
-             if( _addCurrentUserCommand == null && CanAddCurrentUser ) {
-                 _addCurrentUserCommand = new RelayCommand(() => AddCurrentUser());
-             }
-             return _addCurrentUserCommand;
-         }
-
-     }*/
+    
     public ICommand AddCurrentUserCommand { get; set; }
     private ICommand _deleteParticipantCommand;
     public ICommand DeleteParticipantCommand {
@@ -112,7 +103,8 @@ public class PollAddViewModel : ViewModelCommon {
         Console.WriteLine("User à EFFACER  ===> "+participant.Name);
         if (participant != null) {
             Poll.Participants.Remove(participant);
-            RaisePropertyChanged(nameof(Poll.Participants));
+            Participants.Remove(participant);
+            RaisePropertyChanged(nameof(Participants));
         }
     }
 
@@ -131,7 +123,10 @@ public class PollAddViewModel : ViewModelCommon {
         // Ajouter l'utilisateur sélectionné à la liste des participants
         if (SelectedUserToAdd != null) {
             Poll.Participants.Add(SelectedUserToAdd);
-            RaisePropertyChanged(nameof(Poll.Participants));
+            Participants.Add(SelectedUserToAdd);
+            RaisePropertyChanged();
+            RaisePropertyChanged(nameof(Participants));
+            RaisePropertyChanged(nameof(CanSaveAction));
         }
     }
 
@@ -148,14 +143,18 @@ public class PollAddViewModel : ViewModelCommon {
     private void AddAllUsers() {
         foreach (var user in AllUsers) {
             Poll.Participants.Add( user);
+            Participants.Add(user);
         }
         // Mise à jour de la liste des participants
-        RaisePropertyChanged(nameof(Poll.Participants));
+        RaisePropertyChanged(nameof(Participants));
     }
  
     private void AddCurrentUser() {
         Poll.Participants.Add(CurrentUser);
+        Participants.Add(CurrentUser);
         RaisePropertyChanged();
+        RaisePropertyChanged(nameof(Participants));
+        RaisePropertyChanged(nameof(CanSaveAction));
     }
 
     public override void SaveAction() {
@@ -172,8 +171,9 @@ public class PollAddViewModel : ViewModelCommon {
     private bool CanSaveAction() {
         if (IsNew)
             return !string.IsNullOrEmpty(Poll.Title);
-        return Poll != null && Poll.IsModified;
+        return Poll != null && (Poll.IsModified || Participants.Count != Poll.Participants.Count);
     }
+
     public override void CancelAction() {
         if (IsNew) {
             IsNew = false;
@@ -225,7 +225,8 @@ public class PollAddViewModel : ViewModelCommon {
     private void DeleteChoice(int choiceId) {
         var choice = Poll.Choices.FirstOrDefault(c => c.ChoiceId == choiceId);
         Poll.Choices.Remove(choice);
-        RaisePropertyChanged(nameof(Poll.Choices));
+        Choices.Remove(choice);
+        RaisePropertyChanged(nameof(Choices));
     }
 
 
@@ -235,14 +236,21 @@ public class PollAddViewModel : ViewModelCommon {
 
     private void AddChoice() {
         Poll.Choices.Add(new Choice { Label = NewChoiceLabel });
+        Choices.Add(new Choice { Label = NewChoiceLabel });
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
-        RaisePropertyChanged(nameof(Poll.Choices));
+        RaisePropertyChanged(nameof(Choices));
     }
 
     private ObservableCollection<User> _participants;
     public ObservableCollection<User> Participants {
         get => _participants;
         set => SetProperty(ref _participants, value);
+
+    }
+    private ObservableCollection<Choice> _choices;
+    public ObservableCollection<Choice> Choices {
+        get => _choices;
+        set => SetProperty(ref _choices, value);
 
     }
 
@@ -257,6 +265,7 @@ public class PollAddViewModel : ViewModelCommon {
         IsNew = isNew;
         IsClosed = Poll.IsClosed;
         Participants = new ObservableCollection<User>(Poll.Participants);
+        Choices = new ObservableCollection<Choice>(Poll.Choices);
         Save = new RelayCommand(SaveAction, CanSaveAction);
         Cancel = new RelayCommand(CancelAction, CanCancelAction);
         Delete = new RelayCommand(DeleteAction);

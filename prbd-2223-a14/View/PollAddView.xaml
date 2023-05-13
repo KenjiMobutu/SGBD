@@ -115,8 +115,8 @@
         </Button>
 
 
-        <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="2" Margin="0,20,0,0" />
-        <ListView ItemsSource="{Binding Poll.Choices}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,50,-1,-50">
+        <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="2" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
+        <ListView ItemsSource="{Binding Choices}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,50,-1,-50">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Label}" />
