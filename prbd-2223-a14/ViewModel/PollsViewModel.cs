@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using MyPoll.Model;
 using PRBD_Framework;
@@ -48,7 +49,7 @@ public class PollsViewModel : ViewModelCommon {
         IQueryable<Poll> polls = Poll.GetPolls(CurrentUser);
 
         if (!string.IsNullOrEmpty(Filter)) {
-            polls = polls.Where(p => p.Title.Contains(Filter) || p.Creator.Name.Contains(Filter));
+            polls = polls.Where(p => p.Title.Contains(Filter) || p.Creator.Name.Contains(Filter) );
         }
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));

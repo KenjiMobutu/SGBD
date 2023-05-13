@@ -20,7 +20,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0">
@@ -70,12 +71,12 @@
                     </ControlTemplate>
                 </ItemsControl.Template>
             </ItemsControl>
-            <StackPanel Grid.Row="2">
+            <StackPanel Grid.Row="3">
                 <TextBlock Text="Comments" FontSize="14" FontWeight="Bold" Margin="0,10"/>
 
                 <StackPanel x:Name="CommentPanel" Orientation="Horizontal" Visibility="{Binding IsCommenting, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBox Width="800" Height="30" Margin="0,5"/>
-                    <Button Content="Add Comment" Width="100" Height="30" Margin="10,5"/>
+                    <TextBox Width="800" Height="30" Margin="0,5" Text="{Binding NewCommentText}"/>
+                    <Button Content="Add Comment" Command="{Binding AddCommentCommand}" Width="100" Height="30" Margin="10,5"/>
                 </StackPanel>
 
                 <TextBlock Height="auto" TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Left" Width="100"
@@ -89,7 +90,7 @@
 
             <TextBlock Width="100" Margin="152,306,528,4" Grid.Row="1" FontSize="12" Text="{Binding CommentTitle}" />
 
-            <ItemsControl ItemsSource="{Binding Comments}" Grid.Row="3" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <ItemsControl ItemsSource="{Binding Comments}" Grid.Row="4" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -102,7 +103,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Text}" Grid.Row="0" FontSize="14" TextWrapping="Wrap" Width="200" />
+                            <TextBlock Text="{Binding Text}" Grid.Row="0" FontSize="14" TextWrapping="Wrap" Width="80" />
                             <TextBlock Text="{Binding User.Name}" Grid.Row="1" Grid.Column="0" FontSize="12" FontStyle="Italic" Foreground="Blue"/>
                             <TextBlock Text=" - " Grid.Row="1" Grid.Column="1" FontSize="12" FontStyle="Italic" Foreground="Gray" />
                             <TextBlock Text="{Binding CreationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Grid.Row="1" Grid.Column="2" FontSize="12" FontStyle="Italic" Foreground="Gray" />
@@ -112,7 +113,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <Grid Grid.Row="4">
+            <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

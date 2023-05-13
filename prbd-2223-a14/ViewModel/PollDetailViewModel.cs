@@ -65,10 +65,19 @@ public class PollDetailViewModel : ViewModelCommon {
         set => SetProperty(ref _voteGridViews, value);
     }
 
+    private string _newCommentText;
+    public string NewCommentText {
+        get { return _newCommentText; }
+        set {
+            _newCommentText = value;
+            RaisePropertyChanged(nameof(NewCommentText));
+        }
+    }
     public ICommand DisplayEdit { get; set; }
     public ICommand Delete { get; set; }
     public ICommand Reopen { get; set; }
     public ICommand ToggleCommentingCommand { get; set; }
+    public ICommand AddCommentCommand { get; set; }
     public ObservableCollection<VoteGridView> VoteGridViews { get; } = new ObservableCollection<VoteGridView>();
 
     private UserControl _editView;
@@ -92,8 +101,8 @@ public class PollDetailViewModel : ViewModelCommon {
             IsCommenting = true;
             IsVisibleLink = false;
         }
-            
-        
+
+        AddCommentCommand =  new RelayCommand(AddCommentAction);
         ToggleCommentingCommand = new RelayCommand(() => {
             IsCommenting = false;
             IsVisibleLink = true;
@@ -121,7 +130,17 @@ public class PollDetailViewModel : ViewModelCommon {
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
         VoteGrid = new ObservableCollection<VoteGridView>(VoteGridViews.Select(vg => new VoteGridView(poll)));
     }
-  
+    private void AddCommentAction() {
+        if (!string.IsNullOrEmpty(NewCommentText)) {
+            Comment newComment = new Comment { Text = NewCommentText, User = CurrentUser };
+            Poll.Comments.Add(newComment);
+            NewCommentText = ""; // Réinitialiser la propriété pour permettre l'ajout d'un nouveau commentaire
+        }
+        Context.SaveChanges();
+        RaisePropertyChanged();
+        NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+    }
+
     private void DeleteAction() {
         CancelAction();
         Poll.Delete();

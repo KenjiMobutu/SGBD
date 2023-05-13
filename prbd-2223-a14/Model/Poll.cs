@@ -42,6 +42,7 @@ public class Poll : EntityBase<MyPollContext> {
             poll.Creator.Mail == CurrentUser.Mail || poll.Participants.Contains(CurrentUser));
             return polls;
     }
+
     public static IQueryable<Poll> GetById(Poll PollId) {
         var poll = Context.Polls.Where(poll =>
         poll.PollId == PollId.PollId);
