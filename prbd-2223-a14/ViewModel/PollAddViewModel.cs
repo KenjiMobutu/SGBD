@@ -263,8 +263,14 @@ public class PollAddViewModel : ViewModelCommon {
     private bool _isClosed;
     public bool IsClosed {
         get => _isClosed;
-        set => SetProperty(ref _isClosed, value);
+        set {
+            SetProperty(ref _isClosed, value);
+            if (_isClosed) {
+                Poll.IsClosed = true;
+            }
+        }
     }
+
     private ObservableCollection<PollType> _pollTypes;
     public ObservableCollection<PollType> PollTypes {
         get => _pollTypes;

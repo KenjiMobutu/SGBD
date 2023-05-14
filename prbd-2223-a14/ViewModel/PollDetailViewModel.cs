@@ -110,12 +110,19 @@ public class PollDetailViewModel : ViewModelCommon {
         }
 
         AddCommentCommand =  new RelayCommand(AddCommentAction);
+
         ToggleCommentingCommand = new RelayCommand(() => {
             IsCommenting = false;
             IsVisibleLink = true;
         });
+
         Reopen = new RelayCommand(() => {
+            Poll.IsClosed = false;
             IsClosed = true;
+            Context.SaveChanges();
+            RaisePropertyChanged();
+            NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+           
         });
 
         // Ajouter seulement le VoteGridView du Poll sélectionné
