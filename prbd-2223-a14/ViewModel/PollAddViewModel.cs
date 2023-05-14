@@ -145,6 +145,7 @@ public class PollAddViewModel : ViewModelCommon {
             Participants.Add(user);
         }
         // Mise à jour de la liste des participants
+        RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
     }
  
@@ -198,6 +199,7 @@ public class PollAddViewModel : ViewModelCommon {
         get { return _newChoiceLabel; }
         set {
             _newChoiceLabel = value;
+            RaisePropertyChanged();
             RaisePropertyChanged(nameof(NewChoiceLabel));
         }
     }
@@ -232,6 +234,7 @@ public class PollAddViewModel : ViewModelCommon {
         var choice = Poll.Choices.FirstOrDefault(c => c.ChoiceId == choiceId);
         Poll.Choices.Remove(choice);
         Choices.Remove(choice);
+        RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choices));
     }
 
