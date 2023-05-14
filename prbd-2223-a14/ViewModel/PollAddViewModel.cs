@@ -126,7 +126,6 @@ public class PollAddViewModel : ViewModelCommon {
             Participants.Add(SelectedUserToAdd);
             RaisePropertyChanged();
             RaisePropertyChanged(nameof(Participants));
-            RaisePropertyChanged(nameof(CanSaveAction));
         }
     }
 
@@ -154,7 +153,6 @@ public class PollAddViewModel : ViewModelCommon {
         Participants.Add(CurrentUser);
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
-        RaisePropertyChanged(nameof(CanSaveAction));
     }
 
     public override void SaveAction() {
@@ -162,17 +160,25 @@ public class PollAddViewModel : ViewModelCommon {
             Poll.CreatorId = CurrentUser.UserId;
             Context.Add(Poll);
             IsNew = false;
+        } else {
+            Context.Update(Poll);
         }
+
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
     }
 
+
+
     private bool CanSaveAction() {
         if (IsNew)
             return !string.IsNullOrEmpty(Poll.Title);
-        return Poll != null && (Poll.IsModified || Participants.Count != Poll.Participants.Count);
+
+        return Poll != null && (Poll.IsModified || Participants.Count != Poll.Participants.Count || Choices.Count != Poll.Choices.Count);
     }
+
+
 
     public override void CancelAction() {
         if (IsNew) {
@@ -276,11 +282,11 @@ public class PollAddViewModel : ViewModelCommon {
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
+        Console.WriteLine("ISNEW===> " +IsNew);
         IsClosed = Poll.IsClosed;
-       // PollTypes = new ObservableCollection<PollType> { Poll.Type };
-
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
+        UpdateParticipantsTotalVotes();
         Choices = new ObservableCollection<Choice>(Poll.Choices);
         Save = new RelayCommand(SaveAction, CanSaveAction);
         Cancel = new RelayCommand(CancelAction, CanCancelAction);
@@ -289,6 +295,22 @@ public class PollAddViewModel : ViewModelCommon {
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
     }
+
+    public void UpdateParticipantsTotalVotes() {
+        foreach (var participant in Participants.ToList()) {
+            TotalVotesForUser(participant);
+        }
+        Context.SaveChanges();
+    }
+
+    public void TotalVotesForUser(User user) {
+        int totalVotes = 0;
+        foreach (var choice in Poll.Choices) {
+            totalVotes += choice.VotesList.Count(v => v.UserId == user.UserId);
+        }
+        user.TotalVotes = totalVotes;
+    }
+
     public void DeleteAction() {
         Console.WriteLine("DELETE !!!!!");
     }

@@ -76,14 +76,14 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Name}" />
-                                    <TextBlock Text=" ( " Margin="5,0,0,0" />
+                                    <TextBlock Text=" (" Margin="5,0,0,0" />
                                     <TextBlock Text="{Binding TotalVotes}" />
-                                    <TextBlock Text=" )" />
-
+                                    <TextBlock Text=")" />
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+
 
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>

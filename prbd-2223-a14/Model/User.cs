@@ -54,15 +54,8 @@ public class User : EntityBase<MyPollContext> {
             return Participations.FirstOrDefault();
         }
     }
+    public int TotalVotes { get; set; }
 
-    public int TotalVotes {
-        get {
-            if (PollUserParticipates != null) {
-                return PollUserParticipates.TotalVotesForUser(this);
-            } else {
-                return 0;
-            }
-        }
-    }
     
+
 }

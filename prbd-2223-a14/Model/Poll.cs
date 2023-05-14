@@ -92,9 +92,11 @@ public class Poll : EntityBase<MyPollContext> {
         int totalVotes = 0;
         foreach (var choice in Choices) {
             totalVotes += choice.VotesList.Count(v => v.UserId == user.UserId);
+            Console.WriteLine("CHOICE ===> " + choice.Label + user.Name + "TOTAL VOTE ===>" +totalVotes);
         }
         return totalVotes;
     }
+
 
     public int VoteCount(Choice choice) {
         return choice.VotesList.Count;

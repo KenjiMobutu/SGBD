@@ -26,18 +26,5 @@ public partial class PollAddView : UserControlBase {
         DataContext = new PollAddViewModel(poll, IsNew);
     }
     
-    private void DeleteParticipant_Click(object sender, RoutedEventArgs e) {
-        var button = (Button)sender;
-        var viewModel = DataContext as PollAddViewModel;
-        var participantId = (int)button.CommandParameter;
-        var participantToDelete = viewModel.Poll.Participants.FirstOrDefault(p => p.UserId == participantId);
-        if (participantToDelete != null) {
-            viewModel.Poll.Participants.Remove(participantToDelete);
-        }
-    }
-    
-
-
-
 }
 
