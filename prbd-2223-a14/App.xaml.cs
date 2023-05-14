@@ -44,9 +44,10 @@ public partial class App : ApplicationBase<User, MyPollContext> {
             NavigateTo<SignUpViewModel, User, MyPollContext>();
         });
 
-        Register<User>(this, Messages.MSG_SIGNUP, user => {
-
+        Register<User>(this, App.Messages.MSG_SIGNUP, user => {
+            CurrentUser = user;
             NavigateTo<MainViewModel, User, MyPollContext>();
+            
         });
 
         Register<PollAddViewModel>(this, Messages.MSG_EDIT_POLL, pollAddViewModel => {
@@ -55,6 +56,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
 
         });
 
+        
 
         // Cold start
         //Console.Write("Cold starting database... ");

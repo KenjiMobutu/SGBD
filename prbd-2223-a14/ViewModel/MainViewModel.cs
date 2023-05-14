@@ -5,7 +5,9 @@ using PRBD_Framework;
 namespace MyPoll.ViewModel;
 
 public class MainViewModel : ViewModelCommon {
+
     public ICommand ReloadDataCommand { get; set; }
+
     public MainViewModel() : base() {
         ReloadDataCommand = new RelayCommand(() => {
             // refuser un reload s'il y a des changements en cours
@@ -15,6 +17,7 @@ public class MainViewModel : ViewModelCommon {
             // notifie tout le monde qu'il faut rafraîchir les données
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         });
+
     }
     public static string Title {
         get => $"My Poll ({CurrentUser?.Name})";

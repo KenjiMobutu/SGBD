@@ -80,9 +80,12 @@ public class VoteChoiceViewModel : ViewModelCommon {
         IsRegistratedYes = false;
         IsRegistratedNo = false;
         IsRegistratedMaybe = false;
+        EditMode = false;
+        // On recrée la liste RegistrationsVM avec les nouvelles données
+        //RefreshVotes();
 
-       
     }
+
 
 
     public void HasVoted(object parameter) {

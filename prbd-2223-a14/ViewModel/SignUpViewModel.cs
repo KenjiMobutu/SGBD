@@ -9,6 +9,7 @@ using System.Windows.Input;
 using MyPoll.Model;
 using PRBD_Framework;
 using System.ComponentModel.DataAnnotations;
+using static MyPoll.App;
 
 namespace MyPoll.ViewModel;
 public  class SignUpViewModel : ViewModelCommon {
@@ -23,7 +24,7 @@ public  class SignUpViewModel : ViewModelCommon {
     public ICommand SaveCommand { get; set; }
     public ICommand Cancel { get; set; }
 
-    private User _user = new User();
+    private User _user;
     public User User {
         get => _user;
         set => SetProperty(ref _user, value);
@@ -62,15 +63,10 @@ public  class SignUpViewModel : ViewModelCommon {
         set => SetProperty(ref _name, value, () => Validate());
     }
 
-    protected override void OnRefreshData() {
-        if (IsNew || User == null) return;
-        User = User.GetByName(User.Name);
-        RaisePropertyChanged();
-    }
   
     public SignUpViewModel()  {
-      
         SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
+        Register<User>(App.Messages.MSG_MEMBER_CHANGED, user => OnRefreshData());
         RaisePropertyChanged();
     }
 
@@ -78,16 +74,19 @@ public  class SignUpViewModel : ViewModelCommon {
 
         if (IsNew) {
             User = new User {
-                Mail = _mail,
-                Name = _name,
-                Password = SecretHasher.Hash(_password) 
+                Mail = Mail,
+                Name = Name,
+                Password = SecretHasher.Hash(Password) 
             };
             Context.Add(User);
+            Context.Users.Add(User);
             IsNew = false;
+            
         }
-        
         Context.SaveChanges();
+        User = Context.Users.FirstOrDefault(u => u.UserId == User.UserId);
         RaisePropertyChanged();
+        NotifyColleagues(App.Messages.MSG_MEMBER_CHANGED, User);
         NotifyColleagues(App.Messages.MSG_SIGNUP, User);
 
     }
@@ -98,18 +97,6 @@ public  class SignUpViewModel : ViewModelCommon {
         return User != null && User.IsModified;
     }
 
-    /*public bool ValidateEmail() {
-
-        Regex regex = new Regex(@"^([\w.-]+)@([\w-]+)((.(\w){2,3})+)$");
-        Match match = regex.Match(Mail);
-        if (string.IsNullOrEmpty(Mail))
-            AddError(nameof(Mail), "required");
-        else if (Mail.Length < 3)
-            AddError(nameof(Mail), "length must be >= 3");
-        else if (!match.Success)
-            AddError(nameof(Mail), "Incorrect format of Mail");
-        return !HasErrors;
-    }*/
     public bool ValidateEmail() {
         var emailAttribute = new EmailAddressAttribute();
         if (string.IsNullOrEmpty(Mail)) {
@@ -158,7 +145,11 @@ public  class SignUpViewModel : ViewModelCommon {
         ValidateName();
         return !HasErrors;
     }
-
-
+    protected override void OnRefreshData() {
+            if (IsNew || User == null) return;
+            User = User.GetByName(User.Name);
+            
+            RaisePropertyChanged();
+    }
 
 }
