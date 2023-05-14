@@ -8,7 +8,7 @@
              xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              xmlns:m="clr-namespace:MyPoll.Model"
-             
+             xmlns:fap="http://schemas.fontawesome.com/icons/fonts/properties"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:PollAddViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -88,10 +88,12 @@
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="&#xE107;" FontFamily="Segoe MDL2 Assets"
+                                <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="red" Width="20"
+                                        FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
                                         Command="{Binding DataContext.DeleteParticipantCommand,
                                         RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
                                         CommandParameter="{Binding UserId}" />
+                                
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -125,11 +127,36 @@
         <ListView ItemsSource="{Binding Choices}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,50,-1,-50">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Label}" />
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="&#xE107;" FontFamily="Segoe MDL2 Assets" Width="20" Height="20"
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Label}" />
+                                    <TextBlock Text=" (" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding TotalVotes}" />
+                                    <TextBlock Text=")" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button fap:FontAwesome.Icon="Solid_Pencil" Foreground="black" Width="20"
+                                        FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
+                                        Command="{Binding DataContext.EditChoiceCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
+                                        CommandParameter="{Binding ChoiceId}">
+                                </Button>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="red" Width="20"
+                                        FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
                                         Command="{Binding DataContext.DeleteChoiceCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
                                         CommandParameter="{Binding ChoiceId}">
                                 </Button>

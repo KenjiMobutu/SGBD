@@ -71,7 +71,6 @@ public  class SignUpViewModel : ViewModelCommon {
     public SignUpViewModel()  {
       
         SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
-
         RaisePropertyChanged();
     }
 
@@ -90,7 +89,6 @@ public  class SignUpViewModel : ViewModelCommon {
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_SIGNUP, User);
-        //NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
 
     }
 
@@ -98,8 +96,6 @@ public  class SignUpViewModel : ViewModelCommon {
         if (IsNew)
             return !string.IsNullOrEmpty(Name);
         return User != null && User.IsModified;
-
-        // return Validate();
     }
 
     /*public bool ValidateEmail() {
@@ -123,9 +119,6 @@ public  class SignUpViewModel : ViewModelCommon {
         }
         return !HasErrors;
     }
-
-
-
 
     public bool ValidatePassword() {
         if (string.IsNullOrEmpty(Password))
