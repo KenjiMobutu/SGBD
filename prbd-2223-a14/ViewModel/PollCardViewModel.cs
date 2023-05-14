@@ -41,7 +41,7 @@ public class PollCardViewModel : ViewModelCommon {
     public double VotesSum => BestChoices.Sum(c => c.VotesList.Sum(v => v.Value));
     public SolidColorBrush BackgroundColor {
         get {
-            return IsClosed ? new SolidColorBrush(Color.FromRgb(255, 230, 220)) : (UserHasVoted ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Gray));
+            return IsClosed ? new SolidColorBrush(Color.FromRgb(255, 230, 220)) : (UserHasVoted ? new SolidColorBrush(Color.FromRgb(196, 224, 196)) : new SolidColorBrush(Colors.LightGray));
 
         }
     }
