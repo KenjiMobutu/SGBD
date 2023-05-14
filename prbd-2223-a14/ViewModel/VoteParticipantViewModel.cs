@@ -109,6 +109,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
         // On recrée la liste VotesVM avec les nouvelles données
         RefreshVotes();
         UpdateVotes();
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
 
 
