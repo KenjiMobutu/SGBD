@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows;
 using PRBD_Framework;
 
-namespace MyPoll.ViewModel;
+namespace PRBD_Framework;
 public class BooleanToVisibilityConverter : IValueConverter {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
         if (value is bool isVisible && isVisible) {

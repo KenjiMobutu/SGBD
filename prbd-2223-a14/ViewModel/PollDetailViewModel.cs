@@ -58,7 +58,7 @@ public class PollDetailViewModel : ViewModelCommon {
         set => SetProperty(ref _isVisibleLink, value);
     }
     public bool IsExisting => !_isNew;
-
+    
     private ObservableCollection<VoteGridView> _voteGridViews;
     public ObservableCollection<VoteGridView> VoteGrid {
         get => _voteGridViews;
@@ -91,19 +91,25 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _comments;
         set => SetProperty(ref _comments, value);
     }
-    
+
+    private VoteGridViewModel _voteGridVM;
+    public VoteGridViewModel VoteGridVM => _voteGridVM;
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
+        //Console.WriteLine("IS CREATOR===> "+IsCreator);
         IsNew = isNew;
         Poll = poll;
         var pollId = poll.PollId;
+        var participants = Participation.GetParticipantOfGrid(pollId).OrderBy(p => p.User.Name).ToList();
+        bool isParticipant = participants.Any(p => p.User.UserId == CurrentUser.UserId);
+        Console.WriteLine("IS PART===> " + isParticipant);
 
-        IsEditing = false;
+        IsEditing = false  ;
         IsClosed = !poll.IsClosed;
 
-        if (!IsClosed) {
+        if (!IsClosed && isParticipant) {
             IsVisibleLink = true;
             IsCommenting = true;
-            Console.WriteLine(" rentre dans le if :ISCLOSED===>" + IsClosed);
+            
         } else {
             IsCommenting = true;
             IsVisibleLink = false;
@@ -115,17 +121,9 @@ public class PollDetailViewModel : ViewModelCommon {
             IsCommenting = false;
             IsVisibleLink = true;
         });
+        _voteGridVM = new VoteGridViewModel(poll);
+        Reopen = new RelayCommand(ReopenAction);
 
-        Reopen = new RelayCommand(() => {
-            Poll.IsClosed = false;
-            IsClosed = true;
-            Context.SaveChanges();
-            RaisePropertyChanged();
-            NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
-           
-        });
-
-        // Ajouter seulement le VoteGridView du Poll sélectionné
         var voteGridView = new VoteGridView(Poll);
         VoteGridViews.Add(voteGridView);
 
@@ -140,9 +138,18 @@ public class PollDetailViewModel : ViewModelCommon {
         foreach (var c in _comments.ToList()) {
             Console.WriteLine("Comments ===> : " + c.Text.ToString());
         }
-       
+
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
-        VoteGrid = new ObservableCollection<VoteGridView>(VoteGridViews.Select(vg => new VoteGridView(poll)));
+        VoteGrid = new ObservableCollection<VoteGridView>(new[] { new VoteGridView(poll) });
+    }
+    private void ReopenAction() {
+        Poll.IsClosed = false;
+        IsClosed = true;
+        _voteGridVM.AskEditMode(false);
+        Context.SaveChanges();
+        RaisePropertyChanged();
+        NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
     private void AddCommentAction() {
         if (!string.IsNullOrEmpty(NewCommentText)) {
@@ -162,10 +169,11 @@ public class PollDetailViewModel : ViewModelCommon {
         Poll.Delete();
         NotifyColleagues(App.Messages.MSG_MEMBER_CHANGED, Poll);
         NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
-
+    public bool IsCreator => Poll.Creator == CurrentUser || CurrentUser.IsAdmin ;
     protected override void OnRefreshData() {
  
     }

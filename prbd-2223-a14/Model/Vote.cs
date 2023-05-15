@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPoll.Model;
-public enum VoteType { Yes = 1, No = -1, Maybe = 1/2 }
+public enum VoteType { Yes = 1, No = -1, Maybe  }
+
 public class Vote : EntityBase<MyPollContext> {
     public VoteType Type { get; set; }
-
 
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
@@ -20,11 +20,20 @@ public class Vote : EntityBase<MyPollContext> {
 
     public Vote() { }
 
-    public double Value => Type switch {
-        VoteType.Yes => 1,
-        VoteType.Maybe => 0.5,
-        VoteType.No => -1,
-        _ => 0,// throw new Exception("bad vote value"),
-    };
-    
+    public double Value {
+        get {
+            switch (Type) {
+                case VoteType.Yes:
+                    return 1;
+                case VoteType.Maybe:
+                    return 0.5;
+                case VoteType.No:
+                    return -1;
+                default:
+                    throw new Exception("Invalid vote type.");
+            }
+        }
+    }
 }
+
+

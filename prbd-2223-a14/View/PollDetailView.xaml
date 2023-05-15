@@ -12,7 +12,8 @@
                    FontSize="14" d:DesignHeight="450" d:DesignWidth="800"
                    x:Name="uc">
     <f:UserControlBase.Resources>
-        <vm:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <f:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
         <CollectionViewSource x:Key="SortedComments" Source="{Binding Comments}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="CreationDate" Direction="Descending"/>
@@ -46,7 +47,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="This poll has been Closed!" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
-                        <Button Grid.Column="1" Command="{Binding Reopen}"  Content="Reopen" Width="60" Height="30" Margin="0,0,15,0" />
+                        <Button Grid.Column="1" Command="{Binding Reopen}"  Content="Reopen" Width="60" Height="30" Margin="0,0,15,0" Visibility="{Binding IsCreator, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
                 </Border>
             </StackPanel>
@@ -125,7 +126,7 @@
                 </ItemsControl.ItemsSource>
             </ItemsControl>
 
-            <Grid Grid.Row="5">
+            <Grid Grid.Row="5" Visibility="{Binding IsCreator, Converter={StaticResource BoolToVisibility}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

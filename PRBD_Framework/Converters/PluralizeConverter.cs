@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using PRBD_Framework;
 
-namespace MyPoll.ViewModel;
+namespace PRBD_Framework;
 public class PluralizeConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             string text = parameter.ToString();

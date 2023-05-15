@@ -17,21 +17,14 @@ public class VoteChoiceViewModel : ViewModelCommon {
         Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId) ??
                new Vote() { Choice = choice, User = participant };
 
-
-        IsVoteYes = Vote.Value == 1;
-        IsVoteNo = Vote.Value == -1;
-        IsVoteMaybe = Vote.Value == 0.5;
-
         IsRegistratedYes = Vote.Type == VoteType.Yes && IsRegistrated;
         IsRegistratedNo = Vote.Type == VoteType.No && IsRegistrated;
         IsRegistratedMaybe = Vote.Type == VoteType.Maybe && IsRegistrated;
 
-        // Commande (utilisée par le bouton de la vue) qui "bascule" le booléen indiquant si l'user a voté 
         HasVotedCommand = new RelayCommand<object>(HasVoted);
 
         ClearChoicesCommand = new RelayCommand(ClearChoices);
     }
-
 
     public Vote Vote { get; set; }
 
@@ -49,41 +42,14 @@ public class VoteChoiceViewModel : ViewModelCommon {
     }
 
     public RelayCommand<object> HasVotedCommand { get; set; }
-    public RelayCommand ChangeVoteYes { get; set; }
-    public void ChangesVoteYes() {
-        if (!EditMode) {
-            return;
-        }
-        Vote.Type = VoteType.Yes;
-        
-    }
-
-
-    public RelayCommand ChangeVoteNo { get; set; }
-    public void ChangesVoteNo() {
-        if (!EditMode) {
-            return;
-        }
-        Vote.Type = VoteType.No;
-       
-    }
-
-    public RelayCommand ChangeVoteMaybe { get; set; }
-    public void ChangesVoteMaybe() {
-        if (!EditMode) {
-            return;
-        }
-        Vote.Type = VoteType.Maybe;
-    }
+    
     public RelayCommand ClearChoicesCommand { get; set; }
     public void ClearChoices() {
         IsRegistratedYes = false;
         IsRegistratedNo = false;
         IsRegistratedMaybe = false;
-        Vote = new Vote();
+        
     }
-
-
 
     public void HasVoted(object parameter) {
         if (!EditMode) {
@@ -91,13 +57,14 @@ public class VoteChoiceViewModel : ViewModelCommon {
         }
 
         double newVote = Convert.ToDouble(parameter);
-        Console.WriteLine(newVote.ToString());
+        Console.WriteLine(newVote);
         // Determine the new vote type
         VoteType newVoteType = newVote switch {
+
             1.0 => VoteType.Yes,
             -1.0 => VoteType.No,
             0.5 => VoteType.Maybe,
-            _ => VoteType.Maybe,
+            _ => VoteType.Maybe
         };
 
         if (newVoteType == Vote.Type) {
@@ -106,12 +73,13 @@ public class VoteChoiceViewModel : ViewModelCommon {
 
         // Update the vote type
         Vote.Type = newVoteType;
-
+        Console.WriteLine(Vote.Type);
         // Update the IsRegistrated properties
-        IsRegistrated = true;
+
         IsRegistratedNo = Vote.Type == VoteType.No;
         IsRegistratedYes = Vote.Type == VoteType.Yes;
         IsRegistratedMaybe = Vote.Type == VoteType.Maybe;
+        IsRegistrated = true;
     }
 
 
@@ -137,10 +105,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
         get => _isRegistratedMaybe;
         set => SetProperty(ref _isRegistratedMaybe, value);
     }
-    public double MaybeDoubleValue => 0.5;
-        
     
-
     public EFontAwesomeIcon RegistratedIcon => IsRegistratedYes  ? EFontAwesomeIcon.Solid_Check : EFontAwesomeIcon.None;
 
     public EFontAwesomeIcon RegistratedX => IsRegistratedNo  ? EFontAwesomeIcon.Solid_X : EFontAwesomeIcon.None;
@@ -153,10 +118,9 @@ public class VoteChoiceViewModel : ViewModelCommon {
 
     public Brush RegistratedColorOrange => IsRegistratedMaybe ? Brushes.Orange : Brushes.White;
 
-    //public string RegistratedToolTip => IsRegistrated ? "Yes" : "No";
-    public string RegistratedToolTipYes => IsRegistratedYes ? "Yes" : "";
-    public string RegistratedToolTipNo => IsRegistratedNo ? "No" : "";
-    public string RegistratedToolTipMaybe => IsRegistratedMaybe ? "Maybe" : "";
+    public string RegistratedToolTipYes => "Yes" ;
+    public string RegistratedToolTipNo =>  "No" ;
+    public string RegistratedToolTipMaybe => "Maybe" ;
 
 }
 

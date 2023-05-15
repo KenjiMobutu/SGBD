@@ -8,6 +8,7 @@
              xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
+                   xmlns:s="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:VoteChoiceViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -42,7 +43,7 @@
                 <fa:FontAwesome Icon="Solid_Check"
                      Foreground="{c:Binding 'IsRegistratedYes ? media:Brushes.Green : media:Brushes.LightGray'}"
                      FontSize="25"
-                     ToolTip="{Binding RegistratedToolTip}" />
+                     ToolTip="{Binding RegistratedToolTipYes}" />
             </Button>
             <Button Padding="2" BorderBrush="Transparent"
                  Visibility="{c:Binding EditMode}"
@@ -57,8 +58,10 @@
             <Button Padding="2" BorderBrush="Transparent"
                 Visibility="{c:Binding EditMode}"
                 Background="Transparent" Width="32"
-                Command="{Binding HasVotedCommand}"
-                CommandParameter="0.5">
+                Command="{Binding HasVotedCommand}">
+                <Button.CommandParameter>
+                    <s:Double>0.5</s:Double>
+                </Button.CommandParameter>
                 <fa:FontAwesome Icon="Regular_CircleQuestion"
                      Foreground="{c:Binding 'IsRegistratedMaybe ? media:Brushes.Orange : media:Brushes.LightGray'}"
                      FontSize="25"

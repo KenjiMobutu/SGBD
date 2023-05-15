@@ -120,11 +120,23 @@ public class VoteParticipantViewModel : ViewModelCommon {
     }
 
     private void Delete() {
-        Participant.VotesList.Clear();
+        // Filtrer les votes pour le sondage actuel
+        int pollId = _voteGridViewModel.Poll.PollId;
+        var votesToDelete = Participant.VotesList.Where(v => v.Choice.Poll.PollId == pollId).ToList();
+
+        // Supprimer les votes filtrés
+        foreach (var vote in votesToDelete) {
+            Context.Votes.Remove(vote);
+        }
+
         Context.SaveChanges();
-        // On recrée la liste RegistrationsVM avec les nouvelles données
+
+        // Mettre à jour les vues associées aux votes
         RefreshVotes();
+        UpdateVotes();
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
+
     private void UpdateVotes() {
         foreach (var vote in VotesVM) {
             var participant = _participants.FirstOrDefault(p => p.UserId == vote.Vote.User.UserId);

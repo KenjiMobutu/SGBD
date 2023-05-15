@@ -293,6 +293,8 @@ public class PollAddViewModel : ViewModelCommon {
         IsNew = isNew;
         Console.WriteLine("ISNEW===> " +IsNew);
         IsClosed = Poll.IsClosed;
+        //PollTypes = new ObservableCollection<PollType> { Poll.Type };
+        SelectedType = Poll.Type;
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
         UpdateParticipantsTotalVotes();
