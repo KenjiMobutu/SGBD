@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPoll.Model;
-public enum VoteType { Yes, No, Maybe  }
+public enum VoteType { Yes, No, Maybe, None  }
 
 public class Vote : EntityBase<MyPollContext> {
     public VoteType Type { get; set; }
@@ -29,6 +29,8 @@ public class Vote : EntityBase<MyPollContext> {
                     return 0.5;
                 case VoteType.No:
                     return -1;
+                case VoteType.None:
+                    return 0;
                 default:
                     throw new Exception("Invalid vote type.");
             }
