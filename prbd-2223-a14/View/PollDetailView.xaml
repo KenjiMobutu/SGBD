@@ -6,7 +6,9 @@
                    xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
                    xmlns:vw="clr-namespace:MyPoll.View"      
                    xmlns:vm="clr-namespace:MyPoll.ViewModel"
+                   xmlns:vmp="clr-namespace:MyPoll.ViewModel"
                    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                   xmlns:fap="http://schemas.fontawesome.com/icons/fonts/properties"
                    mc:Ignorable="d"       
                    d:DataContext="{d:DesignInstance Type=vm:PollDetailViewModel, IsDesignTimeCreatable=False}"
                    FontSize="14" d:DesignHeight="450" d:DesignWidth="800"
@@ -113,6 +115,12 @@
                             <TextBlock Text="{Binding User.Name}" Grid.Row="1" Grid.Column="0" FontSize="12" FontStyle="Italic" Foreground="Blue"/>
                             <TextBlock Text=" - " Grid.Row="1" Grid.Column="1" FontSize="12" FontStyle="Italic" Foreground="Gray" />
                             <TextBlock Text="{Binding CreationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm:ss}'}" Grid.Row="1" Grid.Column="2" FontSize="12" FontStyle="Italic" Foreground="Gray" />
+                            <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="Green" Width="20"
+                                FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
+                                Command="{Binding DataContext.DeleteCommentCommand, RelativeSource={RelativeSource AncestorType={x:Type vw:PollDetailView}}}"
+                                CommandParameter="{Binding CommentId}"
+                                Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Visibility="{Binding IsDeletable,Converter={StaticResource BoolToVisibility}}"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -125,7 +133,7 @@
                     <Binding Source="{StaticResource SortedComments}" />
                 </ItemsControl.ItemsSource>
             </ItemsControl>
-
+            
             <Grid Grid.Row="5" Visibility="{Binding IsCreator, Converter={StaticResource BoolToVisibility}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

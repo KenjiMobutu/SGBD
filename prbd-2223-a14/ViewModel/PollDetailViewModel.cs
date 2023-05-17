@@ -17,13 +17,38 @@ using static MyPoll.App;
 namespace MyPoll.ViewModel;
 
 public class PollDetailViewModel : ViewModelCommon {
+    public ICommand DisplayEdit { get; set; }
+    public ICommand Delete { get; set; }
+    public ICommand Reopen { get; set; }
+    public ICommand ToggleCommentingCommand { get; set; }
+    public ICommand AddCommentCommand { get; set; }
+
+    private ICommand _deleteCommentCommand;
+    public ICommand DeleteCommentCommand {
+        get {
+            if (_deleteCommentCommand == null) {
+                _deleteCommentCommand = new RelayCommand<int>(
+                    (commentId) => this.DeleteCommentAction(commentId)
+                    
+                );
+            }
+            return _deleteCommentCommand;
+        }
+    }
+
     private readonly Poll _poll;
 
     public Poll Poll {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
-    
+    private readonly Comment _comment;
+
+    public Comment Comment{
+        get => _comment;
+        private init => SetProperty(ref _comment, value);
+    }
+
     private ObservableCollection<Choice> _choices;
     public ObservableCollection<Choice> Choices {
         get => _choices;
@@ -73,11 +98,7 @@ public class PollDetailViewModel : ViewModelCommon {
             RaisePropertyChanged(nameof(NewCommentText));
         }
     }
-    public ICommand DisplayEdit { get; set; }
-    public ICommand Delete { get; set; }
-    public ICommand Reopen { get; set; }
-    public ICommand ToggleCommentingCommand { get; set; }
-    public ICommand AddCommentCommand { get; set; }
+    
     public ObservableCollection<VoteGridView> VoteGridViews { get; } = new ObservableCollection<VoteGridView>();
 
     private UserControl _editView;
@@ -91,9 +112,11 @@ public class PollDetailViewModel : ViewModelCommon {
         get => _comments;
         set => SetProperty(ref _comments, value);
     }
-
+ 
     private VoteGridViewModel _voteGridVM;
     public VoteGridViewModel VoteGridVM => _voteGridVM;
+    public static int Index { get; set; }
+
     public PollDetailViewModel(Poll poll, bool isNew) : base() {
         //Console.WriteLine("IS CREATOR===> "+IsCreator);
         IsNew = isNew;
@@ -105,7 +128,7 @@ public class PollDetailViewModel : ViewModelCommon {
 
         IsEditing = false  ;
         IsClosed = !poll.IsClosed;
-
+        
         if (!IsClosed && isParticipant) {
             IsVisibleLink = true;
             IsCommenting = true;
@@ -116,7 +139,7 @@ public class PollDetailViewModel : ViewModelCommon {
         }
 
         AddCommentCommand =  new RelayCommand(AddCommentAction);
-
+        
         ToggleCommentingCommand = new RelayCommand(() => {
             IsCommenting = false;
             IsVisibleLink = true;
@@ -135,12 +158,17 @@ public class PollDetailViewModel : ViewModelCommon {
         Delete = new RelayCommand(DeleteAction, () => !IsNew);
        
         Comments = new ObservableCollection<Comment>(Poll.Comments);
-        foreach (var c in _comments.ToList()) {
-            Console.WriteLine("Comments ===> : " + c.Text.ToString());
+
+        foreach (var comment in Comments) {
+            bool isCreatedByCurrentUserOrAdmin = comment.IsCreatedByUser(CurrentUser) || CurrentUser.IsAdmin;
+            comment.IsDeletable = isCreatedByCurrentUserOrAdmin;
+            Context.SaveChanges();
         }
+        
 
         // Assigner la liste VoteGrid à une nouvelle collection créée à partir de VoteGridViews
         VoteGrid = new ObservableCollection<VoteGridView>(new[] { new VoteGridView(poll) });
+        
     }
     private void ReopenAction() {
         Poll.IsClosed = false;
@@ -163,7 +191,14 @@ public class PollDetailViewModel : ViewModelCommon {
         RaisePropertyChanged(nameof(Comments));
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
     }
-
+    private void DeleteCommentAction(int commentId) {
+        var comment = Poll.Comments.FirstOrDefault(c => c.CommentId == commentId);
+        Poll.Comments.Remove(comment);
+        Comments.Remove(comment);
+        Context.SaveChanges();
+        RaisePropertyChanged();
+        RaisePropertyChanged(nameof(Comments));
+    }
     private void DeleteAction() {
         CancelAction();
         Poll.Delete();
@@ -171,6 +206,7 @@ public class PollDetailViewModel : ViewModelCommon {
         NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
+
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
     public bool IsCreator => Poll.Creator == CurrentUser || CurrentUser.IsAdmin ;
