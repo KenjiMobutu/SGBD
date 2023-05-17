@@ -89,7 +89,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
             .ToList();
     }
 
-    private void Save() {
+    /*private void Save() {
         EditMode = false;
         // Get the current poll ID
         int pollId = _voteGridViewModel.Poll.PollId;
@@ -110,8 +110,50 @@ public class VoteParticipantViewModel : ViewModelCommon {
         RefreshVotes();
         UpdateVotes();
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
-    }
+    }*/
+    private void Save() {
+        EditMode = false;
+        // Get the current poll ID
+        int pollId = _voteGridViewModel.Poll.PollId;
 
+        // Filter the participant's existing votes to include only the votes for the current poll
+        var existingVotes = Participant.VotesList.Where(v => v.Choice.Poll.PollId == pollId).ToList();
+
+        // Create a new list to store the votes that should be added or updated
+        var newVotes = new List<Vote>();
+
+        // Replace only the existing votes for the current poll with the new votes from VotesVM
+        foreach (var voteVM in VotesVM) {
+            var existingVote = existingVotes.FirstOrDefault(v => v.Choice.ChoiceId == voteVM.Vote.Choice.ChoiceId);
+            if (voteVM.IsRegistrated) {
+                if (existingVote != null) {
+                    // Update the existing vote
+                    existingVote.Type = voteVM.Vote.Type;
+                } else {
+                    // Add a new vote
+                    newVotes.Add(voteVM.Vote);
+                }
+            } else {
+                if (existingVote != null) {
+                    // Remove the existing vote
+                    existingVotes.Remove(existingVote);
+                    Context.Votes.Remove(existingVote);
+                }
+            }
+        }
+
+        // Add the new votes to the participant's votes list
+        foreach (var vote in newVotes) {
+            Participant.VotesList.Add(vote);
+        }
+
+        Context.SaveChanges();
+
+        // On recrée la liste VotesVM avec les nouvelles données
+        RefreshVotes();
+        UpdateVotes();
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+    }
 
     private void Cancel() {
         EditMode = false;
@@ -137,7 +179,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
 
-    private void UpdateVotes() {
+    public void UpdateVotes() {
         foreach (var vote in VotesVM) {
             var participant = _participants.FirstOrDefault(p => p.UserId == vote.Vote.User.UserId);
             if (participant == null) {
@@ -153,10 +195,28 @@ public class VoteParticipantViewModel : ViewModelCommon {
             vote.IsVoteYes = vote.Vote.Value == 1;
             vote.IsVoteNo = vote.Vote.Value == -1;
             vote.IsVoteMaybe = vote.Vote.Value == 0.5;
-            vote.IsRegistratedYes = vote.Vote.Type == VoteType.Yes && vote.IsRegistrated;
-            vote.IsRegistratedNo = vote.Vote.Type == VoteType.No && vote.IsRegistrated;
-            vote.IsRegistratedMaybe = vote.Vote.Type == VoteType.Maybe && vote.IsRegistrated;
+
+            // Mise à jour des propriétés IsRegistratedYes, IsRegistratedNo et IsRegistratedMaybe
+            if (vote.Vote.Type == VoteType.Yes) {
+                vote.IsRegistratedYes = vote.IsRegistrated;
+                vote.IsRegistratedNo = false;
+                vote.IsRegistratedMaybe = false;
+            } else if (vote.Vote.Type == VoteType.No) {
+                vote.IsRegistratedYes = false;
+                vote.IsRegistratedNo = vote.IsRegistrated;
+                vote.IsRegistratedMaybe = false;
+            } else if (vote.Vote.Type == VoteType.Maybe) {
+                vote.IsRegistratedYes = false;
+                vote.IsRegistratedNo = false;
+                vote.IsRegistratedMaybe = vote.IsRegistrated;
+            } else {
+                vote.IsRegistratedYes = false;
+                vote.IsRegistratedNo = false;
+                vote.IsRegistratedMaybe = false;
+            }
         }
     }
+
+
 
 }

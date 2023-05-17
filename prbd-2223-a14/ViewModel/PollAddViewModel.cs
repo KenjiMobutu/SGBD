@@ -43,8 +43,6 @@ public class PollAddViewModel : ViewModelCommon {
         return choice.VotesList.Count;
     }
 
-    
-
     private User _selectedUserToAdd;
 
     public User SelectedUserToAdd {
@@ -112,8 +110,6 @@ public class PollAddViewModel : ViewModelCommon {
         return Poll.Participants.Any(p => p.UserId == userId);
     }
 
-
-
     private bool CanAddSelectedUser() {
         // Vérifier si l'utilisateur sélectionné n'est pas déjà dans la liste des participants
         return SelectedUserToAdd != null && !Poll.Participants.Contains(SelectedUserToAdd);
@@ -170,16 +166,12 @@ public class PollAddViewModel : ViewModelCommon {
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
     }
 
-
-
     private bool CanSaveAction() {
         if (IsNew)
             return !string.IsNullOrEmpty(Poll.Title);
 
         return Poll != null && (Poll.IsModified || Participants.Count != Poll.Participants.Count || Choices.Count != Poll.Choices.Count);
     }
-
-
 
     public override void CancelAction() {
         if (IsNew) {
@@ -236,18 +228,20 @@ public class PollAddViewModel : ViewModelCommon {
         Choices.Remove(choice);
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choices));
+        
     }
-
 
     private bool CanAddChoice() {
         return !string.IsNullOrEmpty(NewChoiceLabel);
     }
 
     private void AddChoice() {
+
         Poll.Choices.Add(new Choice { Label = NewChoiceLabel });
         Choices.Add(new Choice { Label = NewChoiceLabel });
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
         RaisePropertyChanged(nameof(Choices));
+        
     }
 
     private ObservableCollection<User> _participants;
@@ -293,7 +287,6 @@ public class PollAddViewModel : ViewModelCommon {
         IsNew = isNew;
         Console.WriteLine("ISNEW===> " +IsNew);
         IsClosed = Poll.IsClosed;
-        //PollTypes = new ObservableCollection<PollType> { Poll.Type };
         SelectedType = Poll.Type;
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);

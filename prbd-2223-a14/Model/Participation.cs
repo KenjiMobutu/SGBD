@@ -19,12 +19,8 @@ public class Participation : EntityBase<MyPollContext> {
     public int UserId { get; set; }
     public virtual User User { get; set; }
 
-    //public virtual ICollection<User> Participants { get; set; } = new HashSet<User>();
-    //public virtual ICollection<Poll> FollowedBy { get; set; } = new HashSet<Poll>();
-
     public static IQueryable<Participation> GetParticipantOfGrid(int pollId) {
         var poll = Context.Polls.FirstOrDefault(p => p.PollId == pollId);
-        //if (poll == null) {throw new ArgumentException($"Poll with ID {pollId} does not exist.");}
         return Context.Participations.Where(c => c.PollId == pollId);
     }
 

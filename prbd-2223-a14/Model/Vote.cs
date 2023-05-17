@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPoll.Model;
-public enum VoteType { Yes = 1, No = -1, Maybe  }
+public enum VoteType { Yes, No, Maybe  }
 
 public class Vote : EntityBase<MyPollContext> {
     public VoteType Type { get; set; }

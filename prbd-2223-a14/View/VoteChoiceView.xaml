@@ -8,13 +8,12 @@
              xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
              xmlns:vm="clr-namespace:MyPoll.ViewModel"
              xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
-                   xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:VoteChoiceViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="uc">
 
-    
     <Border BorderBrush="Black" BorderThickness="1,0,0,1"
             SnapsToDevicePixels="True" Width="130" MinHeight="50">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -32,9 +31,9 @@
                     Visibility="{c:Binding !EditMode}" />
 
             <!-- Si on est en mode d'édition 
-        Grâce à la librairie CalcBinding, on peut utiliser des expressions (ici une ternaire)
-        Ce bouton change l'état du vote
-        -->
+            Grâce à la librairie CalcBinding, on peut utiliser des expressions (ici une ternaire)
+            Ce bouton change l'état du vote
+            -->
             <Button Padding="2" BorderBrush="Transparent"
                  Visibility="{c:Binding EditMode}"
                 Background="Transparent" Width="32"
@@ -55,6 +54,7 @@
                      FontSize="25"
                      ToolTip="{Binding RegistratedToolTipNo}" />
             </Button>
+            
             <Button Padding="2" BorderBrush="Transparent"
                 Visibility="{c:Binding EditMode}"
                 Background="Transparent" Width="32"
@@ -67,14 +67,16 @@
                      FontSize="25"
                      ToolTip="{Binding RegistratedToolTipMaybe}" />
             </Button>
+
             <Button Padding="2" BorderBrush="Transparent"
                 Visibility="{c:Binding EditMode}"
                 Background="Transparent" Width="32"
-                Command="{Binding ClearChoicesCommand}">
+                Command="{Binding ClearChoicesCommand}"
+                CommandParameter="{Binding Choice}">
                 <fa:FontAwesome Icon="None"
                      Foreground="LightGray"
                       FontSize="25"
-                      ToolTip="Effacer les choix" />
+                      ToolTip="{Binding RegistratedToolTipReset}" />
             </Button>
 
         </StackPanel>

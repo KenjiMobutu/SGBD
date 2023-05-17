@@ -22,9 +22,9 @@ public class Comment : EntityBase<MyPollContext> {
     public virtual User User { get; set; }
 
     public Comment() { }
-    public static IQueryable<Comment> GetAllCommentsForPoll(int pollId) {
-        
-        return Context.Comments.Where(c => c.PollId == pollId);
-          
+    
+    public bool IsCreatedByUser(User currentUser) {
+        return User == currentUser;
     }
+    public bool IsDeletable { get; set; }
 }

@@ -28,13 +28,9 @@ public class Poll : EntityBase<MyPollContext> {
 
     public Poll() { }
 
-    //public virtual ICollection<User> Participants { get; set; } = new HashSet<User>();
     public virtual ICollection<User> Participants { get; set; } = new HashSet<User>().OrderBy(u => u.Name).ToList();
-
-    //public virtual ICollection<Participation> Participations{ get; set; } = new HashSet<Participation>();
     public virtual ICollection<Comment> Comments{ get; set; } = new HashSet<Comment>();
     public virtual ICollection<Choice> Choices{ get; set; } = new HashSet<Choice>();
-    // public virtual ICollection<Vote> Vote { get; set; } = new HashSet<Vote>();
     public virtual ICollection<Vote> Votes { get; set; } = new HashSet<Vote>();
 
     public static IQueryable<Poll> GetPolls(User CurrentUser) {
@@ -45,24 +41,6 @@ public class Poll : EntityBase<MyPollContext> {
 
     public static IQueryable<Poll> GetAllPolls() {
         return Context.Polls;
-    }
-    public static IQueryable<Poll> GetById(Poll PollId) {
-        var poll = Context.Polls.Where(poll =>
-        poll.PollId == PollId.PollId);
-        return poll;
-    }
-    public static Dictionary<int, User> GetCreator(IEnumerable<Poll> polls) {
-        var creatorIds = polls.Select(p => p.CreatorId).Distinct();
-        var creators = Context.Users.Where(u => creatorIds.Contains(u.UserId)).ToDictionary(u => u.UserId);
-        return creators;
-    }
-
-    public static IQueryable<Poll> GetFiltered(string Filter) {
-        var filtered = from p in Context.Polls
-                       where p.Title.Contains(Filter)
-                       orderby p.Title
-                       select p;
-        return filtered;
     }
 
     [NotMapped]
@@ -77,9 +55,6 @@ public class Poll : EntityBase<MyPollContext> {
         }
     }
 
-    public double GetVotesCount(Choice choice) {
-        return choice.VotesList.Sum(v => v.Value);
-    }
     public int GetVotesCount() {
         int count = 0;
         foreach (var choice in Choices) {
@@ -88,22 +63,8 @@ public class Poll : EntityBase<MyPollContext> {
         return count;
     }
 
-    public int TotalVotesForUser(User user) {
-        int totalVotes = 0;
-        foreach (var choice in Choices) {
-            totalVotes += choice.VotesList.Count(v => v.UserId == user.UserId);
-            Console.WriteLine("CHOICE ===> " + choice.Label + user.Name + "TOTAL VOTE ===>" +totalVotes);
-        }
-        return totalVotes;
-    }
-
-
-    public int VoteCount(Choice choice) {
-        return choice.VotesList.Count;
-    }
     public void Delete() {
       
-        // Supprime le membre lui-même
         Context.Polls.Remove(this);
         Context.SaveChanges();
     }

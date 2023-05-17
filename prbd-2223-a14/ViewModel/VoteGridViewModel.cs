@@ -31,13 +31,8 @@ public class VoteGridViewModel : ViewModelCommon {
         var pollId = poll.PollId;
         //var choices = Choice.GetChoicesForGrid(pollId);
         Console.WriteLine("POLL_ID ===> "+pollId);
-        /*foreach (var choice in choices.ToList()) {
-            Console.WriteLine("Choice ID: " + choice.ChoiceId + ", Label: " + choice.Label);
-        }*/
-
-        //_choices = choices != null ? choices.OrderBy(c => c.Label).ToList() : new List<Choice>();
         _choices = Poll.Choices.OrderBy(c => c.Label).ToList();
-        //var participants = Context.Participations.OrderBy(p => p.User.Name).ToList();
+        
         var participants = Participation.GetParticipantOfGrid(pollId).OrderBy(p => p.User.Name).ToList();
         foreach (var p in participants.ToList()) {
             Console.WriteLine("NAME PARTICIPANTS ===> : " + p.User.Name );

@@ -53,12 +53,6 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
 
-
-
-
-
-
-
         <Label x:Name="labelCreator" Content="Creator :" VerticalAlignment="Top" Padding="5" Grid.Row="2" />
         <TextBox x:Name="txtCreator" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
              Text="{Binding Poll.Creator.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" IsReadOnly="True" />

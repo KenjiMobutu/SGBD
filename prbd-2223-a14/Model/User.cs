@@ -22,7 +22,6 @@ public class User : EntityBase<MyPollContext> {
         }
     }
 
-
     public User( int userId, string name, string mail, string password) {
             UserId = userId;
             Name = name;
@@ -35,7 +34,6 @@ public class User : EntityBase<MyPollContext> {
         return Role == Role.Admin;
     }
 
-
     public virtual ICollection<Poll> Participations { get; set; } = new HashSet<Poll>();
     public virtual ICollection<Choice> Choices { get; set; } = new HashSet<Choice>();
 
@@ -43,19 +41,11 @@ public class User : EntityBase<MyPollContext> {
     public virtual ICollection<Poll> Polls { get; set; } = new HashSet<Poll>();
     public virtual ICollection<Comment> CommentsList { get; set; } = new HashSet<Comment>();
     public virtual ICollection<Vote> VotesList { get; set; } = new HashSet<Vote>();
-  
 
     public static User GetByName(string name) {
         return Context.Users.SingleOrDefault(u => u.Name == name);
     }
     
-    public Poll PollUserParticipates {
-        get {
-            return Participations.FirstOrDefault();
-        }
-    }
     public int TotalVotes { get; set; }
-
-    
 
 }
