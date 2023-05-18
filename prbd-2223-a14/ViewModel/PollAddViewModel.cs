@@ -5,9 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 using MyPoll.Model;
 using MyPoll.View;
 using PRBD_Framework;
+using Newtonsoft.Json;
+
 
 namespace MyPoll.ViewModel;
 public class PollAddViewModel : ViewModelCommon {
@@ -16,15 +19,22 @@ public class PollAddViewModel : ViewModelCommon {
     }
     public ICommand Save { get; set; }
     public ICommand Cancel { get; set; }
+    public ICommand CancelCommand { get; set; }
     public ICommand Delete { get; set; }
-
+    public ICommand SaveCommand { get; set; }
+    public ICommand EditChoiceCommand { get; set; }
     private readonly Poll _poll;
 
     public Poll Poll {
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
-    
+    private Choice _choice;
+    public Choice Choice {
+        get { return _choice; }
+        set { SetProperty(ref _choice, value); }
+    }
+
     public PollAddViewModel(Poll poll) {
         Poll = poll;
     }
@@ -82,19 +92,7 @@ public class PollAddViewModel : ViewModelCommon {
     
     public ICommand AddCurrentUserCommand { get; set; }
     private ICommand _deleteParticipantCommand;
-    public ICommand DeleteParticipantCommand {
-        get {
-            Console.WriteLine("Delete Command 1");
-            if (_deleteParticipantCommand == null) {
-                Console.WriteLine("Delete Command");
-                _deleteParticipantCommand = new RelayCommand<int>(
-                    (id) => this.DeleteParticipant(id),
-                    (id) => this.CanDeleteParticipant(id)
-                );
-            }
-            return _deleteParticipantCommand;
-        }
-    }
+    public ICommand DeleteParticipantCommand { get; set; }
 
     private void DeleteParticipant(int userId) {
         var participant = Poll.Participants.FirstOrDefault(p => p.UserId == userId);
@@ -151,7 +149,12 @@ public class PollAddViewModel : ViewModelCommon {
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
     }
-
+    public void SaveChoiceAction() {
+        EditChoiceVisibility = true;
+        IsEditingVisibility = false;
+        Context.SaveChanges();
+        RaisePropertyChanged();
+    }
     public override void SaveAction() {
         if (IsNew) {
             Poll.CreatorId = CurrentUser.UserId;
@@ -160,7 +163,7 @@ public class PollAddViewModel : ViewModelCommon {
         } else {
             Context.Update(Poll);
         }
-
+       
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
@@ -182,6 +185,44 @@ public class PollAddViewModel : ViewModelCommon {
             RaisePropertyChanged();
         }
     }
+    private Choice _initialChoice;
+
+    private Choice CloneChoice(Choice choice) {
+        if (choice == null)
+            return null;
+
+        Choice clonedChoice = new Choice {
+            ChoiceId = choice.ChoiceId,
+            Label = choice.Label,
+            VotesList = new List<Vote>(choice.VotesList) // Effectue une copie de la liste de votes
+        };
+
+        return clonedChoice;
+    }
+
+
+
+    private void CancelChoice() {
+        EditChoiceVisibility = true;
+        IsEditingVisibility = false;
+
+        Choices.Clear(); // Supprime tous les éléments de la liste actuelle
+
+        foreach (var choice in _initialChoices) {
+            Console.WriteLine(choice.Label);
+            Choices.Add(CloneChoice(choice)); // Ajoute un clone de chaque choix initial
+        }
+
+        RaisePropertyChanged(nameof(Choices));
+    }
+
+
+
+
+
+
+
+
     private bool CanCancelAction() {
         return Poll != null && (IsNew || Poll.IsModified);
     }
@@ -193,6 +234,15 @@ public class PollAddViewModel : ViewModelCommon {
             _newChoiceLabel = value;
             RaisePropertyChanged();
             RaisePropertyChanged(nameof(NewChoiceLabel));
+        }
+    }
+    private string _label;
+    public string Label {
+        get { return _label; }
+        set {
+            _label = value;
+            RaisePropertyChanged();
+            RaisePropertyChanged(nameof(Label));
         }
     }
 
@@ -282,8 +332,38 @@ public class PollAddViewModel : ViewModelCommon {
             RaisePropertyChanged(nameof(SelectedType));
         }
     }
+    
+    private bool _editChoiceVisibility;
+    public bool EditChoiceVisibility {
+        get => _editChoiceVisibility;
+        set => SetProperty(ref _editChoiceVisibility, value);
+    }
+
+    private bool _isEditingVisibility;
+    public bool IsEditingVisibility {
+        get => _isEditingVisibility;
+        set => SetProperty(ref _isEditingVisibility, value);
+    }
+    private List<Choice> _initialChoices;
+
     public PollAddViewModel(Poll poll, bool isNew) {
+       
+
+        EditChoiceVisibility = true;
+        IsEditingVisibility = false;
+        EditChoiceCommand = new RelayCommand(() => {
+            Console.WriteLine("EDIT CHOICE COMMAND");
+            EditChoiceVisibility = false;
+            IsEditingVisibility = true; 
+        });
+        
         Poll = poll;
+        _initialChoices = new List<Choice>(Poll.Choices);
+        foreach (Choice choice in Poll.Choices) {
+            Choice = choice;
+            Console.WriteLine("Choice ==>"+Choice.Label);
+        }
+
         IsNew = isNew;
         Console.WriteLine("ISNEW===> " +IsNew);
         IsClosed = Poll.IsClosed;
@@ -293,12 +373,19 @@ public class PollAddViewModel : ViewModelCommon {
         UpdateParticipantsTotalVotes();
         Choices = new ObservableCollection<Choice>(Poll.Choices);
         Save = new RelayCommand(SaveAction, CanSaveAction);
+        SaveCommand = new RelayCommand(SaveChoiceAction);
         Cancel = new RelayCommand(CancelAction, CanCancelAction);
+       // CancelCommand = new RelayCommand();
         Delete = new RelayCommand(DeleteAction);
         AddCurrentUserCommand = new RelayCommand(AddCurrentUser);
+        DeleteParticipantCommand = new RelayCommand<int>(
+                    (id) => this.DeleteParticipant(id),
+                    (id) => this.CanDeleteParticipant(id)
+                );
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
     }
+
 
     public void UpdateParticipantsTotalVotes() {
         foreach (var participant in Participants.ToList()) {

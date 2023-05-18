@@ -12,6 +12,9 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:PollAddViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <f:UserControlBase.Resources>
+        <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
+    </f:UserControlBase.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -119,13 +122,16 @@
 
         <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="2" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
         <ListView ItemsSource="{Binding Choices}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,50,-1,-50">
+            
             <ListView.View>
                 <GridView>
+                    
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Label}" />
+                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                    <TextBlock Text="{Binding Label}" Visibility="{Binding DataContext.EditChoiceVisibility, Converter={StaticResource BoolToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}" />
+                                    <TextBox Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding DataContext.IsEditingVisibility, Converter={StaticResource BoolToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}" />
                                     <TextBlock Text=" (" Margin="5,0,0,0" />
                                     <TextBlock Text="{Binding TotalVotes}" />
                                     <TextBlock Text=")" />
@@ -140,8 +146,22 @@
                                 <Button fap:FontAwesome.Icon="Solid_Pencil" Foreground="black" Width="20"
                                         FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
                                         Command="{Binding DataContext.EditChoiceCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
-                                        CommandParameter="{Binding ChoiceId}">
-                                </Button>
+                                        Visibility="{Binding DataContext.EditChoiceVisibility,Converter={StaticResource BoolToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
+                                        CommandParameter="{Binding ChoiceId}" />
+    
+                            </DataTemplate>
+                            
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button fap:FontAwesome.Icon="Solid_FloppyDisk" Foreground="Green" Width="20"
+                                        FontSize="15" Margin="0"
+                                        Padding="2" Background="Transparent" BorderBrush="Transparent"
+                                        Visibility="{Binding DataContext.IsEditingVisibility,Converter={StaticResource BoolToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
+                                        Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -152,8 +172,21 @@
                                 <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="red" Width="20"
                                         FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
                                         Command="{Binding DataContext.DeleteChoiceCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
-                                        CommandParameter="{Binding ChoiceId}">
-                                </Button>
+                                        Visibility="{Binding DataContext.EditChoiceVisibility,Converter={StaticResource BoolToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
+                                        CommandParameter="{Binding ChoiceId}" />
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button fap:FontAwesome.Icon="Solid_X" Foreground="Red" Width="20"
+                                        FontSize="15" Margin="0"
+                                        Padding="2" Background="Transparent" BorderBrush="Transparent"
+                                        Visibility="{Binding DataContext.IsEditingVisibility,Converter={StaticResource BoolToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
+                                        Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
