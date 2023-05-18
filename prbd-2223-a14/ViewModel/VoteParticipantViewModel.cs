@@ -20,6 +20,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
         Participant = participant;
         IsCurrentUser = CurrentUser == participant;
         IsClosed = poll.IsClosed;
+        Poll = poll;
         RefreshVotes();
         UpdateVotes();
             EditCommand = new RelayCommand(() => EditMode = true);
@@ -85,7 +86,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
         // On crée, pour chaque choix du sondage, un VoteChoiceViewModel qui sera utilisé par le VoteParticipantView
         // VotesVM est la liste qui servira de source pour la balise <ItemsControl>
         VotesVM = _choices
-            .Select(c => new VoteChoiceViewModel(Participant, c, Participant.VotesList.Any(v => v.Choice.ChoiceId == c.ChoiceId)))
+            .Select(c => new VoteChoiceViewModel(Participant, c, Participant.VotesList.Any(v => v.Choice.ChoiceId == c.ChoiceId), Poll))
             .ToList();
     }
 

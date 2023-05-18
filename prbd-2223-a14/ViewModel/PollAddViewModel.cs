@@ -352,8 +352,8 @@ public class PollAddViewModel : ViewModelCommon {
     public PollType SelectedType {
         get { return _selectedType; }
         set {
-            _selectedType = value;
-            RaisePropertyChanged(nameof(SelectedType));
+            SetProperty(ref _selectedType, value);
+            Poll.Type = value;
         }
     }
     
