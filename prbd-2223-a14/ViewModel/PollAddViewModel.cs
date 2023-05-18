@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
 using System.Windows.Media;
 using MyPoll.Model;
 using MyPoll.View;
+using System.Collections.Specialized;
 using PRBD_Framework;
-using Newtonsoft.Json;
+
 
 
 namespace MyPoll.ViewModel;
@@ -59,7 +61,7 @@ public class PollAddViewModel : ViewModelCommon {
         get { return _selectedUserToAdd; }
         set {
             _selectedUserToAdd = value;
-            // OnPropertyChanged(nameof(SelectedUserToAdd));
+            
             RaisePropertyChanged(nameof(SelectedUserToAdd));
         }
     }
@@ -96,18 +98,33 @@ public class PollAddViewModel : ViewModelCommon {
 
     private void DeleteParticipant(int userId) {
         var participant = Poll.Participants.FirstOrDefault(p => p.UserId == userId);
-        Console.WriteLine("User à EFFACER  ===> "+participant.Name);
+        Console.WriteLine("User à EFFACER  ===> " + participant.Name);
+
         if (participant != null) {
+            // Vérifier si le participant a déjà voté
+            if (NbVotesForUser(participant) > 0) {
+                // Afficher une boîte de dialogue de confirmation
+                var result = MessageBox.Show("Le participant a déjà voté. Êtes-vous sûr de vouloir le supprimer ?",
+                    "Confirmation de suppression", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.No) {
+                    // L'utilisateur a annulé la suppression, vous pouvez sortir de la méthode sans supprimer le participant
+                    return;
+                }
+            }
+
+            // Supprimer le participant
             Poll.Participants.Remove(participant);
             Participants.Remove(participant);
-            RaisePropertyChanged(nameof(Participants));
         }
+        Context.SaveChanges();
+        RaisePropertyChanged(nameof(Participants));
     }
 
     private bool CanDeleteParticipant(int userId) {
         return Poll.Participants.Any(p => p.UserId == userId);
     }
-
+    
     private bool CanAddSelectedUser() {
         // Vérifier si l'utilisateur sélectionné n'est pas déjà dans la liste des participants
         return SelectedUserToAdd != null && !Poll.Participants.Contains(SelectedUserToAdd);
@@ -216,13 +233,6 @@ public class PollAddViewModel : ViewModelCommon {
         RaisePropertyChanged(nameof(Choices));
     }
 
-
-
-
-
-
-
-
     private bool CanCancelAction() {
         return Poll != null && (IsNew || Poll.IsModified);
     }
@@ -274,8 +284,22 @@ public class PollAddViewModel : ViewModelCommon {
 
     private void DeleteChoice(int choiceId) {
         var choice = Poll.Choices.FirstOrDefault(c => c.ChoiceId == choiceId);
-        Poll.Choices.Remove(choice);
-        Choices.Remove(choice);
+
+        if (choice != null) {
+            if (NbVotesForChoice(choice) > 0) {
+                // Afficher une boîte de dialogue de confirmation
+                var result = MessageBox.Show("Le choix contient des votes. Êtes-vous sûr de vouloir le supprimer ?",
+                    "Confirmation de suppression", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.No) {
+                    return;
+                }
+            }
+
+            Poll.Choices.Remove(choice);
+            Choices.Remove(choice);
+        }
+        
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choices));
         
@@ -401,7 +425,20 @@ public class PollAddViewModel : ViewModelCommon {
         }
         user.TotalVotes = totalVotes;
     }
-
+    public int NbVotesForChoice(Choice choice) {
+        int totalVotes = 0;
+        foreach (var c in Poll.Choices) {
+            totalVotes += c.VotesList.Count(c => c.ChoiceId == choice.ChoiceId);
+        }
+        return totalVotes;
+    }
+    public int NbVotesForUser(User user) {
+        int totalVotes = 0;
+        foreach (var choice in Poll.Choices) {
+            totalVotes += choice.VotesList.Count(v => v.UserId == user.UserId);
+        }
+        return totalVotes;
+    }
     public void DeleteAction() {
         Console.WriteLine("DELETE !!!!!");
     }

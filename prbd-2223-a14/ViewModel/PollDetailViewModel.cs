@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -190,6 +191,7 @@ public class PollDetailViewModel : ViewModelCommon {
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Comments));
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
     private void DeleteCommentAction(int commentId) {
         var comment = Poll.Comments.FirstOrDefault(c => c.CommentId == commentId);
@@ -200,8 +202,17 @@ public class PollDetailViewModel : ViewModelCommon {
         RaisePropertyChanged(nameof(Comments));
     }
     private void DeleteAction() {
-        CancelAction();
-        Poll.Delete();
+        if (Poll != null) {
+            // Afficher une boîte de dialogue de confirmation
+            var result = MessageBox.Show(" Êtes-vous sûr de vouloir supprimer le Poll ?",
+                "Confirmation de suppression", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.No) {
+                return;
+            }
+            CancelAction();
+            Poll.Delete();
+        }
+        
         NotifyColleagues(App.Messages.MSG_MEMBER_CHANGED, Poll);
         NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
