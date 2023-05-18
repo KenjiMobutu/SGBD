@@ -11,23 +11,20 @@ using System.Windows.Input;
 
 namespace MyPoll.ViewModel;
 public class VoteChoiceViewModel : ViewModelCommon {
-    public VoteChoiceViewModel(User participant, Choice choice, bool isRegistered) {
+    public VoteChoiceViewModel(User participant, Choice choice, bool isRegistered, Poll poll) {
         IsRegistrated = isRegistered;
         Participant = participant;
         Choice = choice;
         Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId) ??
                new Vote() { Choice = choice, User = participant };
-
+        Poll = poll;
         IsRegistratedYes = Vote.Type == VoteType.Yes && IsRegistrated;
         IsRegistratedNo = Vote.Type == VoteType.No && IsRegistrated;
         IsRegistratedMaybe = Vote.Type == VoteType.Maybe && IsRegistrated;
-        
+        IsRegistratedNone = Vote.Type == VoteType.None && IsRegistrated;
         HasVotedCommand = new RelayCommand<object>(HasVoted);
-
-        ClearChoicesCommand = new RelayCommand<object>(ClearChoices);
-
     }
-
+    public Poll Poll { get; set; }
     public Choice Choice { get; set; }
 
     public Vote Vote { get; set; }
@@ -53,38 +50,12 @@ public class VoteChoiceViewModel : ViewModelCommon {
     public RelayCommand<object> HasVotedCommand { get; set; }
     
     public RelayCommand<object> ClearChoicesCommand { get; set; }
-    /*public void ClearChoices(Choice choice) {
-        IsRegistratedYes = false;
-        IsRegistratedNo = false;
-        IsRegistratedMaybe = false;
-    }*/
-    private void ClearChoices(object parameter) {
-        IsRegistratedYes = false;
-        IsRegistratedNo = false;
-        IsRegistratedMaybe = false;
-        Console.WriteLine("PARAMETER ===>" + parameter);
-        if (parameter is Choice choice) {
-            // Réinitialiser le vote pour la Choice spécifique
-            Console.WriteLine("PARAMETER ===>" + parameter);   
-            Console.WriteLine("CHOOICE ===>" + choice.Label);   
-            Console.WriteLine("Participant ===>" + Participant.Name);
-            var vote = Participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId);
-            if (vote != null) {
-                Participant.VotesList.Remove(vote);
-                Context.Votes.Remove(vote);
-                Context.SaveChanges();
-            } else {
-                Console.WriteLine("Vote is null");
-            }
-            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
-        }
-    }
-
+  
     public void HasVoted(object parameter) {
         if (!EditMode) {
             return;
         }
-
+        Console.WriteLine("Poll TYPE ==> " + Poll.Type);
         double newVote = Convert.ToDouble(parameter);
         Console.WriteLine(newVote);
 
@@ -116,6 +87,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
         get => _isRegistrated;
         set => SetProperty(ref _isRegistrated, value);
     }
+
     private bool _isRegistratedYes;
     public bool IsRegistratedYes {
         get => _isRegistratedYes;
@@ -133,12 +105,20 @@ public class VoteChoiceViewModel : ViewModelCommon {
         get => _isRegistratedMaybe;
         set => SetProperty(ref _isRegistratedMaybe, value);
     }
+
+    private bool _isRegistratedNone;
+    public bool IsRegistratedNone {
+        get => _isRegistratedNone;
+        set => SetProperty(ref _isRegistratedNone, value);
+    }
     
     public EFontAwesomeIcon RegistratedIcon => IsRegistratedYes  ? EFontAwesomeIcon.Solid_Check : EFontAwesomeIcon.None;
 
     public EFontAwesomeIcon RegistratedX => IsRegistratedNo  ? EFontAwesomeIcon.Solid_X : EFontAwesomeIcon.None;
 
     public EFontAwesomeIcon RegistratedQuestion => IsRegistratedMaybe ? EFontAwesomeIcon.Regular_CircleQuestion : EFontAwesomeIcon.None;
+
+    public EFontAwesomeIcon RegistratedBan => IsRegistratedNone ? EFontAwesomeIcon.Solid_Ban : EFontAwesomeIcon.None;
 
     public Brush RegistratedColor => IsRegistratedYes ? Brushes.Green : Brushes.White;
 

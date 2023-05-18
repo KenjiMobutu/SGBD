@@ -73,10 +73,10 @@
                 Background="Transparent" Width="32"
                 Command="{Binding HasVotedCommand}"
                 CommandParameter="0">
-                <fa:FontAwesome Icon="None"
+                <fa:FontAwesome Icon="Solid_Ban"
                      Foreground="LightGray"
-                      FontSize="25"
-                      ToolTip="{Binding RegistratedToolTipReset}" />
+                     FontSize="25"
+                     ToolTip="{Binding RegistratedToolTipReset}" />
             </Button>
 
         </StackPanel>
