@@ -71,8 +71,8 @@
             <Button Padding="2" BorderBrush="Transparent"
                 Visibility="{c:Binding EditMode}"
                 Background="Transparent" Width="32"
-                Command="{Binding ClearChoicesCommand}"
-                CommandParameter="{Binding Choice}">
+                Command="{Binding HasVotedCommand}"
+                CommandParameter="0">
                 <fa:FontAwesome Icon="None"
                      Foreground="LightGray"
                       FontSize="25"

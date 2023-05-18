@@ -93,6 +93,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
             1.0 => VoteType.Yes,
             -1.0 => VoteType.No,
             0.5 => VoteType.Maybe,
+            0.0 => VoteType.None,
             _ => VoteType.Maybe
         };
 
