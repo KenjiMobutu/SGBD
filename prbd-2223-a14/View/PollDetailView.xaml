@@ -115,7 +115,7 @@
                             <TextBlock Text="{Binding User.Name}" Grid.Row="1" Grid.Column="0" FontSize="12" FontStyle="Italic" Foreground="Blue"/>
                             <TextBlock Text=" - " Grid.Row="1" Grid.Column="1" FontSize="12" FontStyle="Italic" Foreground="Gray" />
                             <TextBlock Text="{Binding CreationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm:ss}'}" Grid.Row="1" Grid.Column="2" FontSize="12" FontStyle="Italic" Foreground="Gray" />
-                            <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="Green" Width="20"
+                            <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="Red" Width="20"
                                 FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
                                 Command="{Binding DataContext.DeleteCommentCommand, RelativeSource={RelativeSource AncestorType={x:Type vw:PollDetailView}}}"
                                 CommandParameter="{Binding CommentId}"

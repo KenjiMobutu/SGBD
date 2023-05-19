@@ -161,7 +161,8 @@ public class PollDetailViewModel : ViewModelCommon {
         Comments = new ObservableCollection<Comment>(Poll.Comments);
 
         foreach (var comment in Comments) {
-            bool isCreatedByCurrentUserOrAdmin = comment.IsCreatedByUser(CurrentUser) || CurrentUser.IsAdmin;
+            //bool isCreatedByCurrentUserOrAdmin = comment.IsCreatedByUser(CurrentUser) || CurrentUser.IsAdmin;
+            bool isCreatedByCurrentUserOrAdmin = Poll.IsCreator(CurrentUser) || CurrentUser.IsAdmin;
             comment.IsDeletable = isCreatedByCurrentUserOrAdmin;
             Context.SaveChanges();
         }

@@ -8,22 +8,30 @@ using PRBD_Framework;
 using FontAwesome6;
 using System.Windows.Media;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MyPoll.ViewModel;
 public class VoteChoiceViewModel : ViewModelCommon {
-    public VoteChoiceViewModel(User participant, Choice choice, bool isRegistered, Poll poll) {
+    public VoteChoiceViewModel(User participant, Choice choice, bool isRegistered, Poll poll){
         IsRegistrated = isRegistered;
         Participant = participant;
         Choice = choice;
-        Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId) ??
-               new Vote() { Choice = choice, User = participant };
         Poll = poll;
+        Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId) ??
+               new Vote { Choice = choice, User = participant };
+
         IsRegistratedYes = Vote.Type == VoteType.Yes && IsRegistrated;
         IsRegistratedNo = Vote.Type == VoteType.No && IsRegistrated;
         IsRegistratedMaybe = Vote.Type == VoteType.Maybe && IsRegistrated;
         IsRegistratedNone = Vote.Type == VoteType.None && IsRegistrated;
-        HasVotedCommand = new RelayCommand<object>(HasVoted);
+
+        if(Poll.Type == PollType.Single) {
+            HasVotedCommand = new RelayCommand<object>(HasVotedSingle);
+        } else {
+            HasVotedCommand = new RelayCommand<object>(HasVoted);
+        }
     }
+
     public Poll Poll { get; set; }
     public Choice Choice { get; set; }
 
@@ -52,6 +60,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
     public RelayCommand<object> ClearChoicesCommand { get; set; }
   
     public void HasVoted(object parameter) {
+        Console.WriteLine("RENTRE DANS Multiple");
         if (!EditMode) {
             return;
         }
@@ -80,6 +89,49 @@ public class VoteChoiceViewModel : ViewModelCommon {
 
         // Set IsRegistrated to true
         IsRegistrated = true;
+    }
+
+    public void HasVotedSingle(object parameter) {
+        if (!EditMode) {
+            return;
+        }
+
+        Console.WriteLine("RENTRE DANS SINGLE");
+        Console.WriteLine("SINGLE ===>:" + Poll.Type);
+        double newVote = Convert.ToDouble(parameter);
+
+        // Determine the new vote type
+        VoteType newVoteType = newVote switch {
+            1.0 => VoteType.Yes,
+            -1.0 => VoteType.No,
+            0.5 => VoteType.Maybe,
+            0.0 => VoteType.None,
+            _ => VoteType.Maybe
+        };
+
+        // Remove all existing votes of the participant for the current poll
+        var existingVotesForPoll = Participant.VotesList.Where(v => v.Choice.Poll == Poll).ToList();
+        foreach (var existingVote in existingVotesForPoll) {
+            Participant.VotesList.Remove(existingVote);
+            existingVote.Choice.VotesList.Remove(existingVote);
+        }
+
+        // Create a new vote for the selected choice in the current poll
+        Vote = new Vote { Choice = Choice, User = Participant, Type = newVoteType };
+        Participant.VotesList.Add(Vote);
+        Choice.VotesList.Add(Vote);
+
+        // Update the IsRegistrated properties
+        IsRegistratedNo = Vote.Type == VoteType.No;
+        IsRegistratedYes = Vote.Type == VoteType.Yes;
+        IsRegistratedMaybe = Vote.Type == VoteType.Maybe;
+
+        // Set IsRegistrated to true
+        IsRegistrated = true;
+
+        // Disable the ability to vote for other choices
+        
+             
     }
 
     private bool _isRegistrated;

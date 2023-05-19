@@ -57,8 +57,14 @@ public class PollsViewModel : ViewModelCommon {
         }
 
         if (!string.IsNullOrEmpty(Filter)) {
-            polls = polls.Where(p => p.Title.Contains(Filter) || p.Creator.Name.Contains(Filter) || p.Participants.Any(participant => participant.Name.Contains(Filter)));
+            polls = polls.Where(p =>
+                p.Title.Contains(Filter) ||
+                p.Creator.Name.Contains(Filter) ||
+                p.Participants.Any(participant => participant.Name.Contains(Filter)) ||
+                p.Choices.Any(choice => choice.Label.Contains(Filter))
+            );
         }
+
 
         Polls = new ObservableCollection<PollCardViewModel>(polls.Select(p => new PollCardViewModel(p)));
     }

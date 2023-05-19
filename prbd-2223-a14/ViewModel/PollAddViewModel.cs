@@ -17,7 +17,6 @@ using PRBD_Framework;
 namespace MyPoll.ViewModel;
 public class PollAddViewModel : ViewModelCommon {
     public PollAddViewModel() {
-        
     }
     public ICommand Save { get; set; }
     public ICommand Cancel { get; set; }
@@ -93,7 +92,7 @@ public class PollAddViewModel : ViewModelCommon {
     }
     
     public ICommand AddCurrentUserCommand { get; set; }
-    private ICommand _deleteParticipantCommand;
+
     public ICommand DeleteParticipantCommand { get; set; }
 
     private void DeleteParticipant(int userId) {
@@ -104,7 +103,7 @@ public class PollAddViewModel : ViewModelCommon {
             // Vérifier si le participant a déjà voté
             if (NbVotesForUser(participant) > 0) {
                 // Afficher une boîte de dialogue de confirmation
-                var result = MessageBox.Show("Le participant a déjà voté. Êtes-vous sûr de vouloir le supprimer ?",
+                var result = MessageBox.Show("Le participant a voté au moins une fois. Êtes-vous sûr de vouloir le supprimer ?",
                     "Confirmation de suppression", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.No) {
@@ -118,6 +117,7 @@ public class PollAddViewModel : ViewModelCommon {
             Participants.Remove(participant);
         }
         Context.SaveChanges();
+        RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
     }
 
@@ -295,14 +295,14 @@ public class PollAddViewModel : ViewModelCommon {
                     return;
                 }
             }
-
-            Poll.Choices.Remove(choice);
             Choices.Remove(choice);
+            Poll.Choices.Remove(choice);
+            
         }
         
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choices));
-        
+        Context.SaveChanges ();
     }
 
     private bool CanAddChoice() {
@@ -310,12 +310,14 @@ public class PollAddViewModel : ViewModelCommon {
     }
 
     private void AddChoice() {
-
-        Poll.Choices.Add(new Choice { Label = NewChoiceLabel });
-        Choices.Add(new Choice { Label = NewChoiceLabel });
+        var choice = new Choice { Label = NewChoiceLabel };
+        Poll.Choices.Add(choice);
+        Choices.Add(choice);
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
-        RaisePropertyChanged(nameof(Choices));
         
+        RaisePropertyChanged();
+        RaisePropertyChanged(nameof(Choices));
+        Context.SaveChanges();
     }
 
     private ObservableCollection<User> _participants;

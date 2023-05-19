@@ -55,18 +55,25 @@ public class Poll : EntityBase<MyPollContext> {
         }
     }
 
-    public int GetVotesCount() {
+   /* public int GetVotesCount() {
         int count = 0;
         foreach (var choice in Choices) {
             count += choice.VotesList.Count;
         }
         return count;
+    }*/
+
+    public int GetVotesCount() {
+        return Choices.Sum(choice => choice.VotesList.Count);
     }
+
 
     public void Delete() {
       
         Context.Polls.Remove(this);
         Context.SaveChanges();
     }
-
+    public bool IsCreator(User currentUser) {
+        return Creator == currentUser;
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -59,7 +60,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
         set => SetProperty(ref _isClosed, value);
     }
 
-    private void EditModeChanged() {
+    public void EditModeChanged() {
         // Lorsqu'on change le mode d'édition de la ligne, on le signale à chaque cellule
         foreach (VoteChoiceViewModel vcVM in _choicesVM) {
             vcVM.EditMode = EditMode;
@@ -155,7 +156,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
         UpdateVotes();
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
-
+  
     private void Cancel() {
         EditMode = false;
         // On recrée la liste RegistrationsVM avec les nouvelles données
