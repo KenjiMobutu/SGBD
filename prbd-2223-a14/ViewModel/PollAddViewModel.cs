@@ -24,11 +24,11 @@ public class PollAddViewModel : ViewModelCommon {
     public ICommand Delete { get; set; }
     public ICommand SaveCommand { get; set; }
     public ICommand EditChoiceCommand { get; set; }
-    private readonly Poll _poll;
+    private  Poll _poll;
 
     public Poll Poll {
         get => _poll;
-        private init => SetProperty(ref _poll, value);
+        set => SetProperty(ref _poll, value);
     }
     private Choice _choice;
     public Choice Choice {
@@ -36,6 +36,27 @@ public class PollAddViewModel : ViewModelCommon {
         set { SetProperty(ref _choice, value); }
     }
 
+    private string _pollTitle;
+    public string PollTitle {
+        get => Poll?.Title;
+        set => SetProperty(Poll.Title, value,Poll, (p,v) => {
+            p.Title = v;
+            ValidateTitle();
+        });
+    }
+    public bool ValidateTitle() {
+        ClearErrors();
+
+        if (string.IsNullOrEmpty(PollTitle)) {
+            AddError(nameof(PollTitle), "Title is required");
+        } else if (PollTitle.Length < 3) {
+            AddError(nameof(PollTitle), "length must be >= 3");
+        } else if (PollTitle.TrimStart() != PollTitle) {
+            AddError(nameof(PollTitle), "cannot start with a space");
+        } 
+
+        return !HasErrors;
+    }
     public PollAddViewModel(Poll poll) {
         Poll = poll;
     }
@@ -175,6 +196,7 @@ public class PollAddViewModel : ViewModelCommon {
     public override void SaveAction() {
         if (IsNew) {
             Poll.CreatorId = CurrentUser.UserId;
+            Poll.Title = PollTitle;
             Context.Add(Poll);
             IsNew = false;
         } else {
@@ -190,7 +212,7 @@ public class PollAddViewModel : ViewModelCommon {
         if (IsNew)
             return !string.IsNullOrEmpty(Poll.Title);
 
-        return Poll != null && (Poll.IsModified || Choice.IsModified || Choices.Count != Poll.Choices.Count);
+        return Poll != null && (Poll.IsModified || Choice.IsModified || Choices.Count != Poll.Choices.Count) && PollTitle != null && !HasErrors; 
     }
 
     public override void CancelAction() {
@@ -246,6 +268,7 @@ public class PollAddViewModel : ViewModelCommon {
         ClearErrors();
 
         if (string.IsNullOrEmpty(NewChoiceLabel)) {
+            AddError(nameof(NewChoiceLabel), "Cannot be empty");
             Keyboard.ClearFocus();
         } else if (NewChoiceLabel.Length < 3) {
             AddError(nameof(NewChoiceLabel), "length must be >= 3");
@@ -385,8 +408,9 @@ public class PollAddViewModel : ViewModelCommon {
     private List<Choice> _initialChoices;
 
     public PollAddViewModel(Poll poll, bool isNew) {
-       
-
+        Poll = poll;
+        IsNew = isNew;
+        PollTitle = Poll.Title;
         EditChoiceVisibility = true;
         IsEditingVisibility = false;
         EditChoiceCommand = new RelayCommand(() => {
@@ -395,7 +419,7 @@ public class PollAddViewModel : ViewModelCommon {
             IsEditingVisibility = true; 
         });
         
-        Poll = poll;
+        
         _initialChoices = new List<Choice>(Poll.Choices);
         foreach (Choice choice in Poll.Choices) {
             Choice = choice;
@@ -403,7 +427,7 @@ public class PollAddViewModel : ViewModelCommon {
         }
         AddChoiceCommand = new RelayCommand(AddChoice, () => { return _newChoiceLabel!= null && !HasErrors; });
 
-        IsNew = isNew;
+        
         Console.WriteLine("ISNEW===> " +IsNew);
         IsClosed = Poll.IsClosed;
         SelectedType = Poll.Type;
@@ -413,7 +437,7 @@ public class PollAddViewModel : ViewModelCommon {
         Choices = new ObservableCollection<Choice>(Poll.Choices);
         Save = new RelayCommand(SaveAction, CanSaveAction);
         SaveCommand = new RelayCommand(SaveChoiceAction);
-        Cancel = new RelayCommand(CancelAction, CanCancelAction);
+        Cancel = new RelayCommand(CancelAction,CanCancelAction);
        // CancelCommand = new RelayCommand();
         Delete = new RelayCommand(DeleteAction);
         AddCurrentUserCommand = new RelayCommand(AddCurrentUser);

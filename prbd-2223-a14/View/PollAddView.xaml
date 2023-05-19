@@ -34,7 +34,7 @@
         </Grid.RowDefinitions>
         <Label x:Name="labelTitle" Content="Poll Name :" VerticalAlignment="Top" Padding="5" />
         <TextBox x:Name="txtTitle" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
-             Text="{Binding Poll.Title, UpdateSourceTrigger=PropertyChanged}" />
+             Text="{Binding PollTitle, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label x:Name="labelType" Content="Type :" VerticalAlignment="Top" Padding="5" Grid.Row="1" />
         <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center" SelectedItem="{Binding SelectedType}" Grid.Row="1" ItemsSource="{Binding PollTypes}">
@@ -103,12 +103,12 @@
         <Button x:Name="btnAddSelectedUser" Content="Add" Margin="0,74,20,0" Grid.Row="5" 
         Command="{Binding AddSelectedUserCommand}" HorizontalAlignment="Right" Width="60" Height="22" VerticalAlignment="Top" Grid.Column="1"/>
 
-        <Button x:Name="btnAddCurrentUser" Content="Add Myself" Margin="52,135,262,1" Grid.Row="5" 
-        Command="{Binding AddCurrentUserCommand}" Grid.ColumnSpan="2" Width="100"
+        <Button x:Name="btnAddCurrentUser" Content="Add Myself" Margin="50,135,260,0" Grid.Row="5" 
+        Command="{Binding AddCurrentUserCommand}" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Left" Height="31" VerticalAlignment="Top"
                 IsEnabled="{Binding CanAddCurrentUser}"/>
 
         <Button x:Name="btnAddAllUsers" Content="Add All Users" Margin="180,135,0,0" Grid.Row="5" Grid.Column="1" 
-        Command="{Binding AddAllUsersCommand}" HorizontalAlignment="Left" Width="100" RenderTransformOrigin="0.5,0.5" Height="31" VerticalAlignment="Top">
+        Command="{Binding AddAllUsersCommand}" HorizontalAlignment="Left" Width="100"  Height="31" VerticalAlignment="Top">
 
             <Button.RenderTransform>
                 <TransformGroup>
@@ -125,8 +125,8 @@
             
             <ListView.View>
                 <GridView>
-                    
-                    <GridViewColumn>
+
+                    <GridViewColumn Width="140">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Grid.Column="1">
@@ -198,14 +198,14 @@
          Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" Height="25" Width="250"/>
         <Button Content="Add" Command="{Binding AddChoiceCommand}" Margin="272,73,17,68" Grid.Column="3" Grid.Row="5" Height="25" Width="50" />
 
-        <Grid Grid.Row="6" Grid.ColumnSpan="4" Margin="0,20,20,0">
+        <Grid Grid.Row="6" Grid.ColumnSpan="4" Margin="0,20,-1,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <Button Content="Save" HorizontalAlignment="Right" Margin="0,80,110,45" Command="{Binding Save}" Height="25" Width="75" />
-            <Button Content="Cancel" Margin="0,80,20,45" Command="{Binding Cancel}" Height="25" Width="75" HorizontalAlignment="Right"  />
+            <Button Content="Save" HorizontalAlignment="Right" Margin="0,30,110,45" Command="{Binding Save}" Height="25" Width="75" />
+            <Button Content="Cancel" Margin="0,30,20,45" Command="{Binding Cancel}" Height="25" Width="75" HorizontalAlignment="Right"  />
         </Grid>
 
 
