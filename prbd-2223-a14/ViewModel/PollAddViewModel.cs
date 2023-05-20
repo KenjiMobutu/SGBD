@@ -36,7 +36,7 @@ public class PollAddViewModel : ViewModelCommon {
         set { SetProperty(ref _choice, value); }
     }
 
-    private string _pollTitle;
+   
     public string PollTitle {
         get => Poll?.Title;
         set => SetProperty(Poll.Title, value,Poll, (p,v) => {
@@ -57,6 +57,7 @@ public class PollAddViewModel : ViewModelCommon {
 
         return !HasErrors;
     }
+
     public PollAddViewModel(Poll poll) {
         Poll = poll;
     }
@@ -192,6 +193,7 @@ public class PollAddViewModel : ViewModelCommon {
         IsEditingVisibility = false;
         Context.SaveChanges();
         RaisePropertyChanged();
+      
     }
     public override void SaveAction() {
         if (IsNew) {
@@ -209,17 +211,19 @@ public class PollAddViewModel : ViewModelCommon {
     }
 
     private bool CanSaveAction() {
+        Console.WriteLine("Can SAVE ACTION ===>" + IsNew);
         if (IsNew)
-            return !string.IsNullOrEmpty(Poll.Title);
-
-        return Poll != null && (Poll.IsModified || Choice.IsModified || Choices.Count != Poll.Choices.Count) && PollTitle != null && !HasErrors; 
+            return !string.IsNullOrEmpty(PollTitle) && !HasErrors;
+        return Poll != null && Poll.IsModified && PollTitle != null && !HasErrors; 
     }
 
     public override void CancelAction() {
         if (IsNew) {
             IsNew = false;
+            Console.WriteLine($"New {PollTitle}");
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
         } else {
+            ClearErrors();
             Poll.Reload();
             RaisePropertyChanged();
         }
@@ -268,8 +272,9 @@ public class PollAddViewModel : ViewModelCommon {
         ClearErrors();
 
         if (string.IsNullOrEmpty(NewChoiceLabel)) {
+           
             AddError(nameof(NewChoiceLabel), "Cannot be empty");
-            Keyboard.ClearFocus();
+            
         } else if (NewChoiceLabel.Length < 3) {
             AddError(nameof(NewChoiceLabel), "length must be >= 3");
         } else if (NewChoiceLabel.TrimStart() != NewChoiceLabel) {
@@ -339,7 +344,8 @@ public class PollAddViewModel : ViewModelCommon {
     }
 
     private bool CanAddChoice() {
-        return !string.IsNullOrEmpty(NewChoiceLabel);
+        return !string.IsNullOrEmpty(NewChoiceLabel) && !HasErrors;
+        
     }
 
     private bool LabelExists() {
@@ -351,10 +357,10 @@ public class PollAddViewModel : ViewModelCommon {
         Poll.Choices.Add(choice);
         Choices.Add(choice);
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
-
+        Context.SaveChanges();
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choices));
-        Context.SaveChanges();
+        
     }
 
     private ObservableCollection<User> _participants;
@@ -425,7 +431,7 @@ public class PollAddViewModel : ViewModelCommon {
             Choice = choice;
             Console.WriteLine("Choice ==>"+Choice.Label);
         }
-        AddChoiceCommand = new RelayCommand(AddChoice, () => { return _newChoiceLabel!= null && !HasErrors; });
+        AddChoiceCommand = new RelayCommand(AddChoice, CanAddChoice);
 
         
         Console.WriteLine("ISNEW===> " +IsNew);
@@ -444,9 +450,9 @@ public class PollAddViewModel : ViewModelCommon {
         DeleteParticipantCommand = new RelayCommand<int>(
                     (id) => this.DeleteParticipant(id),
                     (id) => this.CanDeleteParticipant(id)
-                );
+         );
+
         RaisePropertyChanged();
-        RaisePropertyChanged(nameof(Participants));
     }
 
 

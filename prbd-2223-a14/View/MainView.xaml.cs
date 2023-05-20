@@ -29,6 +29,7 @@ public partial class MainView : WindowBase {
             OpenTab(isNew ? "<New Poll>" : poll.Title, poll.Title, () => new PollDetailView(poll, isNew));
     }
     private void DoDisplayNewPoll(Poll poll, bool isNew) {
+        Console.WriteLine("DO DISPLAY NEW POLL ===>" + isNew);
         if (poll != null)
             OpenTab(isNew ? "<New Poll>" : poll.Title, poll.Title, () => new PollAddView(poll, isNew));
     }
