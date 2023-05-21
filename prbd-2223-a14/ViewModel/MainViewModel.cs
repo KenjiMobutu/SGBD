@@ -15,7 +15,7 @@ public class MainViewModel : ViewModelCommon {
             // permet de renouveller le contexte EF
             App.ClearContext();
             // notifie tout le monde qu'il faut rafraîchir les données
-            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+            
         });
 
     }

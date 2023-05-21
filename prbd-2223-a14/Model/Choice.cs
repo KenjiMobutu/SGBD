@@ -28,4 +28,15 @@ public class Choice : EntityBase<MyPollContext> {
         return Context.Choices.Where(c => c.PollId == pollId);
     }
     public Choice() { }
+
+    public List<string> GetChoiceLabels() {
+        List<string> choiceLabels = new List<string>();
+
+        foreach (var choice in Poll.Choices) {
+            choiceLabels.Add(choice.Label);
+        }
+
+        return choiceLabels;
+    }
+
 }

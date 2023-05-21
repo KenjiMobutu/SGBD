@@ -40,10 +40,20 @@ public class PollAddViewModel : ViewModelCommon {
     public string PollTitle {
         get => Poll?.Title;
         set => SetProperty(Poll.Title, value,Poll, (p,v) => {
-            p.Title = v;
+            p.Title = v;   
+            NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Poll);
             ValidateTitle();
         });
     }
+    public string Label {
+        get => Choice.Label;
+        set => SetProperty(Choice.Label, value, Choice, (c, v) => {
+            c.Label = v;
+            Validate();
+            
+        });
+    }
+
     public bool ValidateTitle() {
         ClearErrors();
 
@@ -157,8 +167,10 @@ public class PollAddViewModel : ViewModelCommon {
         if (SelectedUserToAdd != null) {
             Poll.Participants.Add(SelectedUserToAdd);
             Participants.Add(SelectedUserToAdd);
+            Context.SaveChanges();
             RaisePropertyChanged();
             RaisePropertyChanged(nameof(Participants));
+            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         }
     }
 
@@ -191,10 +203,31 @@ public class PollAddViewModel : ViewModelCommon {
     public void SaveChoiceAction() {
         EditChoiceVisibility = true;
         IsEditingVisibility = false;
+       
         Context.SaveChanges();
         RaisePropertyChanged();
       
     }
+    public bool ValidateChoiceLabel(Choice choice) {
+        ClearErrors();
+
+        if (string.IsNullOrEmpty(choice.Label)) {
+            AddError(nameof(choice.Label), "Label is required");
+        } else if (choice.Label.Length < 3) {
+            AddError(nameof(choice.Label), "Label must be at least 3 characters long");
+        } else if (choice.Label.TrimStart() != choice.Label) {
+            AddError(nameof(choice.Label), "Label cannot start with a space");
+        } else if (LabelExists(choice.Label)) {
+            AddError(nameof(choice.Label), "Label already exists");
+        }
+
+        return !HasErrors;
+    }
+
+    private bool LabelExists(string label) {
+        return Choices.Any(choice => choice.Label == label && choice != Choice);
+    }
+
     public override void SaveAction() {
         if (IsNew) {
             Poll.CreatorId = CurrentUser.UserId;
@@ -204,7 +237,10 @@ public class PollAddViewModel : ViewModelCommon {
         } else {
             Context.Update(Poll);
         }
-       
+        if (!ValidateTitle()) {
+            // Afficher un message d'erreur ou prendre une autre action en cas de validation échouée
+            return;
+        }
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
@@ -216,12 +252,15 @@ public class PollAddViewModel : ViewModelCommon {
             return !string.IsNullOrEmpty(PollTitle) && !HasErrors;
         return Poll != null && Poll.IsModified && PollTitle != null && !HasErrors; 
     }
-
+    private bool CanCancelAction() {
+            return Poll != null && (IsNew || Poll.IsModified);
+    }
     public override void CancelAction() {
         if (IsNew) {
-            IsNew = false;
             Console.WriteLine($"New {PollTitle}");
+            
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
+            IsNew = false;
         } else {
             ClearErrors();
             Poll.Reload();
@@ -243,6 +282,14 @@ public class PollAddViewModel : ViewModelCommon {
         return clonedChoice;
     }
 
+    private Choice _selectedChoice;
+    public Choice SelectedChoice {
+        get { return _selectedChoice; }
+        set {
+            _selectedChoice = value;
+            RaisePropertyChanged(); // Assurez-vous d'avoir la bonne implémentation de RaisePropertyChanged
+        }
+    }
 
 
     private void CancelChoice() {
@@ -259,9 +306,7 @@ public class PollAddViewModel : ViewModelCommon {
         RaisePropertyChanged(nameof(Choices));
     }
 
-    private bool CanCancelAction() {
-        return Poll != null && (IsNew || Poll.IsModified);
-    }
+    
 
     private string _newChoiceLabel;
     public string NewChoiceLabel {
@@ -282,20 +327,8 @@ public class PollAddViewModel : ViewModelCommon {
         } else if (LabelExists()) {
             AddError(nameof(NewChoiceLabel), "Label already in the choice list");
         }
-
+        
         return !HasErrors;
-    }
-
-
-
-    private string _label;
-    public string Label {
-        get { return _label; }
-        set {
-            _label = value;
-            RaisePropertyChanged();
-            RaisePropertyChanged(nameof(Label));
-        }
     }
 
     private ICommand _addChoiceCommand;
@@ -357,10 +390,12 @@ public class PollAddViewModel : ViewModelCommon {
         Poll.Choices.Add(choice);
         Choices.Add(choice);
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
+        
         Context.SaveChanges();
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choices));
         
+        ClearErrors();
     }
 
     private ObservableCollection<User> _participants;
@@ -411,25 +446,33 @@ public class PollAddViewModel : ViewModelCommon {
         get => _isEditingVisibility;
         set => SetProperty(ref _isEditingVisibility, value);
     }
+    private bool _isEditingChoice;
+    public bool IsEditingChoice {
+        get => _isEditingChoice;
+        set => SetProperty(ref _isEditingChoice, value);
+    }
+
     private List<Choice> _initialChoices;
 
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
+        
         PollTitle = Poll.Title;
         EditChoiceVisibility = true;
         IsEditingVisibility = false;
-        EditChoiceCommand = new RelayCommand(() => {
+        EditChoiceCommand = new RelayCommand(() =>{
             Console.WriteLine("EDIT CHOICE COMMAND");
+            IsEditingChoice = true;
             EditChoiceVisibility = false;
-            IsEditingVisibility = true; 
+            IsEditingVisibility = true;
         });
-        
-        
+       
         _initialChoices = new List<Choice>(Poll.Choices);
         foreach (Choice choice in Poll.Choices) {
             Choice = choice;
-            Console.WriteLine("Choice ==>"+Choice.Label);
+        
+            Console.WriteLine("Choice!!! ==>"+Choice.Label);
         }
         AddChoiceCommand = new RelayCommand(AddChoice, CanAddChoice);
 

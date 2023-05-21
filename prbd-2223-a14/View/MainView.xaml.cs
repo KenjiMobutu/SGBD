@@ -19,6 +19,9 @@ public partial class MainView : WindowBase {
         Register<Poll>(App.Messages.MSG_POLL_CHANGED,
             poll => DoRenameTab(string.IsNullOrEmpty(poll.Title) ? "<New Poll>" : poll.Title));
 
+        Register<Poll>(App.Messages.MSG_TITLE_CHANGED,
+            poll => DoRenameTab(string.IsNullOrEmpty(poll.Title) ? "<New Poll>" : poll.Title));
+
         Register<Poll>(App.Messages.MSG_CLOSE_TAB,
             poll => DoCloseTab(poll));
 

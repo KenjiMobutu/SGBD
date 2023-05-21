@@ -139,7 +139,11 @@ public class PollDetailViewModel : ViewModelCommon {
             IsVisibleLink = false;
         }
 
-        AddCommentCommand =  new RelayCommand(AddCommentAction);
+        AddCommentCommand =  new RelayCommand(() => {
+            AddCommentAction();
+            IsCommenting = true;
+            IsVisibleLink = false;
+        });
         
         ToggleCommentingCommand = new RelayCommand(() => {
             IsCommenting = false;
