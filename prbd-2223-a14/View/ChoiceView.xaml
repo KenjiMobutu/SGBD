@@ -31,7 +31,7 @@
         <!-- Éléments à gauche -->
         <StackPanel Grid.Column="0" Orientation="Horizontal">
             
-            <TextBlock Text="{Binding Choice.Label, Converter={StaticResource TruncateTextConverter}, ConverterParameter=20}" Margin="5" TextWrapping="Wrap" Visibility="{c:Binding Editable}" />
+            <TextBlock Text="{Binding Choice.Label, Converter={StaticResource TruncateTextConverter}, ConverterParameter=40}" Margin="5" TextWrapping="Wrap" Visibility="{c:Binding Editable}" />
 
             <TextBox Text="{Binding ChoiceLabel, UpdateSourceTrigger=PropertyChanged}" Margin="5" TextWrapping="Wrap" Visibility="{c:Binding EditMode}" />
             <TextBlock Text=" (" Margin="5,0,0,0" VerticalAlignment="Center"  HorizontalAlignment="Center"/>

@@ -106,7 +106,7 @@ public class ChoiceViewModel : ViewModelCommon{
         return Choices.Any(choice => choice.Label == NewChoiceLabel);
     }
     private bool ChoiceLabelExists() {
-        return Choices.Any(choice => choice.Label == ChoiceLabel);
+        return Context.Choices.Any(choice => choice.Label == ChoiceLabel);
     }
     
     public Choice Choice { get; set; }

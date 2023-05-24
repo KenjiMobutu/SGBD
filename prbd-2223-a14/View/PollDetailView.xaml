@@ -16,6 +16,7 @@
     <f:UserControlBase.Resources>
         <f:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
+        <vm:TruncateTextConverter x:Key="TruncateTextConverter" />
         <CollectionViewSource x:Key="SortedComments" Source="{Binding Comments}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="CreationDate" Direction="Descending"/>
@@ -111,7 +112,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Text}" Grid.Row="0" FontSize="14" TextWrapping="Wrap" Width="80" TextAlignment="Justify" />
+                            <TextBlock Text="{Binding Text, Converter={StaticResource TruncateTextConverter}, ConverterParameter=50}" Grid.Row="0" FontSize="14" TextWrapping="Wrap" Width="80" TextAlignment="Justify" />
                             <TextBlock Text="{Binding User.Name}" Grid.Row="1" Grid.Column="0" FontSize="12" FontStyle="Italic" Foreground="Blue"/>
                             <TextBlock Text=" - " Grid.Row="1" Grid.Column="1" FontSize="12" FontStyle="Italic" Foreground="Gray" />
                             <TextBlock Text="{Binding CreationDate, StringFormat='{}{0:dd/MM/yyyy HH:mm:ss}'}" Grid.Row="1" Grid.Column="2" FontSize="12" FontStyle="Italic" Foreground="Gray" />

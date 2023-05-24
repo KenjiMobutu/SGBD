@@ -21,18 +21,18 @@ public class EditChoiceViewModel : ViewModelCommon {
         Poll = poll;
         var pollId = poll.PollId;
         var editChoices = Choice.GetById(Poll.PollId).OrderBy(c => c.Label).ToList();
-        
-        //_choices = Poll.Choices.OrderBy(c => c.Label).ToList();
         _choices = new ObservableCollectionFast<Choice>(Poll.Choices);
-        //_choicesVM = editChoices.Select(c => new ChoiceViewModel(this,poll,_choices)).ToList();
-        _choicesVM = new ObservableCollectionFast<ChoiceViewModel>(_choices.Select(c => {
-            var vm = new ChoiceViewModel(this, poll, c);
-            vm.ChoiceChanged += () => {
-                Console.WriteLine("ChoiceChanged");
-                ChoicesVM.Remove(vm);
-            };
-            return vm;
-        }));
+
+        _choicesVM = new ObservableCollectionFast<ChoiceViewModel>(_choices
+                        .Select(c => {
+                            var vm = new ChoiceViewModel(this, poll, c);
+                            vm.ChoiceChanged += () => {
+                                Console.WriteLine("ChoiceChanged");
+                                ChoicesVM.Remove(vm);
+                            };
+                            return vm;
+                        }).OrderBy(vm => vm.ChoiceLabel));
+
         AddChoiceCommand = new RelayCommand(AddChoice, CanAddChoice);
 
     }
@@ -71,18 +71,23 @@ public class EditChoiceViewModel : ViewModelCommon {
         return Choices.Any(choice => choice.Label == NewChoiceLabel);
     }
     private void AddChoice() {
-
         var choice = new Choice { Label = NewChoiceLabel };
         Poll.Choices.Add(choice);
         Choices.Add(choice);
-       
+
         var vm = new ChoiceViewModel(this, Poll, choice);
-        vm.ChoiceChanged += () => {
+        vm.ChoiceChanged += () =>
+        {
             Console.WriteLine("ChoiceChanged");
             ChoicesVM.Remove(vm);
         };
-      
-        ChoicesVM.Add(vm);
+
+        int insertIndex = 0;
+        while (insertIndex < ChoicesVM.Count && string.Compare(vm.ChoiceLabel, ChoicesVM[insertIndex].ChoiceLabel) > 0) {
+            insertIndex++;
+        }
+
+        ChoicesVM.Insert(insertIndex, vm);
         Context.Choices.Add(choice);
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
 
@@ -94,6 +99,8 @@ public class EditChoiceViewModel : ViewModelCommon {
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
+
+
 
     private string _newChoiceLabel;
     public string NewChoiceLabel {
