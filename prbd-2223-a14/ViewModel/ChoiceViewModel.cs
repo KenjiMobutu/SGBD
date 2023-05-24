@@ -49,7 +49,7 @@ public class ChoiceViewModel : ViewModelCommon{
         
         //_choicesVM = editChoices.Select(c => new ChoiceListViewModel( poll, _choices)).ToList();
         EditCommand = new RelayCommand(() => EditMode = true);
-        SaveCommand = new RelayCommand(SaveChoiceAction);
+        SaveCommand = new RelayCommand(SaveChoiceAction,CanSaveChoice);
         CancelCommand = new RelayCommand(Cancel);
         DeleteChoiceCommand2 = new RelayCommand(DeleteChoice, CanDeleteChoice);
         
@@ -57,11 +57,37 @@ public class ChoiceViewModel : ViewModelCommon{
     private string _newChoiceLabel;
     public string NewChoiceLabel {
         get => _newChoiceLabel;
-        set => SetProperty(ref _newChoiceLabel, value, () => Validate());
+        set => SetProperty(ref _newChoiceLabel, value, () => Validate(value));
+    }
+    
+    public string ChoiceLabel {
+        get => Choice?.Label;
+        set => SetProperty(Choice.Label, value, Choice, (c,v) => {
+            c.Label = v;
+            NotifyColleagues(App.Messages.MSG_LABEL_CHANGED, Choice);
+            Validate();
+        });
     }
     public override bool Validate() {
         ClearErrors();
+        Console.WriteLine("VALIDATE CHOICE LABEL ===>" + ChoiceLabel);
+        if (string.IsNullOrEmpty(ChoiceLabel)) {
 
+            AddError(nameof(ChoiceLabel), "Cannot be empty");
+
+        } else if (ChoiceLabel.Length < 3) {
+            AddError(nameof(ChoiceLabel), "length must be >= 3");
+        } else if (ChoiceLabel.TrimStart() != ChoiceLabel) {
+            AddError(nameof(ChoiceLabel), "cannot start with a space");
+        } else if (ChoiceLabelExists()) {
+            AddError(nameof(ChoiceLabel), "Label already in the choice list");
+        }
+
+        return !HasErrors;
+    }
+    public  bool Validate(string NewChoiceLabel) {
+        ClearErrors();
+        Console.WriteLine("VALIDATE CHOICE LABEL 2 !!!! ===>" + ChoiceLabel);
         if (string.IsNullOrEmpty(NewChoiceLabel)) {
 
             AddError(nameof(NewChoiceLabel), "Cannot be empty");
@@ -79,31 +105,10 @@ public class ChoiceViewModel : ViewModelCommon{
     private bool LabelExists() {
         return Choices.Any(choice => choice.Label == NewChoiceLabel);
     }
-    private void AddChoice() {
-
-        var choice = new Choice { Label = NewChoiceLabel };
-        Poll.Choices.Add(choice);
-        Choices.Add(choice);
-        NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
-
-        Context.SaveChanges();
-        RaisePropertyChanged();
-        RaisePropertyChanged(nameof(Choices));
-        ClearErrors();
+    private bool ChoiceLabelExists() {
+        return Choices.Any(choice => choice.Label == ChoiceLabel);
     }
-    /*
-   private ICommand _deleteChoiceCommand;
-   public ICommand DeleteChoiceCommand {
-        get {
-            if (_deleteChoiceCommand == null) {
-                _deleteChoiceCommand = new RelayCommand<int>(
-                    DeleteChoice,
-                    CanDeleteChoice
-                );
-            }
-            return _deleteChoiceCommand;
-        }
-    }*/
+    
     public Choice Choice { get; set; }
     
     public void SaveChoiceAction() {
@@ -112,10 +117,11 @@ public class ChoiceViewModel : ViewModelCommon{
         RaisePropertyChanged();
         EditMode = false;
     }
+    private bool CanSaveChoice() {
+        return !string.IsNullOrEmpty(ChoiceLabel) && !HasErrors;
+    }
     private void Cancel() {
         EditMode = false;
-        
-        //RefreshChoices();
     }
     private void DeleteChoice() {
         Console.WriteLine("DELETE CHOICE");

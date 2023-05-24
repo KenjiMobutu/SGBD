@@ -17,10 +17,10 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -30,10 +30,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <Label x:Name="labelTitle" Content="Poll Name :" VerticalAlignment="Top" Padding="5" />
-        <TextBox x:Name="txtTitle" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
-             Text="{Binding PollTitle, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox x:Name="txtTitle" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center" Text="{Binding PollTitle, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label x:Name="labelType" Content="Type :" VerticalAlignment="Top" Padding="5" Grid.Row="1" />
         <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center" SelectedItem="{Binding SelectedType}" Grid.Row="1" ItemsSource="{Binding PollTypes}">
@@ -56,17 +57,15 @@
         </ComboBox>
 
         <Label x:Name="labelCreator" Content="Creator :" VerticalAlignment="Top" Padding="5" Grid.Row="2" />
-        <TextBox x:Name="txtCreator" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
-             Text="{Binding Poll.Creator.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" IsReadOnly="True" />
+        <TextBox x:Name="txtCreator" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Poll.Creator.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" IsReadOnly="True" />
 
         <Label x:Name="labelIsClosed" Content="Is Closed :" VerticalAlignment="Top" Padding="5" Grid.Row="3" />
-        <CheckBox x:Name="CheckBox" IsChecked="{Binding IsClosed}"  VerticalAlignment="Center" Padding="5" Grid.Row="3" Grid.Column="1" />
+        <CheckBox x:Name="CheckBox" IsChecked="{Binding IsClosed}" VerticalAlignment="Center" Padding="5" Grid.Row="3" Grid.Column="1" />
 
-        <Label x:Name="Participants" Content="Participants" VerticalAlignment="Top" Padding="5" Grid.Row="4"  Grid.Column="0" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
-        <ListView ItemsSource="{Binding Participants}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,50,20,-50">
+        <Label x:Name="Participants" Content="Participants" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="0" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
+        <ListView ItemsSource="{Binding Participants}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,50,15,-50">
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -79,17 +78,12 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
-
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="red" Width="20"
-                                        FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
-                                        Command="{Binding DataContext.DeleteParticipantCommand,
-                                        RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
-                                        CommandParameter="{Binding UserId}" />
-
+                                <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="Red" Width="20" FontSize="15" Margin="0" Padding="2" Background="Transparent" BorderBrush="Transparent"
+                                    Command="{Binding DataContext.DeleteParticipantCommand, RelativeSource={RelativeSource AncestorType={x:Type local:PollAddView}}}"
+                                    CommandParameter="{Binding UserId}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -98,50 +92,38 @@
         </ListView>
 
         <ComboBox x:Name="cmbUsers" Grid.Row="5" VerticalAlignment="Top" Margin="1,74,91,0"
-          ItemsSource="{Binding AllUsers}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedUserToAdd}" Grid.ColumnSpan="2"/>
-        <Button x:Name="btnAddSelectedUser" Content="Add" Margin="0,74,20,0" Grid.Row="5" 
-        Command="{Binding AddSelectedUserCommand}" HorizontalAlignment="Right" Width="60" Height="22" VerticalAlignment="Top" Grid.Column="1"/>
+              ItemsSource="{Binding AllUsers}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedUserToAdd}" Grid.ColumnSpan="2" Height="30" />
+        <Button x:Name="btnAddSelectedUser" Content="Add" Margin="0,74,15,0" Grid.Row="5"
+            Command="{Binding AddSelectedUserCommand}" Width="67" Height="30" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Right" FontFamily="Yu Gothic" />
 
-        <Button x:Name="btnAddCurrentUser" Content="Add Myself" Margin="50,135,260,0" Grid.Row="5" 
-        Command="{Binding AddCurrentUserCommand}" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Left" Height="31" VerticalAlignment="Top"
-                IsEnabled="{Binding CanAddCurrentUser}"/>
+        <Button x:Name="btnAddCurrentUser" Content="Add Myself" Margin="50,135,294,0" Grid.Row="5"
+            Command="{Binding AddCurrentUserCommand}" Grid.ColumnSpan="2" Height="30" VerticalAlignment="Center"
+            IsEnabled="{Binding CanAddCurrentUser}" HorizontalAlignment="Center" Width="100" FontFamily="Yu Gothic" />
 
-        <Button x:Name="btnAddAllUsers" Content="Add All Users" Margin="180,135,0,0" Grid.Row="5" Grid.Column="1" 
-        Command="{Binding AddAllUsersCommand}" HorizontalAlignment="Left" Width="100"  Height="31" VerticalAlignment="Top">
+        <Button x:Name="btnAddAllUsers" Content="Add All Users" Margin="180,135,0,0" Grid.Row="5" Grid.Column="1"
+            Command="{Binding AddAllUsersCommand}" HorizontalAlignment="Center" Width="100" Height="30" VerticalAlignment="Center" FontFamily="Yu Gothic" />
 
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="-1.736"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="-0.47"/>
-                </TransformGroup>
-            </Button.RenderTransform>
-        </Button>
-
-
-        <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="2" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
-        <ItemsControl ItemsSource="{Binding EditChoiceViews}" Grid.Column="2" Grid.ColumnSpan="2" Margin="13,45,17,101" Grid.Row="4" Grid.RowSpan="2">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <local:EditChoiceView />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
+        <Label x:Name="Choices" Content="Choices" VerticalAlignment="Top" Padding="5" Grid.Row="4" Grid.Column="3" Margin="0,20,0,0" FontSize="14" FontWeight="Bold" />
+        
+            <ItemsControl ItemsSource="{Binding EditChoiceViews}" Grid.Row="4" Grid.Column="3" Grid.RowSpan="2" Margin="0,50,15,-50">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:EditChoiceView />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         
 
         <Grid Grid.Row="6" Grid.ColumnSpan="4" Margin="0,20,-1,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Button Content="Save" HorizontalAlignment="Right" Margin="0,30,110,45" Command="{Binding Save}" Height="25" Width="75" />
-            <Button Content="Cancel" Margin="0,30,20,45" Command="{Binding Cancel}" Height="25" Width="75" HorizontalAlignment="Right"  />
+            <Button Content="Cancel" Margin="0,30,20,45" Command="{Binding Cancel}" Height="25" Width="75" HorizontalAlignment="Right" />
         </Grid>
-
-
     </Grid>
+
 
 </f:UserControlBase>

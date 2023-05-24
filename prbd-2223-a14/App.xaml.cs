@@ -10,6 +10,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_NEW_MEMBER,
         MSG_PSEUDO_CHANGED,
         MSG_TITLE_CHANGED,
+        MSG_LABEL_CHANGED,
         MSG_MEMBER_CHANGED,
         MSG_DISPLAY_MEMBER,
         MSG_CLOSE_TAB,

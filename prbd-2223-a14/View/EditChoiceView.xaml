@@ -19,17 +19,24 @@
         <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
     </f:UserControlBase.Resources>
     <StackPanel Orientation="Vertical">
-        <!-- Une ligne pour chaque Choix - chaque ChoiceView utilisera un viewModel qui provient de la liste ParticipantsVM -->
-        <ItemsControl ItemsSource="{Binding ChoicesVM}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <vw:ChoiceView/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <TextBox x:Name="txtNewChoice" Margin="15,72,125,0" VerticalAlignment="Top" Text="{Binding NewChoiceLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-         Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" Height="25" Width="250"/>
-        <Button Content="Add" Command="{Binding AddChoiceCommand}" Grid.Row="5" Height="25" Width="50" HorizontalAlignment="Right" />
+        <!-- Une ligne pour chaque Choix - chaque ChoiceView utilisera un viewModel qui provient de la liste ChoicesVM -->
+        <Border BorderBrush="Black" BorderThickness="0.5" Padding="5" Margin="5">
+            <ItemsControl ItemsSource="{Binding ChoicesVM}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <vw:ChoiceView/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBox x:Name="txtNewChoice" Margin="5" VerticalAlignment="Top" Text="{Binding NewChoiceLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                Height="25" Width="250"/>
+            <Button Content="Add" Command="{Binding AddChoiceCommand}" Margin="5" Height="25" Width="50" />
+        </StackPanel>
     </StackPanel>
+
+
 
 </f:UserControlBase>
