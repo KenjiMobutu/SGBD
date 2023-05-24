@@ -13,6 +13,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <f:UserControlBase.Resources>
         <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
+        <vm:TruncateTextConverter x:Key="TruncateTextConverter" />
     </f:UserControlBase.Resources>
 
     <Grid>
