@@ -32,7 +32,7 @@ public class PollAddViewModel : ViewModelCommon {
     }
     private Choice _choice;
     public Choice Choice {
-        get { return _choice; }
+        get => _choice;
         set { SetProperty(ref _choice, value); }
     }
 
@@ -203,7 +203,7 @@ public class PollAddViewModel : ViewModelCommon {
     public void SaveChoiceAction() {
         EditChoiceVisibility = true;
         IsEditingVisibility = false;
-       
+        EditingChoice = false;
         Context.SaveChanges();
         RaisePropertyChanged();
       
@@ -285,10 +285,7 @@ public class PollAddViewModel : ViewModelCommon {
     private Choice _selectedChoice;
     public Choice SelectedChoice {
         get { return _selectedChoice; }
-        set {
-            _selectedChoice = value;
-            RaisePropertyChanged(); // Assurez-vous d'avoir la bonne implémentation de RaisePropertyChanged
-        }
+        set { SetProperty(ref _selectedChoice, value); }
     }
 
 
@@ -397,7 +394,12 @@ public class PollAddViewModel : ViewModelCommon {
         
         ClearErrors();
     }
-
+    public ObservableCollection<EditChoiceView> EditChoiceViews { get; } = new ObservableCollection<EditChoiceView>();
+    private ObservableCollection<EditChoiceView> _editChoiceViews;
+    public ObservableCollection<EditChoiceView> EditChoice {
+        get => _editChoiceViews;
+        set => SetProperty(ref _editChoiceViews, value);
+    }
     private ObservableCollection<User> _participants;
     public ObservableCollection<User> Participants {
         get => _participants;
@@ -451,24 +453,51 @@ public class PollAddViewModel : ViewModelCommon {
         get => _isEditingChoice;
         set => SetProperty(ref _isEditingChoice, value);
     }
+    private bool _editingChoice;
+    public bool EditingChoice {
+        get => _editingChoice; 
+        set => SetProperty(ref _editingChoice, value); 
+    }
+    private bool _editMode;
+    public bool EditMode {
+        get => _editMode;
+        set => SetProperty(ref _editMode, value, EditModeChanged);
+    }
+    public void EditModeChanged() {
+        Console.WriteLine("EDIT MODE CHANGED");
+        // Lorsqu'on change le mode d'édition de la ligne, on le signale à chaque cellule
+        foreach (Choice choice in Choices) {
+            choice.IsEditing = EditMode;
+        }
+    }
 
     private List<Choice> _initialChoices;
-
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
-        
         PollTitle = Poll.Title;
         EditChoiceVisibility = true;
         IsEditingVisibility = false;
-        EditChoiceCommand = new RelayCommand(() =>{
-            Console.WriteLine("EDIT CHOICE COMMAND");
-            IsEditingChoice = true;
-            EditChoiceVisibility = false;
-            IsEditingVisibility = true;
-        });
+        EditingChoice = false;
+        Choices = new ObservableCollection<Choice>(Poll.Choices);
+
+        EditChoiceCommand = new RelayCommand<int>((id)=>EditChoiceAction(id));
+
        
-        _initialChoices = new List<Choice>(Poll.Choices);
+        
+       var editChoices = Choice.GetChoicesForGrid(Poll.PollId).OrderBy(c => c.Label).ToList();
+        foreach(var c in editChoices.ToList()) {
+            Console.WriteLine("EDITCHOICES ===>" + c.Label);
+        }
+        _editChoices = editChoices.Select(c => new EditChoiceViewModel(poll)).ToList();
+
+        var editChoiceView = new EditChoiceView(Poll);
+        EditChoiceViews.Add(editChoiceView);
+
+        foreach (var c in _editChoices.ToList()) {
+            Console.WriteLine("EDITCHOICES 2 ===>" + c);
+        }
+        //_initialChoices = new List<Choice>(Poll.Choices);
         foreach (Choice choice in Poll.Choices) {
             Choice = choice;
         
@@ -483,7 +512,7 @@ public class PollAddViewModel : ViewModelCommon {
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
         UpdateParticipantsTotalVotes();
-        Choices = new ObservableCollection<Choice>(Poll.Choices);
+        //Choices = new ObservableCollection<Choice>(Poll.Choices);
         Save = new RelayCommand(SaveAction, CanSaveAction);
         SaveCommand = new RelayCommand(SaveChoiceAction);
         Cancel = new RelayCommand(CancelAction,CanCancelAction);
@@ -496,9 +525,27 @@ public class PollAddViewModel : ViewModelCommon {
          );
 
         RaisePropertyChanged();
+        EditChoice = new ObservableCollection<EditChoiceView>(new[] { new EditChoiceView(poll) });
     }
+    public void EditChoiceAction(int choiceId) {
+        Console.WriteLine("EDIT CHOICE COMMAND ID ===>" + choiceId);
+       
+        foreach (var choice in Choices) {
+            bool isEditingChoice = choice.IsEditingChoice(choiceId);
+            Console.WriteLine("isEditingChoice 1 ===>" + isEditingChoice);
+            choice.IsEditing = isEditingChoice;
+            //EditChoiceVisibility = !isEditingChoice;
+            //EditingChoice = isEditingChoice;
+            Console.WriteLine("isEditingChoice 2  ===>" + choice.IsEditing + "  Choice ===>" + choiceId);
+            Context.SaveChanges();
 
+        }
 
+        IsEditingChoice = true;
+        EditChoiceVisibility = false;
+        IsEditingVisibility = true;
+    }
+    
     public void UpdateParticipantsTotalVotes() {
         foreach (var participant in Participants.ToList()) {
             TotalVotesForUser(participant);
@@ -530,6 +577,8 @@ public class PollAddViewModel : ViewModelCommon {
     public void DeleteAction() {
         Console.WriteLine("DELETE !!!!!");
     }
+    private List<EditChoiceViewModel> _editChoices;
+    public List<EditChoiceViewModel> EditChoices => _editChoices;
     
 }
 

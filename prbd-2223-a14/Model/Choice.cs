@@ -22,21 +22,18 @@ public class Choice : EntityBase<MyPollContext> {
 
     public static IQueryable<Choice> GetChoicesForGrid(int pollId) {
         var poll = Context.Polls.FirstOrDefault(p => p.PollId == pollId);
-        if (poll == null) {
-            throw new ArgumentException($"Poll with ID {pollId} does not exist.");
-        }
+        
+        return Context.Choices.Where(c => c.PollId == pollId);
+    }
+    public static IQueryable<Choice> GetById(int pollId) {
         return Context.Choices.Where(c => c.PollId == pollId);
     }
     public Choice() { }
 
-    public List<string> GetChoiceLabels() {
-        List<string> choiceLabels = new List<string>();
+    public bool IsEditing { get; set; }
 
-        foreach (var choice in Poll.Choices) {
-            choiceLabels.Add(choice.Label);
-        }
 
-        return choiceLabels;
+    public bool IsEditingChoice(int choiceId) {
+        return ChoiceId == choiceId ;
     }
-
 }

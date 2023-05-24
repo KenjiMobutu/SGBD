@@ -1,0 +1,45 @@
+﻿<f:UserControlBase x:Class="MyPoll.View.ChoiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyPoll.View"
+             xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:vw="clr-namespace:MyPoll.View"
+             xmlns:vm="clr-namespace:MyPoll.ViewModel"
+             xmlns:fap="http://schemas.fontawesome.com/icons/fonts/properties"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:ChoiceViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="150" d:DesignWidth="200"
+             x:Name="uc">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding Choice.Label}" Margin="5" TextWrapping="Wrap"  HorizontalAlignment="Left" Visibility="{c:Binding Editable}"/>
+        <TextBox Text="{Binding Choice.Label}" Margin="5" TextWrapping="Wrap"  HorizontalAlignment="Left" Visibility="{c:Binding EditMode}" />
+        <TextBlock Text=" (" Margin="5,0,0,0" />
+        <TextBlock Text="{Binding TotalVotes}" />
+        <TextBlock Text=")" />
+
+        <Button fap:FontAwesome.Icon="Solid_Pencil" Foreground="Black" Width="20"
+                        FontSize="15" Margin="0"
+                        Padding="2" Background="Transparent" BorderBrush="Transparent"
+                        Visibility="{c:Binding Editable}"
+                        Command="{Binding EditCommand}" />
+        <Button fap:FontAwesome.Icon="Regular_TrashCan" Foreground="red" Width="20"
+                        FontSize="15" Margin="0"
+                        Padding="2" Background="Transparent" BorderBrush="Transparent"
+                        Visibility="{c:Binding Editable}"
+                        Command="{Binding DeleteChoiceCommand2}"/>
+        <Button fap:FontAwesome.Icon="Solid_FloppyDisk" Foreground="Green" Width="20"
+                        FontSize="15" Margin="0"
+                        Padding="2" Background="Transparent" BorderBrush="Transparent"
+                        Visibility="{c:Binding EditMode}"
+                        Command="{Binding SaveCommand}" />
+        <Button fap:FontAwesome.Icon="Solid_X" Foreground="red" Width="20" FontSize="15"
+                        Margin="0"
+                        Padding="2" Background="Transparent" BorderBrush="Transparent"
+                        Visibility="{c:Binding EditMode}"
+                        Command="{Binding CancelCommand}" />
+        
+    </StackPanel>
+</f:UserControlBase>

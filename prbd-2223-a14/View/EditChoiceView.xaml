@@ -1,0 +1,35 @@
+﻿<f:UserControlBase x:Class="MyPoll.View.EditChoiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyPoll.View"
+             xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
+             xmlns:vm="clr-namespace:MyPoll.ViewModel"
+             xmlns:vw="clr-namespace:MyPoll.View"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             d:DataContext="{d:DesignInstance Type=vm:EditChoiceViewModel, IsDesignTimeCreatable=True}"
+             xmlns:fap="http://schemas.fontawesome.com/icons/fonts/properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="400">
+    <UserControl.DataContext>
+        <vm:EditChoiceViewModel x:Name="vm" />
+    </UserControl.DataContext>
+    <f:UserControlBase.Resources>
+        <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
+    </f:UserControlBase.Resources>
+    <StackPanel Orientation="Vertical">
+        <!-- Une ligne pour chaque Choix - chaque ChoiceView utilisera un viewModel qui provient de la liste ParticipantsVM -->
+        <ItemsControl ItemsSource="{Binding ChoicesVM}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <vw:ChoiceView/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBox x:Name="txtNewChoice" Margin="15,72,125,0" VerticalAlignment="Top" Text="{Binding NewChoiceLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+         Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" Height="25" Width="250"/>
+        <Button Content="Add" Command="{Binding AddChoiceCommand}" Grid.Row="5" Height="25" Width="50" HorizontalAlignment="Right" />
+    </StackPanel>
+
+</f:UserControlBase>

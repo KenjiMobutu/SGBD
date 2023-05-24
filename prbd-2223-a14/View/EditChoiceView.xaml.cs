@@ -17,18 +17,15 @@ using MyPoll.ViewModel;
 using PRBD_Framework;
 
 namespace MyPoll.View;
-public partial class PollAddView : UserControlBase {
-   public PollAddView() {
+public partial class EditChoiceView : UserControlBase {
+    public EditChoiceView() {
         InitializeComponent();
-   }
-    public PollAddView(Poll poll, bool IsNew) {
-        InitializeComponent();
-        DataContext = new PollAddViewModel(poll, IsNew);
-        DoDisplayChoice(poll);
     }
-   private void DoDisplayChoice(Poll poll) {
-        if (poll != null)
-            new EditChoiceView(poll);
+
+
+    public EditChoiceView(Poll poll) {
+        InitializeComponent();
+        DataContext = new EditChoiceViewModel(poll);
     }
 }
 

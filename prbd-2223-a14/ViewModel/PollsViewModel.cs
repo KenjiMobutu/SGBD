@@ -55,7 +55,7 @@ public class PollsViewModel : ViewModelCommon {
         } else {
             polls = Poll.GetPolls(CurrentUser); // Récupérer les sondages de l'utilisateur actuel
         }
-
+        
         if (!string.IsNullOrEmpty(Filter)) {
             polls = polls.Where(p =>
                 p.Title.Contains(Filter) ||
