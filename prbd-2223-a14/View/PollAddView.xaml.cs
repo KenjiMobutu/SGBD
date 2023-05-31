@@ -24,11 +24,11 @@ public partial class PollAddView : UserControlBase {
     public PollAddView(Poll poll, bool IsNew) {
         InitializeComponent();
         DataContext = new PollAddViewModel(poll, IsNew);
-        DoDisplayChoice(poll);
+        DoDisplayChoice(poll,IsNew);
     }
-   private void DoDisplayChoice(Poll poll) {
+   private void DoDisplayChoice(Poll poll, bool IsNew) {
         if (poll != null)
-            new EditChoiceView(poll);
+            new EditChoiceView(poll,IsNew);
     }
 }
 

@@ -107,6 +107,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
             Participant.VotesList.Add(Vote);
             Choice.VotesList.Add(Vote);
             NotifyColleagues(App.Messages.MSG_VOTE_CHANGED, Vote);
+            NotifyColleagues(App.Messages.MSG_EDITMODE_CHANGED,Vote);
         }
 
         // Update the IsRegistrated properties

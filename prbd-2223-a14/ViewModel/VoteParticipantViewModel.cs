@@ -30,6 +30,7 @@ public class VoteParticipantViewModel : ViewModelCommon {
             DeleteCommand = new RelayCommand(Delete);
 
         Register<Vote>(App.Messages.MSG_VOTE_CHANGED, vote => RefreshVotes());
+        Register<Vote>(App.Messages.MSG_EDITMODE_CHANGED, vote => EditModeChanged());
     }
 
     private VoteGridViewModel _voteGridViewModel;

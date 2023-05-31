@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore.Metadata;
 using MyPoll.Model;
 using PRBD_Framework;
 
@@ -16,9 +17,10 @@ public class EditChoiceViewModel : ViewModelCommon {
         set => SetProperty(ref _addChoiceCommand, value);
     }
     public EditChoiceViewModel() { }
-    public EditChoiceViewModel(Poll poll) {
+    public EditChoiceViewModel(Poll poll, bool isNew) {
        
         Poll = poll;
+        IsNew = isNew;
         var pollId = poll.PollId;
         var editChoices = Choice.GetById(Poll.PollId).OrderBy(c => c.Label).ToList();
         _choices = new ObservableCollectionFast<Choice>(Poll.Choices);
@@ -43,6 +45,11 @@ public class EditChoiceViewModel : ViewModelCommon {
     public Poll Poll {
         get => _poll;
         set => SetProperty(ref _poll, value);
+    }
+    private bool _isNew;
+    public bool IsNew {
+        get => _isNew;
+        set => SetProperty(ref _isNew, value);
     }
     private PollAddViewModel _pollAddVM;
     private readonly Choice _choice;
@@ -91,11 +98,13 @@ public class EditChoiceViewModel : ViewModelCommon {
         Context.Choices.Add(choice);
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
         ClearErrors();
+        
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choice));
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
-        //Context.SaveChanges();  
+        if (!IsNew) { Context.SaveChanges(); }
+        //Context.SaveChanges();
     }
 
     private string _newChoiceLabel;

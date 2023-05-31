@@ -243,7 +243,7 @@ public class PollAddViewModel : ViewModelCommon {
         Console.WriteLine("Can SAVE ACTION ===>" + IsNew);
         if (IsNew)
             return !string.IsNullOrEmpty(PollTitle) && !HasErrors;
-        return Poll != null && PollTitle != null && !HasErrors && Poll.IsModified && Choice.IsModified; 
+        return Poll != null && PollTitle != null && !HasErrors && Poll.IsModified; 
     }
     private bool CanCancelAction() {
             return Poll != null && (IsNew || Poll.IsModified);
@@ -364,9 +364,9 @@ public class PollAddViewModel : ViewModelCommon {
         foreach(var c in editChoices.ToList()) {
             Console.WriteLine("EDITCHOICES ===>" + c.Label);
         }
-        _editChoices = editChoices.Select(c => new EditChoiceViewModel(poll)).ToList();
+        _editChoices = editChoices.Select(c => new EditChoiceViewModel(poll, IsNew)).ToList();
 
-        var editChoiceView = new EditChoiceView(Poll);
+        var editChoiceView = new EditChoiceView(Poll, IsNew);
         EditChoiceViews.Add(editChoiceView);
 
         foreach (var c in _editChoices.ToList()) {
@@ -399,7 +399,7 @@ public class PollAddViewModel : ViewModelCommon {
          );
 
         RaisePropertyChanged();
-        EditChoice = new ObservableCollection<EditChoiceView>(new[] { new EditChoiceView(poll) });
+        EditChoice = new ObservableCollection<EditChoiceView>(new[] { new EditChoiceView(poll, IsNew) });
     }
     
     public void UpdateParticipantsTotalVotes() {

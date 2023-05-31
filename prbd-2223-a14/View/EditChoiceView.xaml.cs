@@ -23,9 +23,9 @@ public partial class EditChoiceView : UserControlBase {
     }
 
 
-    public EditChoiceView(Poll poll) {
+    public EditChoiceView(Poll poll, bool IsNew) {
         InitializeComponent();
-        DataContext = new EditChoiceViewModel(poll);
+        DataContext = new EditChoiceViewModel(poll, IsNew);
     }
 }
 
