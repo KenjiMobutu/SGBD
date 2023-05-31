@@ -91,28 +91,6 @@ public class VoteParticipantViewModel : ViewModelCommon {
             .ToList();
     }
 
-    /*private void Save() {
-        EditMode = false;
-        // Get the current poll ID
-        int pollId = _voteGridViewModel.Poll.PollId;
-        // Filter the participant's existing votes to include only the votes for the current poll
-        var existingVotes = Participant.VotesList.Where(v => v.Choice.Poll.PollId == pollId).ToList();
-        // Replace only the existing votes for the current poll with the new votes from VotesVM
-        foreach (var voteVM in VotesVM.Where(v => v.IsRegistrated)) {
-            var existingVote = existingVotes.FirstOrDefault(v => v.Choice.ChoiceId == voteVM.Vote.Choice.ChoiceId);
-            if (existingVote != null) {
-               // existingVote.Value = voteVM.Vote.Value;
-                existingVote.Type = voteVM.Vote.Type;
-            } else {
-                Participant.VotesList.Add(voteVM.Vote);
-            }
-        }
-        Context.SaveChanges();
-        // On recrée la liste VotesVM avec les nouvelles données
-        RefreshVotes();
-        UpdateVotes();
-        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
-    }*/
     private void Save() {
         EditMode = false;
         // Get the current poll ID

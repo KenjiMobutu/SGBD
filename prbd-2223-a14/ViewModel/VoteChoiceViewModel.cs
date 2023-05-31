@@ -9,6 +9,7 @@ using FontAwesome6;
 using System.Windows.Media;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Collections.ObjectModel;
 
 namespace MyPoll.ViewModel;
 public class VoteChoiceViewModel : ViewModelCommon {
@@ -16,7 +17,9 @@ public class VoteChoiceViewModel : ViewModelCommon {
         IsRegistrated = isRegistered;
         Participant = participant;
         Choice = choice;
+       
         Poll = poll;
+        
         Vote = participant.VotesList.FirstOrDefault(v => v.Choice.ChoiceId == choice.ChoiceId) ??
                new Vote { Choice = choice, User = participant };
 
@@ -25,11 +28,13 @@ public class VoteChoiceViewModel : ViewModelCommon {
         IsRegistratedMaybe = Vote.Type == VoteType.Maybe && IsRegistrated;
         IsRegistratedNone = Vote.Type == VoteType.None && IsRegistrated;
 
-        if(Poll.Type == PollType.Single) {
+        /*if(Poll.Type == PollType.Single) {
             HasVotedCommand = new RelayCommand<object>(HasVotedSingle);
         } else {
             HasVotedCommand = new RelayCommand<object>(HasVoted);
-        }
+        }*/
+
+        HasVotedCommand = new RelayCommand<object>(HasVoted);
     }
 
     public Poll Poll { get; set; }
@@ -40,7 +45,11 @@ public class VoteChoiceViewModel : ViewModelCommon {
     public bool IsVoteYes { get; set; }
     public bool IsVoteNo { get; set; }
     public bool IsVoteMaybe { get; set; }
-
+    private ObservableCollection<Vote> _votes;
+    public ObservableCollection<Vote> Votes {
+        get => _votes;
+        set => SetProperty(ref _votes, value);
+    }
     public VoteChoiceViewModel() { }
 
     private bool _editMode;
@@ -58,15 +67,16 @@ public class VoteChoiceViewModel : ViewModelCommon {
     public RelayCommand<object> HasVotedCommand { get; set; }
     
     public RelayCommand<object> ClearChoicesCommand { get; set; }
-  
     public void HasVoted(object parameter) {
         Console.WriteLine("RENTRE DANS Multiple");
         if (!EditMode) {
             return;
         }
+        
         Console.WriteLine("Poll TYPE ==> " + Poll.Type);
         double newVote = Convert.ToDouble(parameter);
         Console.WriteLine(newVote);
+
 
         // Determine the new vote type
         VoteType newVoteType = newVote switch {
@@ -80,6 +90,22 @@ public class VoteChoiceViewModel : ViewModelCommon {
         // Update the vote type
         Vote.Type = newVoteType;
         Console.WriteLine(Vote.Type);
+
+        if (Poll.Type == PollType.Single) {
+            // Remove all existing votes of the participant for the current poll
+            var existingVotesForPoll = Participant.VotesList.Where(v => v.Choice.Poll == Poll).ToList();
+            foreach (var existingVote in existingVotesForPoll) {
+                Console.WriteLine("EXISTING VOTE ==> " + existingVote.Choice.Label);
+                existingVote.Choice.VotesList.Remove(existingVote);
+                Participant.VotesList.Remove(existingVote);
+                existingVote.Type = VoteType.None;
+            }
+
+            // Create a new vote for the selected choice in the current poll
+            Vote = new Vote { Choice = Choice, User = Participant, Type = newVoteType };
+            Participant.VotesList.Add(Vote);
+            Choice.VotesList.Add(Vote);
+        }
 
         // Update the IsRegistrated properties
         IsRegistratedNo = Vote.Type == VoteType.No;
@@ -109,11 +135,14 @@ public class VoteChoiceViewModel : ViewModelCommon {
             _ => VoteType.Maybe
         };
 
+
         // Remove all existing votes of the participant for the current poll
         var existingVotesForPoll = Participant.VotesList.Where(v => v.Choice.Poll == Poll).ToList();
         foreach (var existingVote in existingVotesForPoll) {
-            Participant.VotesList.Remove(existingVote);
+            Console.WriteLine("EXISTING VOTE ==> " + existingVote.Choice.Label);
             existingVote.Choice.VotesList.Remove(existingVote);
+            Participant.VotesList.Remove(existingVote);
+            existingVote.Type = VoteType.None;
         }
 
         // Create a new vote for the selected choice in the current poll
@@ -129,9 +158,6 @@ public class VoteChoiceViewModel : ViewModelCommon {
         // Set IsRegistrated to true
         IsRegistrated = true;
 
-        // Disable the ability to vote for other choices
-        
-             
     }
 
     private bool _isRegistrated;

@@ -46,8 +46,6 @@ public class ChoiceViewModel : ViewModelCommon{
         _totalVotes = NbVotesForChoice(choice);
         var editChoices = Choice.GetById(Poll.PollId).OrderBy(c => c.Label).ToList();
         _choices = new ObservableCollectionFast<Choice>(Poll.Choices.OrderBy(c => c.Label));
-        
-        //_choicesVM = editChoices.Select(c => new ChoiceListViewModel( poll, _choices)).ToList();
         EditCommand = new RelayCommand(() => EditMode = true);
         SaveCommand = new RelayCommand(SaveChoiceAction,CanSaveChoice);
         CancelCommand = new RelayCommand(Cancel);
@@ -145,11 +143,8 @@ public class ChoiceViewModel : ViewModelCommon{
         Context.SaveChanges();
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choice));
-        NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
-        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
-        NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
-
         
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);  
         EditMode = false;
     }
 
@@ -171,9 +166,6 @@ public class ChoiceViewModel : ViewModelCommon{
         set => SetProperty(ref _editMode, value, EditModeChanged);
     }
     public void EditModeChanged() {
-        
-
-        // On informe le parent qu'on change le mode d'édition de la ligne
         _editChoiceViewModel.AskEditMode(EditMode);
     }
     public void Changes() {

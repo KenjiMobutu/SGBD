@@ -25,6 +25,7 @@ public partial class MainView : WindowBase {
         Register<Poll>(App.Messages.MSG_CLOSE_TAB,
             poll => DoCloseTab(poll));
 
+
     }
 
     private void DoDisplayPoll(Poll poll, bool isNew) {

@@ -19,6 +19,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_NEW_POLL,
         MSG_DISPLAY_POLL,
         MSG_POLL_CHANGED,
+        MSG_POLL_SAVED,
         MSG_SIGNUP,
         MSG_DISPLAY_GRID,
         MSG_DISPLAY_CHANGED,
@@ -57,8 +58,6 @@ public partial class App : ApplicationBase<User, MyPollContext> {
             NavigateTo<PollAddViewModel, User, MyPollContext>();
 
         });
-
-        
 
         // Cold start
         //Console.Write("Cold starting database... ");

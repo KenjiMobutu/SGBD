@@ -24,7 +24,14 @@ public class PollAddViewModel : ViewModelCommon {
     public ICommand Delete { get; set; }
     public ICommand SaveCommand { get; set; }
     public ICommand EditChoiceCommand { get; set; }
-    private  Poll _poll;
+    private PollDetailViewModel _pollDetailViewModel;
+
+    public PollDetailViewModel PollDetailViewModel {
+        get { return _pollDetailViewModel; }
+        set { SetProperty(ref _pollDetailViewModel, value); }
+    }
+
+    private Poll _poll;
 
     public Poll Poll {
         get => _poll;
@@ -241,9 +248,11 @@ public class PollAddViewModel : ViewModelCommon {
             // Afficher un message d'erreur ou prendre une autre action en cas de validation échouée
             return;
         }
+        
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+        
     }
 
     private bool CanSaveAction() {
@@ -266,66 +275,6 @@ public class PollAddViewModel : ViewModelCommon {
             Poll.Reload();
             RaisePropertyChanged();
         }
-    }
-    private Choice _initialChoice;
-
-    private Choice CloneChoice(Choice choice) {
-        if (choice == null)
-            return null;
-
-        Choice clonedChoice = new Choice {
-            ChoiceId = choice.ChoiceId,
-            Label = choice.Label,
-            VotesList = new List<Vote>(choice.VotesList) // Effectue une copie de la liste de votes
-        };
-
-        return clonedChoice;
-    }
-
-    private Choice _selectedChoice;
-    public Choice SelectedChoice {
-        get { return _selectedChoice; }
-        set { SetProperty(ref _selectedChoice, value); }
-    }
-
-
-    private void CancelChoice() {
-        EditChoiceVisibility = true;
-        IsEditingVisibility = false;
-
-        Choices.Clear(); // Supprime tous les éléments de la liste actuelle
-
-        foreach (var choice in _initialChoices) {
-            Console.WriteLine(choice.Label);
-            Choices.Add(CloneChoice(choice)); // Ajoute un clone de chaque choix initial
-        }
-
-        RaisePropertyChanged(nameof(Choices));
-    }
-
-    
-
-    private string _newChoiceLabel;
-    public string NewChoiceLabel {
-        get => _newChoiceLabel; 
-        set => SetProperty(ref _newChoiceLabel, value, () => Validate());
-    }
-    public override bool Validate() {
-        ClearErrors();
-
-        if (string.IsNullOrEmpty(NewChoiceLabel)) {
-           
-            AddError(nameof(NewChoiceLabel), "Cannot be empty");
-            
-        } else if (NewChoiceLabel.Length < 3) {
-            AddError(nameof(NewChoiceLabel), "length must be >= 3");
-        } else if (NewChoiceLabel.TrimStart() != NewChoiceLabel) {
-            AddError(nameof(NewChoiceLabel), "cannot start with a space");
-        } else if (LabelExists()) {
-            AddError(nameof(NewChoiceLabel), "Label already in the choice list");
-        }
-        
-        return !HasErrors;
     }
 
     private ICommand _addChoiceCommand;
@@ -373,27 +322,6 @@ public class PollAddViewModel : ViewModelCommon {
         Context.SaveChanges ();
     }
 
-    private bool CanAddChoice() {
-        return !string.IsNullOrEmpty(NewChoiceLabel) && !HasErrors;
-        
-    }
-
-    private bool LabelExists() {
-        return Choices.Any(choice => choice.Label == NewChoiceLabel);
-    }
-    private void AddChoice() {
-        
-        var choice = new Choice { Label = NewChoiceLabel };
-        Poll.Choices.Add(choice);
-        Choices.Add(choice);
-        NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
-        
-        Context.SaveChanges();
-        RaisePropertyChanged();
-        RaisePropertyChanged(nameof(Choices));
-        
-        ClearErrors();
-    }
     public ObservableCollection<EditChoiceView> EditChoiceViews { get; } = new ObservableCollection<EditChoiceView>();
     private ObservableCollection<EditChoiceView> _editChoiceViews;
     public ObservableCollection<EditChoiceView> EditChoice {
@@ -420,6 +348,11 @@ public class PollAddViewModel : ViewModelCommon {
                 Poll.IsClosed = true;
             }
         }
+    }
+    private bool _isEditing;
+    public bool IsEditingPoll {
+        get => _isEditing;
+        set => SetProperty(ref _isEditing, value);
     }
 
     private ObservableCollection<PollType> _pollTypes;
@@ -479,13 +412,14 @@ public class PollAddViewModel : ViewModelCommon {
         EditChoiceVisibility = true;
         IsEditingVisibility = false;
         EditingChoice = false;
+        IsEditingPoll = false;
         Choices = new ObservableCollection<Choice>(Poll.Choices);
 
         EditChoiceCommand = new RelayCommand<int>((id)=>EditChoiceAction(id));
-
-       
         
-       var editChoices = Choice.GetChoicesForGrid(Poll.PollId).OrderBy(c => c.Label).ToList();
+
+
+        var editChoices = Choice.GetChoicesForGrid(Poll.PollId).OrderBy(c => c.Label).ToList();
         foreach(var c in editChoices.ToList()) {
             Console.WriteLine("EDITCHOICES ===>" + c.Label);
         }
@@ -503,8 +437,7 @@ public class PollAddViewModel : ViewModelCommon {
         
             Console.WriteLine("Choice!!! ==>"+Choice.Label);
         }
-        AddChoiceCommand = new RelayCommand(AddChoice, CanAddChoice);
-
+        
         
         Console.WriteLine("ISNEW===> " +IsNew);
         IsClosed = Poll.IsClosed;
