@@ -28,7 +28,8 @@ public class VoteParticipantViewModel : ViewModelCommon {
             SaveCommand = new RelayCommand(Save);
             CancelCommand = new RelayCommand(Cancel);
             DeleteCommand = new RelayCommand(Delete);
-        
+
+        Register<Vote>(App.Messages.MSG_VOTE_CHANGED, vote => RefreshVotes());
     }
 
     private VoteGridViewModel _voteGridViewModel;

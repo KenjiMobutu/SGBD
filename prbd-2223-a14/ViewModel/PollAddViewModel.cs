@@ -37,10 +37,11 @@ public class PollAddViewModel : ViewModelCommon {
         get => _poll;
         set => SetProperty(ref _poll, value);
     }
+    public ChoiceViewModel PollChoice { get; } = new();
     private Choice _choice;
     public Choice Choice {
         get => _choice;
-        set { SetProperty(ref _choice, value); }
+        set =>SetProperty(ref _choice, value,()=> PollChoice.Choice = value); 
     }
 
    
@@ -215,25 +216,6 @@ public class PollAddViewModel : ViewModelCommon {
         RaisePropertyChanged();
       
     }
-    public bool ValidateChoiceLabel(Choice choice) {
-        ClearErrors();
-
-        if (string.IsNullOrEmpty(choice.Label)) {
-            AddError(nameof(choice.Label), "Label is required");
-        } else if (choice.Label.Length < 3) {
-            AddError(nameof(choice.Label), "Label must be at least 3 characters long");
-        } else if (choice.Label.TrimStart() != choice.Label) {
-            AddError(nameof(choice.Label), "Label cannot start with a space");
-        } else if (LabelExists(choice.Label)) {
-            AddError(nameof(choice.Label), "Label already exists");
-        }
-
-        return !HasErrors;
-    }
-
-    private bool LabelExists(string label) {
-        return Choices.Any(choice => choice.Label == label && choice != Choice);
-    }
 
     public override void SaveAction() {
         if (IsNew) {
@@ -252,14 +234,16 @@ public class PollAddViewModel : ViewModelCommon {
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
-        
+        NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
+        NotifyColleagues(App.Messages.MSG_DISPLAY_POLL, Poll);
+
     }
 
     private bool CanSaveAction() {
         Console.WriteLine("Can SAVE ACTION ===>" + IsNew);
         if (IsNew)
             return !string.IsNullOrEmpty(PollTitle) && !HasErrors;
-        return Poll != null && Poll.IsModified && PollTitle != null && !HasErrors; 
+        return Poll != null && PollTitle != null && !HasErrors && Poll.IsModified && Choice.IsModified; 
     }
     private bool CanCancelAction() {
             return Poll != null && (IsNew || Poll.IsModified);
@@ -282,45 +266,7 @@ public class PollAddViewModel : ViewModelCommon {
         get => _addChoiceCommand;
         set => SetProperty(ref _addChoiceCommand, value);
     }
-    private ICommand _deleteChoiceCommand;
-    public ICommand DeleteChoiceCommand {
-        get {
-            if (_deleteChoiceCommand == null) {
-                _deleteChoiceCommand = new RelayCommand<int>(
-                    (choiceId) => this.DeleteChoice(choiceId),
-                    (choiceId) => this.CanDeleteChoice(choiceId)
-                );
-            }
-            return _deleteChoiceCommand;
-        }
-    }
-
-    private bool CanDeleteChoice(int choiceId) {
-        return Poll.Choices.Any(c => c.ChoiceId == choiceId);
-    }
-
-    private void DeleteChoice(int choiceId) {
-        var choice = Poll.Choices.FirstOrDefault(c => c.ChoiceId == choiceId);
-
-        if (choice != null) {
-            if (NbVotesForChoice(choice) > 0) {
-                // Afficher une boîte de dialogue de confirmation
-                var result = MessageBox.Show("Le choix contient des votes. Êtes-vous sûr de vouloir le supprimer ?",
-                    "Confirmation de suppression", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.No) {
-                    return;
-                }
-            }
-            Choices.Remove(choice);
-            Poll.Choices.Remove(choice);
-            
-        }
-        
-        RaisePropertyChanged();
-        RaisePropertyChanged(nameof(Choices));
-        Context.SaveChanges ();
-    }
+    
 
     public ObservableCollection<EditChoiceView> EditChoiceViews { get; } = new ObservableCollection<EditChoiceView>();
     private ObservableCollection<EditChoiceView> _editChoiceViews;
@@ -404,7 +350,6 @@ public class PollAddViewModel : ViewModelCommon {
         }
     }
 
-    private List<Choice> _initialChoices;
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
         IsNew = isNew;
@@ -414,10 +359,6 @@ public class PollAddViewModel : ViewModelCommon {
         EditingChoice = false;
         IsEditingPoll = false;
         Choices = new ObservableCollection<Choice>(Poll.Choices);
-
-        EditChoiceCommand = new RelayCommand<int>((id)=>EditChoiceAction(id));
-        
-
 
         var editChoices = Choice.GetChoicesForGrid(Poll.PollId).OrderBy(c => c.Label).ToList();
         foreach(var c in editChoices.ToList()) {
@@ -445,11 +386,11 @@ public class PollAddViewModel : ViewModelCommon {
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
         UpdateParticipantsTotalVotes();
-        //Choices = new ObservableCollection<Choice>(Poll.Choices);
+        ;
         Save = new RelayCommand(SaveAction, CanSaveAction);
         SaveCommand = new RelayCommand(SaveChoiceAction);
         Cancel = new RelayCommand(CancelAction,CanCancelAction);
-       // CancelCommand = new RelayCommand();
+       
         Delete = new RelayCommand(DeleteAction);
         AddCurrentUserCommand = new RelayCommand(AddCurrentUser);
         DeleteParticipantCommand = new RelayCommand<int>(
@@ -459,24 +400,6 @@ public class PollAddViewModel : ViewModelCommon {
 
         RaisePropertyChanged();
         EditChoice = new ObservableCollection<EditChoiceView>(new[] { new EditChoiceView(poll) });
-    }
-    public void EditChoiceAction(int choiceId) {
-        Console.WriteLine("EDIT CHOICE COMMAND ID ===>" + choiceId);
-       
-        foreach (var choice in Choices) {
-            bool isEditingChoice = choice.IsEditingChoice(choiceId);
-            Console.WriteLine("isEditingChoice 1 ===>" + isEditingChoice);
-            choice.IsEditing = isEditingChoice;
-            //EditChoiceVisibility = !isEditingChoice;
-            //EditingChoice = isEditingChoice;
-            Console.WriteLine("isEditingChoice 2  ===>" + choice.IsEditing + "  Choice ===>" + choiceId);
-            Context.SaveChanges();
-
-        }
-
-        IsEditingChoice = true;
-        EditChoiceVisibility = false;
-        IsEditingVisibility = true;
     }
     
     public void UpdateParticipantsTotalVotes() {

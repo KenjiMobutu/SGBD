@@ -67,6 +67,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
     public RelayCommand<object> HasVotedCommand { get; set; }
     
     public RelayCommand<object> ClearChoicesCommand { get; set; }
+
     public void HasVoted(object parameter) {
         Console.WriteLine("RENTRE DANS Multiple");
         if (!EditMode) {
@@ -105,6 +106,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
             Vote = new Vote { Choice = Choice, User = Participant, Type = newVoteType };
             Participant.VotesList.Add(Vote);
             Choice.VotesList.Add(Vote);
+            NotifyColleagues(App.Messages.MSG_VOTE_CHANGED, Vote);
         }
 
         // Update the IsRegistrated properties
@@ -115,49 +117,7 @@ public class VoteChoiceViewModel : ViewModelCommon {
 
         // Set IsRegistrated to true
         IsRegistrated = true;
-    }
-
-    public void HasVotedSingle(object parameter) {
-        if (!EditMode) {
-            return;
-        }
-
-        Console.WriteLine("RENTRE DANS SINGLE");
-        Console.WriteLine("SINGLE ===>:" + Poll.Type);
-        double newVote = Convert.ToDouble(parameter);
-
-        // Determine the new vote type
-        VoteType newVoteType = newVote switch {
-            1.0 => VoteType.Yes,
-            -1.0 => VoteType.No,
-            0.5 => VoteType.Maybe,
-            0.0 => VoteType.None,
-            _ => VoteType.Maybe
-        };
-
-
-        // Remove all existing votes of the participant for the current poll
-        var existingVotesForPoll = Participant.VotesList.Where(v => v.Choice.Poll == Poll).ToList();
-        foreach (var existingVote in existingVotesForPoll) {
-            Console.WriteLine("EXISTING VOTE ==> " + existingVote.Choice.Label);
-            existingVote.Choice.VotesList.Remove(existingVote);
-            Participant.VotesList.Remove(existingVote);
-            existingVote.Type = VoteType.None;
-        }
-
-        // Create a new vote for the selected choice in the current poll
-        Vote = new Vote { Choice = Choice, User = Participant, Type = newVoteType };
-        Participant.VotesList.Add(Vote);
-        Choice.VotesList.Add(Vote);
-
-        // Update the IsRegistrated properties
-        IsRegistratedNo = Vote.Type == VoteType.No;
-        IsRegistratedYes = Vote.Type == VoteType.Yes;
-        IsRegistratedMaybe = Vote.Type == VoteType.Maybe;
-
-        // Set IsRegistrated to true
-        IsRegistrated = true;
-
+        
     }
 
     private bool _isRegistrated;

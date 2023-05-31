@@ -50,7 +50,8 @@ public class ChoiceViewModel : ViewModelCommon{
         SaveCommand = new RelayCommand(SaveChoiceAction,CanSaveChoice);
         CancelCommand = new RelayCommand(Cancel);
         DeleteChoiceCommand2 = new RelayCommand(DeleteChoice, CanDeleteChoice);
-        
+
+        RaisePropertyChanged();
     }
     private string _newChoiceLabel;
     public string NewChoiceLabel {
@@ -106,8 +107,11 @@ public class ChoiceViewModel : ViewModelCommon{
     private bool ChoiceLabelExists() {
         return Context.Choices.Any(choice => choice.Label == ChoiceLabel);
     }
-    
-    public Choice Choice { get; set; }
+    private Choice _choice;
+    public Choice Choice {
+        get => _choice;
+        set=> SetProperty(ref _choice, value);
+    }
     
     public void SaveChoiceAction() {
         
@@ -120,6 +124,8 @@ public class ChoiceViewModel : ViewModelCommon{
     }
     private void Cancel() {
         EditMode = false;
+        Choice.Reload();
+        RaisePropertyChanged();
     }
     private void DeleteChoice() {
         Console.WriteLine("DELETE CHOICE");
