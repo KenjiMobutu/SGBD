@@ -23,12 +23,7 @@ public class PollAddViewModel : ViewModelCommon {
     public ICommand Delete { get; set; }
     public ICommand SaveCommand { get; set; }
     public ICommand EditChoiceCommand { get; set; }
-    private PollDetailViewModel _pollDetailViewModel;
-
-    public PollDetailViewModel PollDetailViewModel {
-        get { return _pollDetailViewModel; }
-        set { SetProperty(ref _pollDetailViewModel, value); }
-    }
+    
 
     private Poll _poll;
 
@@ -156,6 +151,7 @@ public class PollAddViewModel : ViewModelCommon {
             Participants.Remove(participant);
         }
         Context.SaveChanges();
+        NoParticipants = Participants.Count == 0;
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
     }
@@ -174,9 +170,11 @@ public class PollAddViewModel : ViewModelCommon {
         if (SelectedUserToAdd != null) {
             Poll.Participants.Add(SelectedUserToAdd);
             Participants.Add(SelectedUserToAdd);
+            NoParticipants = Participants.Count == 0;
             Context.SaveChanges();
             RaisePropertyChanged();
             RaisePropertyChanged(nameof(Participants));
+            NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         }
     }
@@ -197,15 +195,20 @@ public class PollAddViewModel : ViewModelCommon {
             Participants.Add(user);
         }
         // Mise à jour de la liste des participants
+        NoParticipants = Participants.Count == 0;
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
+        NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
     }
  
     private void AddCurrentUser() {
         Poll.Participants.Add(CurrentUser);
         Participants.Add(CurrentUser);
+        NoParticipants = Participants.Count == 0;
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Participants));
+        NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+
     }
     public void SaveChoiceAction() {
         EditChoiceVisibility = true;
@@ -242,7 +245,7 @@ public class PollAddViewModel : ViewModelCommon {
         Console.WriteLine("Can SAVE ACTION ===>" + IsNew);
         if (IsNew)
             return !string.IsNullOrEmpty(PollTitle) && !HasErrors;
-        return Poll != null && PollTitle != null && !HasErrors && Poll.IsModified; 
+        return Poll != null && PollTitle != null && !HasErrors; 
     }
     private bool CanCancelAction() {
             return Poll != null && (IsNew || Poll.IsModified);
@@ -250,9 +253,10 @@ public class PollAddViewModel : ViewModelCommon {
     public override void CancelAction() {
         if (IsNew) {
             Console.WriteLine($"New {PollTitle}");
-            
+            ClearErrors();
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
             IsNew = false;
+           
         } else {
             ClearErrors();
             Poll.Reload();
@@ -276,7 +280,10 @@ public class PollAddViewModel : ViewModelCommon {
     private ObservableCollection<User> _participants;
     public ObservableCollection<User> Participants {
         get => _participants;
-        set => SetProperty(ref _participants, value);
+        set {
+            SetProperty(ref _participants, value);
+            NoParticipants = _participants.Count == 0;
+        }
     }
     private ObservableCollection<Choice> _choices;
     public ObservableCollection<Choice> Choices {
@@ -348,6 +355,11 @@ public class PollAddViewModel : ViewModelCommon {
             choice.IsEditing = EditMode;
         }
     }
+    private bool _noParticipants;
+    public bool NoParticipants {
+        get => _noParticipants;
+        set => SetProperty(ref _noParticipants, value);
+    }
 
     public PollAddViewModel(Poll poll, bool isNew) {
         Poll = poll;
@@ -357,8 +369,9 @@ public class PollAddViewModel : ViewModelCommon {
         IsEditingVisibility = false;
         EditingChoice = false;
         IsEditingPoll = false;
+        
         Choices = new ObservableCollection<Choice>(Poll.Choices);
-
+        
         var editChoices = Choice.GetChoicesForGrid(Poll.PollId).OrderBy(c => c.Label).ToList();
         foreach(var c in editChoices.ToList()) {
             Console.WriteLine("EDITCHOICES ===>" + c.Label);
@@ -384,6 +397,8 @@ public class PollAddViewModel : ViewModelCommon {
         SelectedType = Poll.Type;
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
+        Console.WriteLine("NOMBRE PARTICIPANTS  ===> "+ Participants.Count);
+        
         UpdateParticipantsTotalVotes();
         
         Save = new RelayCommand(SaveAction, CanSaveAction);
@@ -423,6 +438,7 @@ public class PollAddViewModel : ViewModelCommon {
         }
         return totalVotes;
     }
+
     public void DeleteAction() {
         Console.WriteLine("DELETE !!!!!");
     }

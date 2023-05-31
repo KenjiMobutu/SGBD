@@ -126,9 +126,7 @@ public class PollDetailViewModel : ViewModelCommon {
         var participants = Participation.GetParticipantOfGrid(pollId).OrderBy(p => p.User.Name).ToList();
         bool isParticipant = participants.Any(p => p.User.UserId == CurrentUser.UserId);
         Console.WriteLine("IS PART===> " + isParticipant);
-        PollAddViewModel addViewModel = new PollAddViewModel(poll, isNew);
-        addViewModel.PollDetailViewModel = this;
-
+        
 
         IsEditing = false  ;
         IsClosed = !poll.IsClosed;
