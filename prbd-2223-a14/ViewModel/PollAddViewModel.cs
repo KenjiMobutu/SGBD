@@ -16,8 +16,7 @@ using PRBD_Framework;
 
 namespace MyPoll.ViewModel;
 public class PollAddViewModel : ViewModelCommon {
-    public PollAddViewModel() {
-    }
+    public PollAddViewModel() {}
     public ICommand Save { get; set; }
     public ICommand Cancel { get; set; }
     public ICommand CancelCommand { get; set; }
@@ -386,9 +385,9 @@ public class PollAddViewModel : ViewModelCommon {
         PollTypes = new ObservableCollection<PollType>(Enum.GetValues(typeof(PollType)).Cast<PollType>());
         Participants = new ObservableCollection<User>(Poll.Participants);
         UpdateParticipantsTotalVotes();
-        ;
+        
         Save = new RelayCommand(SaveAction, CanSaveAction);
-        SaveCommand = new RelayCommand(SaveChoiceAction);
+        
         Cancel = new RelayCommand(CancelAction,CanCancelAction);
        
         Delete = new RelayCommand(DeleteAction);
@@ -416,13 +415,7 @@ public class PollAddViewModel : ViewModelCommon {
         }
         user.TotalVotes = totalVotes;
     }
-    public int NbVotesForChoice(Choice choice) {
-        int totalVotes = 0;
-        foreach (var c in Poll.Choices) {
-            totalVotes += c.VotesList.Count(c => c.ChoiceId == choice.ChoiceId);
-        }
-        return totalVotes;
-    }
+    
     public int NbVotesForUser(User user) {
         int totalVotes = 0;
         foreach (var choice in Poll.Choices) {

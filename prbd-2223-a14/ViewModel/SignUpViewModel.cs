@@ -22,7 +22,7 @@ public  class SignUpViewModel : ViewModelCommon {
     }
     private const string MailPropertyName = nameof(Mail);
     public ICommand SaveCommand { get; set; }
-    public ICommand Cancel { get; set; }
+    public ICommand CancelCommand { get; set; }
 
     private User _user;
     public User User {
@@ -66,9 +66,14 @@ public  class SignUpViewModel : ViewModelCommon {
   
     public SignUpViewModel()  {
         SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
+        CancelCommand = new RelayCommand(CancelAction);
         Register<User>(App.Messages.MSG_MEMBER_CHANGED, user => OnRefreshData());
         RaisePropertyChanged();
     }
+    public override void CancelAction() {
+        NotifyColleagues(App.Messages.MSG_LOGOUT);
+    }
+
 
     public override void SaveAction() {
 

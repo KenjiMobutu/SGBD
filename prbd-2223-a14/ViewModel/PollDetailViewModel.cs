@@ -226,7 +226,7 @@ public class PollDetailViewModel : ViewModelCommon {
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
 
-    public string Title => Poll.Title;
+    public string Title => IsNew ? "< NEW POLL >" : Poll.Title;
     public User Creator => Poll.Creator;
     public bool IsCreator => Poll.Creator == CurrentUser || CurrentUser.IsAdmin ;
     protected override void OnRefreshData() {
