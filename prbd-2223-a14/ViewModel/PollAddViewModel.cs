@@ -272,6 +272,7 @@ public class PollAddViewModel : ViewModelCommon {
             Poll.Reload();
             RaisePropertyChanged();
         }
+        NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
     }
 
     public ObservableCollection<EditChoiceView> EditChoiceViews { get; } = new ObservableCollection<EditChoiceView>();
@@ -324,7 +325,26 @@ public class PollAddViewModel : ViewModelCommon {
             Poll.Type = value;
         }
     }
-    
+    private bool _pollTypeValid;
+    public bool PollTypeValid {
+        get => _pollTypeValid;
+        set {
+            SetProperty(ref _pollTypeValid, value);
+            
+        }
+    }
+    public bool PollTypeValidation() {
+
+        bool hasMultipleVotes = Participants.Any(user => {
+            var voteCount = Poll.Choices.Sum(c => c.VotesList.Count(v => v.UserId == user.UserId));
+            Console.WriteLine("NB VOTECOUNT==>" +voteCount);
+            return voteCount > 1;
+        });
+        PollTypeValid = !hasMultipleVotes;
+
+        return !HasErrors;
+    }
+
     private bool _editChoiceVisibility;
     public bool EditChoiceVisibility {
         get => _editChoiceVisibility;
@@ -427,6 +447,7 @@ public class PollAddViewModel : ViewModelCommon {
         EditChoice = new ObservableCollection<EditChoiceView>(new[] { new EditChoiceView(poll, IsNew) });
         Register<Choice>(App.Messages.MSG_CHOICE_ADDED, choice => NbChoice());
         NbChoice();
+        PollTypeValidation();
     }
     public void NbChoice() {
         Console.WriteLine("NB CHOICE ===> " + Choices.Count);

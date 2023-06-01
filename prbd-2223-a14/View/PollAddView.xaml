@@ -38,7 +38,7 @@
         <TextBox x:Name="txtTitle" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center" Text="{Binding PollTitle, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label x:Name="labelType" Content="Type :" VerticalAlignment="Top" Padding="5" Grid.Row="1" />
-        <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center" SelectedItem="{Binding SelectedType}" Grid.Row="1" ItemsSource="{Binding PollTypes}">
+        <ComboBox x:Name="cmbType" Grid.Column="1" VerticalAlignment="Center" SelectedItem="{Binding SelectedType}" Grid.Row="1" ItemsSource="{Binding PollTypes}" IsEnabled="{Binding PollTypeValid}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock>
