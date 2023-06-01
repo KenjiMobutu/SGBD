@@ -75,6 +75,11 @@ public class PollAddViewModel : ViewModelCommon {
         get => _isNew;
         set => SetProperty(ref _isNew, value);
     }
+    private bool _isNewPoll;
+    public bool IsNewPoll {
+        get => _isNewPoll;
+        set => SetProperty(ref _isNewPoll, value);
+    }
     public bool IsExisting => !_isNew;
     public string Title => Poll.Title;
     public User Creator => Poll.Creator;
@@ -399,10 +404,10 @@ public class PollAddViewModel : ViewModelCommon {
         Poll = poll;
         IsNew = isNew;
         PollTitle = Poll.Title;
-        
+        IsNewPoll = IsNew;
         EditingChoice = false;
         IsEditingPoll = false;
-        
+        Console.WriteLine("ISNEW POLL ===> " + IsNewPoll);
         Choices = new ObservableCollection<Choice>(Poll.Choices);
         
         var editChoices = Choice.GetChoicesForGrid(Poll.PollId).OrderBy(c => c.Label).ToList();
@@ -492,5 +497,7 @@ public class PollAddViewModel : ViewModelCommon {
     public List<EditChoiceViewModel> EditChoices => _editChoices;
     public EditChoiceViewModel EditChoiceVM;
     
+        
+
 }
 

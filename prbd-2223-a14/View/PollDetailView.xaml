@@ -122,6 +122,7 @@
                                 CommandParameter="{Binding CommentId}"
                                 Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Visibility="{Binding IsDeletable,Converter={StaticResource BoolToVisibility}}"/>
+                            
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
