@@ -27,7 +27,7 @@ public class EditChoiceViewModel : ViewModelCommon {
 
         _choicesVM = new ObservableCollectionFast<ChoiceViewModel>(_choices
                         .Select(c => {
-                            var vm = new ChoiceViewModel(this, poll, c);
+                            var vm = new ChoiceViewModel(this, poll, c,IsNew);
                             vm.ChoiceChanged += () => {
                                 Console.WriteLine("ChoiceChanged");
                                 ChoicesVM.Remove(vm);
@@ -83,7 +83,7 @@ public class EditChoiceViewModel : ViewModelCommon {
         Poll.Choices.Add(choice);
         Choices.Add(choice);
 
-        var vm = new ChoiceViewModel(this, Poll, choice);
+        var vm = new ChoiceViewModel(this, Poll, choice,IsNew);
         vm.ChoiceChanged += () =>{
             Console.WriteLine("ChoiceChanged");
             ChoicesVM.Remove(vm);
@@ -98,13 +98,14 @@ public class EditChoiceViewModel : ViewModelCommon {
         Context.Choices.Add(choice);
         NewChoiceLabel = ""; // remise à zéro de la propriété pour permettre d'ajouter un nouveau choix
         ClearErrors();
-        
+        //NoChoices = Choices.Count == 0;
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choice));
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+        NotifyColleagues(App.Messages.MSG_CHOICE_ADDED, Choice);
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         if (!IsNew) { Context.SaveChanges(); }
-        //Context.SaveChanges();
+        
     }
 
     private string _newChoiceLabel;

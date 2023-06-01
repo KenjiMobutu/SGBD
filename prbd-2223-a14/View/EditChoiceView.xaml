@@ -18,6 +18,7 @@
     <f:UserControlBase.Resources>
         <f:BoolToVisibleConverter x:Key="BoolToVisibility"/>
     </f:UserControlBase.Resources>
+
     <StackPanel Orientation="Vertical">
         <!-- Une ligne pour chaque Choix - chaque ChoiceView utilisera un viewModel qui provient de la liste ChoicesVM -->
         <Border BorderBrush="Black" BorderThickness="0.5" Padding="5" Margin="5">
@@ -36,7 +37,5 @@
             <Button Content="Add" Command="{Binding AddChoiceCommand}" Margin="5" Height="25" Width="50" />
         </StackPanel>
     </StackPanel>
-
-
 
 </f:UserControlBase>

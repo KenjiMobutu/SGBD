@@ -32,8 +32,4 @@ public class Choice : EntityBase<MyPollContext> {
 
     public bool IsEditing { get; set; }
 
-
-    public bool IsEditingChoice(int choiceId) {
-        return ChoiceId == choiceId ;
-    }
 }

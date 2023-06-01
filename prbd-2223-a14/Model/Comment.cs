@@ -23,8 +23,5 @@ public class Comment : EntityBase<MyPollContext> {
 
     public Comment() { }
     
-    public bool IsCreatedByUser(User currentUser) {
-        return User == currentUser;
-    }
     public bool IsDeletable { get; set; }
 }

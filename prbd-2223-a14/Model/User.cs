@@ -30,10 +30,6 @@ public class User : EntityBase<MyPollContext> {
 
     }
     public User() { }
-    public bool isAdmin() {
-        return Role == Role.Admin;
-    }
-
     public virtual ICollection<Poll> Participations { get; set; } = new HashSet<Poll>();
     public virtual ICollection<Choice> Choices { get; set; } = new HashSet<Choice>();
 

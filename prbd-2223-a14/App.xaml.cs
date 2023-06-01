@@ -20,6 +20,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_DISPLAY_POLL,
         MSG_POLL_CHANGED,
         MSG_VOTE_CHANGED,
+        MSG_CHOICE_ADDED,
         MSG_EDITMODE_CHANGED,
         MSG_POLL_SAVED,
         MSG_SIGNUP,

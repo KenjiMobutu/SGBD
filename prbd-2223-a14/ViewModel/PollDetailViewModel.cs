@@ -207,6 +207,7 @@ public class PollDetailViewModel : ViewModelCommon {
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Comments));
     }
+    
     private void DeleteAction() {
         if (Poll != null) {
             // Afficher une boîte de dialogue de confirmation

@@ -28,12 +28,6 @@ public class VoteChoiceViewModel : ViewModelCommon {
         IsRegistratedMaybe = Vote.Type == VoteType.Maybe && IsRegistrated;
         IsRegistratedNone = Vote.Type == VoteType.None && IsRegistrated;
 
-        /*if(Poll.Type == PollType.Single) {
-            HasVotedCommand = new RelayCommand<object>(HasVotedSingle);
-        } else {
-            HasVotedCommand = new RelayCommand<object>(HasVoted);
-        }*/
-
         HasVotedCommand = new RelayCommand<object>(HasVoted);
     }
 
@@ -92,6 +86,12 @@ public class VoteChoiceViewModel : ViewModelCommon {
         Vote.Type = newVoteType;
         Console.WriteLine(Vote.Type);
 
+        // Update the IsRegistrated properties
+        IsRegistratedNo = Vote.Type == VoteType.No;
+        IsRegistratedYes = Vote.Type == VoteType.Yes;
+        IsRegistratedMaybe = Vote.Type == VoteType.Maybe;
+        Console.WriteLine("IS Maybe ===> " + IsRegistratedMaybe);
+
         if (Poll.Type == PollType.Single) {
             // Remove all existing votes of the participant for the current poll
             var existingVotesForPoll = Participant.VotesList.Where(v => v.Choice.Poll == Poll).ToList();
@@ -107,14 +107,8 @@ public class VoteChoiceViewModel : ViewModelCommon {
             Participant.VotesList.Add(Vote);
             Choice.VotesList.Add(Vote);
             NotifyColleagues(App.Messages.MSG_VOTE_CHANGED, Vote);
-            NotifyColleagues(App.Messages.MSG_EDITMODE_CHANGED,Vote);
+            NotifyColleagues(App.Messages.MSG_EDITMODE_CHANGED, Vote);
         }
-
-        // Update the IsRegistrated properties
-        IsRegistratedNo = Vote.Type == VoteType.No;
-        IsRegistratedYes = Vote.Type == VoteType.Yes;
-        IsRegistratedMaybe = Vote.Type == VoteType.Maybe;
-        Console.WriteLine("IS Maybe ===> " + IsRegistratedMaybe);
 
         // Set IsRegistrated to true
         IsRegistrated = true;

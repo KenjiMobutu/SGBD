@@ -24,10 +24,10 @@ public class VoteParticipantViewModel : ViewModelCommon {
         Poll = poll;
         RefreshVotes();
         UpdateVotes();
-            EditCommand = new RelayCommand(() => EditMode = true);
-            SaveCommand = new RelayCommand(Save);
-            CancelCommand = new RelayCommand(Cancel);
-            DeleteCommand = new RelayCommand(Delete);
+        EditCommand = new RelayCommand(() => EditMode = true);
+        SaveCommand = new RelayCommand(Save);
+        CancelCommand = new RelayCommand(Cancel);
+        DeleteCommand = new RelayCommand(Delete);
 
         Register<Vote>(App.Messages.MSG_VOTE_CHANGED, vote => RefreshVotes());
         Register<Vote>(App.Messages.MSG_EDITMODE_CHANGED, vote => EditModeChanged());
@@ -177,25 +177,6 @@ public class VoteParticipantViewModel : ViewModelCommon {
             vote.IsVoteYes = vote.Vote.Value == 1;
             vote.IsVoteNo = vote.Vote.Value == -1;
             vote.IsVoteMaybe = vote.Vote.Value == 0.5;
-
-            // Mise à jour des propriétés IsRegistratedYes, IsRegistratedNo et IsRegistratedMaybe
-            if (vote.Vote.Type == VoteType.Yes) {
-                vote.IsRegistratedYes = vote.IsRegistrated;
-                vote.IsRegistratedNo = false;
-                vote.IsRegistratedMaybe = false;
-            } else if (vote.Vote.Type == VoteType.No) {
-                vote.IsRegistratedYes = false;
-                vote.IsRegistratedNo = vote.IsRegistrated;
-                vote.IsRegistratedMaybe = false;
-            } else if (vote.Vote.Type == VoteType.Maybe) {
-                vote.IsRegistratedYes = false;
-                vote.IsRegistratedNo = false;
-                vote.IsRegistratedMaybe = vote.IsRegistrated;
-            } else {
-                vote.IsRegistratedYes = false;
-                vote.IsRegistratedNo = false;
-                vote.IsRegistratedMaybe = false;
-            }
         }
     }
 

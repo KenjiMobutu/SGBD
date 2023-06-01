@@ -48,20 +48,13 @@ public class Poll : EntityBase<MyPollContext> {
         get {
             if (Choices.Count == 0) return new List<Choice>();
             var maxScore = Choices.Select(c => c.VotesList.Sum(v => v.Value)).Max();
-            if (maxScore == 0) return new List<Choice>();
+            if (maxScore == 0 ) return new List<Choice>();
             var choices = Choices.Where(c => c.VotesList.Sum(v => v.Value) == maxScore).ToList();
 
             return choices;
         }
     }
 
-   /* public int GetVotesCount() {
-        int count = 0;
-        foreach (var choice in Choices) {
-            count += choice.VotesList.Count;
-        }
-        return count;
-    }*/
 
     public int GetVotesCount() {
         return Choices.Sum(choice => choice.VotesList.Count);

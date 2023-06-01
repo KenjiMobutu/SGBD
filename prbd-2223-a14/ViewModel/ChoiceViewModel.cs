@@ -36,11 +36,17 @@ public class ChoiceViewModel : ViewModelCommon{
         get => _poll;
         private init => SetProperty(ref _poll, value);
     }
-    
+    private bool _isNew;
+    public bool IsNew {
+        get => _isNew;
+        set => SetProperty(ref _isNew, value);
+    }
+
     private EditChoiceViewModel _editChoiceViewModel;
     public ChoiceViewModel() {}
-    public ChoiceViewModel(EditChoiceViewModel editChoiceViewModel, Poll poll, Choice choice) {
+    public ChoiceViewModel(EditChoiceViewModel editChoiceViewModel, Poll poll, Choice choice, bool isNew) {
         Poll = poll;
+        IsNew = isNew;
         _editChoiceViewModel = editChoiceViewModel;
         Choice = choice;
         _totalVotes = NbVotesForChoice(choice);
@@ -120,7 +126,7 @@ public class ChoiceViewModel : ViewModelCommon{
         EditMode = false;
     }
     private bool CanSaveChoice() {
-        return !string.IsNullOrEmpty(ChoiceLabel) && !HasErrors;
+        return !string.IsNullOrEmpty(ChoiceLabel) && !HasErrors && !IsNew;
     }
     private void Cancel() {
         EditMode = false;
@@ -146,12 +152,14 @@ public class ChoiceViewModel : ViewModelCommon{
         }
         //_editChoiceViewModel.ChoicesVM.Remove(this);
         ChoiceChanged?.Invoke();
-        Context.SaveChanges();
+        
         RaisePropertyChanged();
         RaisePropertyChanged(nameof(Choice));
         
-        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);  
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+        NotifyColleagues(App.Messages.MSG_CHOICE_ADDED, Choice);
         EditMode = false;
+        if (!IsNew) { Context.SaveChanges(); }
     }
 
     private bool CanDeleteChoice() {
