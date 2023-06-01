@@ -11,8 +11,7 @@ using MyPoll.Model;
 using MyPoll.View;
 using System.Collections.Specialized;
 using PRBD_Framework;
-
-
+using Microsoft.EntityFrameworkCore;
 
 namespace MyPoll.ViewModel;
 public class PollAddViewModel : ViewModelCommon {
@@ -261,6 +260,20 @@ public class PollAddViewModel : ViewModelCommon {
             return Poll != null && (IsNew || Poll.IsModified);
     }
     public override void CancelAction() {
+        foreach (var entry in Context.ChangeTracker.Entries()) {
+            switch (entry.State) {
+                case EntityState.Modified:
+                    entry.CurrentValues.SetValues(entry.OriginalValues);
+                    entry.State = EntityState.Unchanged;
+                    break;
+                case EntityState.Added:
+                    entry.State = EntityState.Detached;
+                    break;
+                case EntityState.Deleted:
+                    entry.State = EntityState.Unchanged;
+                    break;
+            }
+        }
         if (IsNew) {
             Console.WriteLine($"New {PollTitle}");
             ClearErrors();
@@ -335,12 +348,12 @@ public class PollAddViewModel : ViewModelCommon {
     }
     public bool PollTypeValidation() {
 
-        bool hasMultipleVotes = Participants.Any(user => {
-            var voteCount = Poll.Choices.Sum(c => c.VotesList.Count(v => v.UserId == user.UserId));
-            Console.WriteLine("NB VOTECOUNT==>" +voteCount);
-            return voteCount > 1;
+        bool hasManyVotes = Participants.Any(user => {
+            var NbVote = Poll.Choices.Sum(c => c.VotesList.Count(v => v.UserId == user.UserId));
+            Console.WriteLine("NB VOTECOUNT==>" +NbVote);
+            return NbVote > 1;
         });
-        PollTypeValid = !hasMultipleVotes;
+        PollTypeValid = !hasManyVotes;
 
         return !HasErrors;
     }

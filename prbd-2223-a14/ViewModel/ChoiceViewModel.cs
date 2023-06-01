@@ -54,7 +54,7 @@ public class ChoiceViewModel : ViewModelCommon{
         _choices = new ObservableCollectionFast<Choice>(Poll.Choices.OrderBy(c => c.Label));
         EditCommand = new RelayCommand(() => EditMode = true);
         SaveCommand = new RelayCommand(SaveChoiceAction,CanSaveChoice);
-        CancelCommand = new RelayCommand(Cancel);
+        CancelCommand = new RelayCommand(Cancel, CanCancel);
         DeleteChoiceCommand2 = new RelayCommand(DeleteChoice, CanDeleteChoice);
 
         RaisePropertyChanged();
@@ -121,17 +121,20 @@ public class ChoiceViewModel : ViewModelCommon{
     
     public void SaveChoiceAction() {
         
-        Context.SaveChanges();
+        //Context.SaveChanges();
         RaisePropertyChanged();
         EditMode = false;
     }
     private bool CanSaveChoice() {
-        return !string.IsNullOrEmpty(ChoiceLabel) && !HasErrors && !IsNew;
+        return !string.IsNullOrEmpty(ChoiceLabel) && !HasErrors;
     }
     private void Cancel() {
         EditMode = false;
         Choice.Reload();
         RaisePropertyChanged();
+    }
+    private bool CanCancel() {
+        return !string.IsNullOrEmpty(ChoiceLabel) && !HasErrors;
     }
     private void DeleteChoice() {
         Console.WriteLine("DELETE CHOICE");
