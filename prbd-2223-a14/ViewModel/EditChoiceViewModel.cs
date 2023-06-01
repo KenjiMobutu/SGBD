@@ -34,6 +34,7 @@ public class EditChoiceViewModel : ViewModelCommon {
                             };
                             return vm;
                         }).OrderBy(vm => vm.ChoiceLabel));
+        
 
         AddChoiceCommand = new RelayCommand(AddChoice, CanAddChoice);
         RaisePropertyChanged();

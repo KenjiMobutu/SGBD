@@ -111,16 +111,6 @@ public class PollAddViewModel : ViewModelCommon {
        
     }
 
-    /*private ICommand _addAllUsersCommand;
-    public ICommand AddAllUsersCommand {
-        get {
-            if (_addAllUsersCommand == null) {
-                _addAllUsersCommand = new RelayCommand(() => AddAllUsers(),
-                    () => true);
-            }
-            return _addAllUsersCommand;
-        }
-    }*/
     public ICommand AddAllUsersCommand { get; set; }
 
     public ICommand AddCurrentUserCommand { get; set; }
@@ -260,6 +250,7 @@ public class PollAddViewModel : ViewModelCommon {
             return Poll != null && (IsNew || Poll.IsModified);
     }
     public override void CancelAction() {
+        //https://stackoverflow.com/questions/10535377/dbcontext-and-rejectchanges
         foreach (var entry in Context.ChangeTracker.Entries()) {
             switch (entry.State) {
                 case EntityState.Modified:
@@ -422,10 +413,6 @@ public class PollAddViewModel : ViewModelCommon {
 
         var editChoiceView = new EditChoiceView(Poll, IsNew);
         EditChoiceViews.Add(editChoiceView);
-
-        foreach (var c in _editChoices.ToList()) {
-            Console.WriteLine("EDITCHOICES 2 ===>" + c);
-        }
         
         foreach (Choice choice in Poll.Choices) {
             Choice = choice;
@@ -458,16 +445,23 @@ public class PollAddViewModel : ViewModelCommon {
 
         RaisePropertyChanged();
         EditChoice = new ObservableCollection<EditChoiceView>(new[] { new EditChoiceView(poll, IsNew) });
+       
         Register<Choice>(App.Messages.MSG_CHOICE_ADDED, choice => NbChoice());
         NbChoice();
+        Register<Choice>(App.Messages.MSG_CHOICE_HASERROR, choice => ChoiceHasError());
+        ChoiceHasError();
         PollTypeValidation();
+    }
+   
+    public bool ChoiceHasError() {
+        return HasErrors;
     }
     public void NbChoice() {
         Console.WriteLine("NB CHOICE ===> " + Choices.Count);
         Console.WriteLine("NB CHOICE 2 ===> " + Poll.Choices.Count());
         NoChoices = Poll.Choices.Count == 0;
     }
-
+   
     public void UpdateParticipantsTotalVotes() {
         foreach (var participant in Participants.ToList()) {
             TotalVotesForUser(participant);
@@ -496,6 +490,7 @@ public class PollAddViewModel : ViewModelCommon {
     }
     private List<EditChoiceViewModel> _editChoices;
     public List<EditChoiceViewModel> EditChoices => _editChoices;
+    public EditChoiceViewModel EditChoiceVM;
     
 }
 

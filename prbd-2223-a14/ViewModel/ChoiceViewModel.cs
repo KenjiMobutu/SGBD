@@ -15,6 +15,7 @@ namespace MyPoll.ViewModel;
 
 public class ChoiceViewModel : ViewModelCommon{
     public event Action ChoiceChanged;
+    public event Action<string, string> ValidationFailed;
 
     public ICommand EditCommand { get; }
     public ICommand DeleteChoiceCommand2 { get; }
@@ -59,12 +60,12 @@ public class ChoiceViewModel : ViewModelCommon{
 
         RaisePropertyChanged();
     }
-    private string _newChoiceLabel;
-    public string NewChoiceLabel {
-        get => _newChoiceLabel;
-        set => SetProperty(ref _newChoiceLabel, value, () => Validate(value));
+
+    private void NotifyValidationFailed(string propertyName, string errorMessage) {
+        ValidationFailed?.Invoke(propertyName, errorMessage);
     }
-    
+
+
     public string ChoiceLabel {
         get => Choice?.Label;
         set => SetProperty(Choice.Label, value, Choice, (c,v) => {
@@ -76,40 +77,24 @@ public class ChoiceViewModel : ViewModelCommon{
     public override bool Validate() {
         ClearErrors();
         Console.WriteLine("VALIDATE CHOICE LABEL ===>" + ChoiceLabel);
+       
         if (string.IsNullOrEmpty(ChoiceLabel)) {
-
             AddError(nameof(ChoiceLabel), "Cannot be empty");
-
+            NotifyColleagues(App.Messages.MSG_CHOICE_HASERROR, Choice);
         } else if (ChoiceLabel.Length < 3) {
             AddError(nameof(ChoiceLabel), "length must be >= 3");
+            NotifyColleagues(App.Messages.MSG_CHOICE_HASERROR, Choice);
         } else if (ChoiceLabel.TrimStart() != ChoiceLabel) {
             AddError(nameof(ChoiceLabel), "cannot start with a space");
         } else if (ChoiceLabelExists()) {
             AddError(nameof(ChoiceLabel), "Label already in the choice list");
         }
 
-        return !HasErrors;
-    }
-    public  bool Validate(string NewChoiceLabel) {
-        ClearErrors();
-        Console.WriteLine("VALIDATE CHOICE LABEL 2 !!!! ===>" + ChoiceLabel);
-        if (string.IsNullOrEmpty(NewChoiceLabel)) {
-
-            AddError(nameof(NewChoiceLabel), "Cannot be empty");
-
-        } else if (NewChoiceLabel.Length < 3) {
-            AddError(nameof(NewChoiceLabel), "length must be >= 3");
-        } else if (NewChoiceLabel.TrimStart() != NewChoiceLabel) {
-            AddError(nameof(NewChoiceLabel), "cannot start with a space");
-        } else if (LabelExists()) {
-            AddError(nameof(NewChoiceLabel), "Label already in the choice list");
-        }
+        
 
         return !HasErrors;
     }
-    private bool LabelExists() {
-        return Choices.Any(choice => choice.Label == NewChoiceLabel);
-    }
+ 
     private bool ChoiceLabelExists() {
         return Context.Choices.Any(choice => choice.Label == ChoiceLabel);
     }

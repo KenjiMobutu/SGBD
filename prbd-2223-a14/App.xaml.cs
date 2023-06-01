@@ -21,6 +21,7 @@ public partial class App : ApplicationBase<User, MyPollContext> {
         MSG_POLL_CHANGED,
         MSG_VOTE_CHANGED,
         MSG_CHOICE_ADDED,
+        MSG_CHOICE_HASERROR,
         MSG_EDITMODE_CHANGED,
         MSG_POLL_SAVED,
         MSG_SIGNUP,

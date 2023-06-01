@@ -184,6 +184,8 @@ public class PollDetailViewModel : ViewModelCommon {
         Context.SaveChanges();
         RaisePropertyChanged();
         NotifyColleagues(App.Messages.MSG_POLL_CHANGED, Poll);
+        NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Poll);
+        NotifyColleagues(App.Messages.MSG_DISPLAY_POLL, Poll);
         NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
     }
     private void AddCommentAction() {
